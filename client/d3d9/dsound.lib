@@ -1,0 +1,33 @@
+!<arch>
+/               1081480250              0       762       `
+     ~  ¦  	Ü  Š  Š  ü  ü  p  p  ¨  ¨        œ  œ  `  `  ä  ä      .  .__IMPORT_DESCRIPTOR_DSOUND __NULL_IMPORT_DESCRIPTOR DSOUND_NULL_THUNK_DATA _DirectSoundCreate@12 __imp__DirectSoundCreate@12 _DirectSoundEnumerateA@8 __imp__DirectSoundEnumerateA@8 _DirectSoundEnumerateW@8 __imp__DirectSoundEnumerateW@8 _DirectSoundCaptureCreate@12 __imp__DirectSoundCaptureCreate@12 _DirectSoundCaptureEnumerateA@8 __imp__DirectSoundCaptureEnumerateA@8 _DirectSoundCaptureEnumerateW@8 __imp__DirectSoundCaptureEnumerateW@8 _GetDeviceID@8 __imp__GetDeviceID@8 _DirectSoundFullDuplexCreate@40 __imp__DirectSoundFullDuplexCreate@40 _DirectSoundCreate8@12 __imp__DirectSoundCreate8@12 _DirectSoundCaptureCreate8@12 __imp__DirectSoundCaptureCreate8@12 /               1081480250              0       772       `
+   ~  ¦  Ü	  Š  ü  p  ¨     œ  `  ä    .        	      
+      	      
+  _DirectSoundCaptureCreate8@12 _DirectSoundCaptureCreate@12 _DirectSoundCaptureEnumerateA@8 _DirectSoundCaptureEnumerateW@8 _DirectSoundCreate8@12 _DirectSoundCreate@12 _DirectSoundEnumerateA@8 _DirectSoundEnumerateW@8 _DirectSoundFullDuplexCreate@40 _GetDeviceID@8 __IMPORT_DESCRIPTOR_DSOUND __NULL_IMPORT_DESCRIPTOR __imp__DirectSoundCaptureCreate8@12 __imp__DirectSoundCaptureCreate@12 __imp__DirectSoundCaptureEnumerateA@8 __imp__DirectSoundCaptureEnumerateW@8 __imp__DirectSoundCreate8@12 __imp__DirectSoundCreate@12 __imp__DirectSoundEnumerateA@8 __imp__DirectSoundEnumerateW@8 __imp__DirectSoundFullDuplexCreate@40 __imp__GetDeviceID@8 DSOUND_NULL_THUNK_DATA DSOUND.dll/     1081480250              0       491       `
+L :v@        .debug$S        A   Œ               @ B.idata$2           Í   á          @ 0À.idata$6           ÿ   á           @  À    	     
+DSOUND.dll(            
+ ÃMicrosoft (R) LINK                                           DSOUND.dll  @comp.idÃ] ÿÿ                  .idata$2@  À   h .idata$6        .idata$4@  À    h .idata$5@  À    h                     8            P   __IMPORT_DESCRIPTOR_DSOUND __NULL_IMPORT_DESCRIPTOR DSOUND_NULL_THUNK_DATA 
+DSOUND.dll/     1081480250              0       250       `
+L :v@¹         .debug$S        A   d               @ B.idata$3           ¥               @ 0À    	     
+DSOUND.dll(            
+ ÃMicrosoft (R) LINK                     @comp.idÃ] ÿÿ                     __NULL_IMPORT_DESCRIPTOR DSOUND.dll/     1081480250              0       277       `
+L :v@Õ         .debug$S        A   Œ               @ B.idata$5           Í               @ 0À.idata$4           Ñ               @ 0À    	     
+DSOUND.dll(            
+ ÃMicrosoft (R) LINK         @comp.idÃ] ÿÿ                     DSOUND_NULL_THUNK_DATA 
+DSOUND.dll/     1081480250              0       61        `
+  ÿÿ  L:v@)      _DirectSoundCaptureCreate8@12 DSOUND.dll 
+DSOUND.dll/     1081480250              0       60        `
+  ÿÿ  L:v@(      _DirectSoundCaptureCreate@12 DSOUND.dll DSOUND.dll/     1081480250              0       63        `
+  ÿÿ  L:v@+      _DirectSoundCaptureEnumerateA@8 DSOUND.dll 
+DSOUND.dll/     1081480250              0       63        `
+  ÿÿ  L:v@+      _DirectSoundCaptureEnumerateW@8 DSOUND.dll 
+DSOUND.dll/     1081480250              0       54        `
+  ÿÿ  L:v@"      _DirectSoundCreate8@12 DSOUND.dll DSOUND.dll/     1081480250              0       53        `
+  ÿÿ  L:v@!      _DirectSoundCreate@12 DSOUND.dll 
+DSOUND.dll/     1081480250              0       56        `
+  ÿÿ  L:v@$      _DirectSoundEnumerateA@8 DSOUND.dll DSOUND.dll/     1081480250              0       56        `
+  ÿÿ  L:v@$      _DirectSoundEnumerateW@8 DSOUND.dll DSOUND.dll/     1081480250              0       63        `
+  ÿÿ  L:v@+   
+   _DirectSoundFullDuplexCreate@40 DSOUND.dll 
+DSOUND.dll/     1081480250              0       46        `
+  ÿÿ  L:v@   	   _GetDeviceID@8 DSOUND.dll 
