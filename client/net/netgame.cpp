@@ -27,9 +27,21 @@ int iPickupPoolProcessFlag=0;
 extern int iSyncedRandomNumber;
 
 
+
 //----------------------------------------------------
 
+BYTE GetPacketID(Packet *p)
+{
+	if (p==0) return 255;
 
+	if ((unsigned char)p->data[0] == ID_TIMESTAMP) {
+		assert(p->length > sizeof(unsigned char) + sizeof(unsigned long));
+		return (unsigned char) p->data[sizeof(unsigned char) + sizeof(unsigned long)];
+	}
+	else {
+		return (unsigned char) p->data[0];
+	}
+}
 
 //----------------------------------------------------
 
@@ -53,8 +65,6 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_pActorPool = new CActorPool();
 
 	m_pRakClient = RakNetworkFactory::GetRakClientInterface();
-	m_pRakClient->SetMTUSize(576);
-
 	//m_pRakClient->InitializeSecurity(0, 0);
 	//m_pRakClient->SetTrackFrequencyTable(true);
 	//m_pRakClient->SetTimeoutTime(30000);
@@ -200,7 +210,7 @@ void CNetGame::InitGameLogic()
 
 void CNetGame::Process()
 {	
-	UpdateNetwork();
+//	UpdateNetwork();
 
 	if (m_byteHoldTime)	{
 		pGame->SetWorldTime(m_byteWorldTime, m_byteWorldMinute);
@@ -329,30 +339,15 @@ void CNetGame::Process()
 //----------------------------------------------------
 // UPDATE NETWORK
 //----------------------------------------------------
-unsigned char GetPacketIdentifier(Packet *p)
-{
-	if (p == 0)
-		return 255;
-
-	if ((unsigned char)p->data[0] == ID_TIMESTAMP)
-	{
-		assert(p->length > sizeof(MessageID) + sizeof(unsigned int));
-		return (unsigned char)p->data[sizeof(MessageID) + sizeof(unsigned int)];
-	}
-	else
-		return (unsigned char)p->data[0];
-}
 
 void CNetGame::UpdateNetwork()
 {
-	Packet* pkt;
+	Packet* pkt=NULL;
 	unsigned char packetIdentifier;
 	
-	for (pkt = m_pRakClient->Receive(); pkt; m_pRakClient->DeallocatePacket(pkt), pkt = m_pRakClient->Receive())
+	while((pkt = m_pRakClient->Receive()))
 	{
-
-		packetIdentifier = GetPacketIdentifier(pkt);
-
+		packetIdentifier = GetPacketID(pkt);
 
 		switch(packetIdentifier)
 		{
@@ -422,7 +417,7 @@ void CNetGame::UpdateNetwork()
 void CNetGame::Packet_PlayerSync(Packet *p)
 {
 	CRemotePlayer * pPlayer;
-	RakNet::BitStream bsPlayerSync(p->data, p->length, false);
+	RakNet::BitStream bsPlayerSync((unsigned char *)p->data, p->length, false);
 	ONFOOT_SYNC_DATA ofSync;
 	BYTE bytePacketID=0;
 	PLAYERID playerId;
@@ -515,7 +510,7 @@ void CNetGame::Packet_PlayerSync(Packet *p)
 
 void CNetGame::Packet_UnoccupiedSync(Packet *p)
 {
-	RakNet::BitStream bsUnocSync(p->data, p->length, false);
+	RakNet::BitStream bsUnocSync((unsigned char *)p->data, p->length, false);
 	UNOCCUPIED_SYNC_DATA unocSync;
 	BYTE bytePacketID=0;
 	PLAYERID playerId;
@@ -543,7 +538,7 @@ void CNetGame::Packet_UnoccupiedSync(Packet *p)
 void CNetGame::Packet_AimSync(Packet *p)
 {  
 	CRemotePlayer * pPlayer;
-	RakNet::BitStream bsAimSync(p->data, p->length, false);
+	RakNet::BitStream bsAimSync((unsigned char *)p->data, p->length, false);
 	AIM_SYNC_DATA aimSync;
 	BYTE bytePacketID=0;
 	PLAYERID playerId;
@@ -568,7 +563,7 @@ void CNetGame::Packet_AimSync(Packet *p)
 void CNetGame::Packet_VehicleSync(Packet *p)
 {
 	CRemotePlayer * pPlayer;
-	RakNet::BitStream bsSync(p->data, p->length, false);
+	RakNet::BitStream bsSync((unsigned char *)p->data, p->length, false);
 	BYTE		bytePacketID=0;
 	PLAYERID playerId;
 	INCAR_SYNC_DATA icSync;
@@ -666,7 +661,7 @@ void CNetGame::Packet_VehicleSync(Packet *p)
 void CNetGame::Packet_PassengerSync(Packet *p)
 {
 	CRemotePlayer * pPlayer;
-	RakNet::BitStream bsPassengerSync(p->data, p->length, false);
+	RakNet::BitStream bsPassengerSync((unsigned char *)p->data, p->length, false);
 	BYTE		bytePacketID=0;
 	PLAYERID	playerId;
 	PASSENGER_SYNC_DATA psSync;
@@ -691,7 +686,7 @@ void CNetGame::Packet_PassengerSync(Packet *p)
 void CNetGame::Packet_TrailerSync(Packet *p)
 {
 	CRemotePlayer * pPlayer;
-	RakNet::BitStream bsSpectatorSync(p->data, p->length, false);
+	RakNet::BitStream bsSpectatorSync((unsigned char *)p->data, p->length, false);
 
 	if(GetGameState() != GAMESTATE_CONNECTED) return;
 
@@ -789,6 +784,7 @@ void CNetGame::Packet_ConnectAttemptFailed(Packet* packet)
 
 //----------------------------------------------------
 // Connection Success
+
 void BIG_NUM_MUL(unsigned long in[5], unsigned long out[6], unsigned long factor)
 {
 	/*
@@ -868,13 +864,15 @@ int gen_gpci(char buf[64], unsigned long factor) /* by bartekdvd */
 	return pos;
 }
 
+
 void CNetGame::Packet_ConnectionSucceeded(Packet *p)
 {
 	if(pChatWindow) {
 		pChatWindow->AddDebugMessage("Connection success. Loading network game...");
 	}
-	char *g_szNickName = "Hola";
+
 	m_iGameState = GAMESTATE_AWAIT_JOIN;
+
 	RakNet::BitStream bsSuccAuth((unsigned char *)p->data, p->length, false);
 	PLAYERID myPlayerID;
 	unsigned int uiChallenge;
@@ -884,16 +882,11 @@ void CNetGame::Packet_ConnectionSucceeded(Packet *p)
 	bsSuccAuth.IgnoreBits(16); // port
 
 	bsSuccAuth.Read(myPlayerID);
-
-	/*g_myPlayerID = myPlayerID;
-	playerInfo[myPlayerID].iIsConnected = 1;
-	strcpy(playerInfo[myPlayerID].szPlayerName, g_szNickName);*/
-
 	bsSuccAuth.Read(uiChallenge);
 
-	//settings.uiChallange = uiChallenge;
-
 	
+
+
 
 	int iVersion = NETGAME_VERSION;
 	unsigned int uiClientChallengeResponse = uiChallenge ^ iVersion;
@@ -904,7 +897,7 @@ void CNetGame::Packet_ConnectionSucceeded(Packet *p)
 
 	BYTE byteAuthBSLen;
 	byteAuthBSLen = (BYTE)strlen(auth_bs);
-	BYTE byteNameLen = (BYTE)strlen(g_szNickName);
+	BYTE byteNameLen = (BYTE)strlen("Jos");
 	BYTE iClientVerLen = (BYTE)strlen("0.3.7");
 
 	RakNet::BitStream bsSend;
@@ -912,7 +905,7 @@ void CNetGame::Packet_ConnectionSucceeded(Packet *p)
 	bsSend.Write(iVersion);
 	bsSend.Write(byteMod);
 	bsSend.Write(byteNameLen);
-	bsSend.Write(g_szNickName, byteNameLen);
+	bsSend.Write("Jos", byteNameLen);
 	bsSend.Write(uiClientChallengeResponse);
 	bsSend.Write(byteAuthBSLen);
 	bsSend.Write(auth_bs, byteAuthBSLen);
@@ -920,19 +913,6 @@ void CNetGame::Packet_ConnectionSucceeded(Packet *p)
 	bsSend.Write("0.3.7", iClientVerLen);
 
 	m_pRakClient->RPC(&RPC_ClientJoin, &bsSend, HIGH_PRIORITY, RELIABLE, 0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
-
-
-	/*
-	int iVersion = NETGAME_VERSION;
-	BYTE byteMod = MOD_VERSION;
-	BYTE byteNameLen = (BYTE)strlen(m_pPlayerPool->GetLocalPlayerName());
-	
-	RakNet::BitStream bsSend;
-	bsSend.Write(iVersion);
-	bsSend.Write(byteMod);
-	bsSend.Write(byteNameLen);
-	bsSend.Write(m_pPlayerPool->GetLocalPlayerName(),byteNameLen);
-	m_pRakClient->RPC(&RPC_ClientJoin,&bsSend,HIGH_PRIORITY,RELIABLE,0,FALSE, UNASSIGNED_NETWORK_ID, NULL);*/
 }
 
 //----------------------------------------------------

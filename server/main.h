@@ -48,8 +48,10 @@ Leaked by ZYRONIX.net.
 // VERSION INFO
 // ------------
 
-#define SAMP_VERSION "0.2X"
-#define NETGAME_VERSION 8866
+#define SAMP_VERSION "0.3.7"
+
+#define NETCODE_CONNCOOKIELULZ 0x6969
+#define NETGAME_VERSION 4057
 
 // ------------
 // OS SPECIFICS
@@ -59,6 +61,7 @@ Leaked by ZYRONIX.net.
 	#define WIN32_LEAN_AND_MEAN
 	#define SLEEP(x) { Sleep(x); }
 
+	#include <Winsock2.h>
 	#include <windows.h>
 	#include <tchar.h>
 	#include <mmsystem.h>
@@ -110,11 +113,17 @@ typedef struct _SERVER_SETTINGS {
 #include <vector>
 
 // Raknet
-#include "../raknet/RakServer.h"
-#include "../raknet/RakNetworkFactory.h"
-#include "../raknet/BitStream.h"
-#include "../raknet/PacketEnumerations.h"
-#include "../raknet/SAMPRPC.h"
+#include "raknet/PacketEnumerations.h"
+#include "raknet/RakNetworkFactory.h"
+#include "raknet/RakServerInterface.h"
+#include "raknet/NetworkTypes.h"
+#include "raknet/BitStream.h"
+#include "raknet/StringCompressor.h"
+
+#include "samp_netencr.h"
+#include "samp_auth.h"
+#include "SAMPRPC.h"
+#include "SAMP_VER.h"
 
 // amx
 #include "amx/amx.h"

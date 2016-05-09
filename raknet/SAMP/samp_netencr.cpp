@@ -202,7 +202,7 @@ void unKyretardizeDatagram(unsigned char *buf, int len, int port, int unk)
         bChecksum ^= (bData & 0xAA);
 	}
 	
-	if(bChecksum != bChecksumEncr)
-		Log("[WARNING] Invalid checksum: bChecksum %d != bChecksumEncr %d", bChecksum, bChecksumEncr);
+/*	if(bChecksum != bChecksumEncr)
+		Log("[WARNING] Invalid checksum: bChecksum %d != bChecksumEncr %d", bChecksum, bChecksumEncr);*/
 }
 #endif

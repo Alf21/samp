@@ -4,7 +4,6 @@ Leaked by ZYRONIX.net.
 
 #include "main.h"
 #include "vehmods.h"
-#include "anticheat.h"
 
 extern CNetGame *pNetGame;
 
@@ -32,11 +31,11 @@ extern unsigned int _uiRndSrvChallenge;
 
 void ClientJoin(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 	RakNet::BitStream bsReject;
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
 
@@ -72,7 +71,7 @@ void ClientJoin(RPCParameters *rpcParams)
 		bytePlayerID > MAX_PLAYERS ) {
 		byteRejectReason = REJECT_REASON_BAD_PLAYERID;
 		bsReject.Write(byteRejectReason);
-		pRak->RPC(RPC_ConnectionRejected,&bsReject,HIGH_PRIORITY,RELIABLE,0,sender,FALSE,FALSE);
+		pRak->RPC(&RPC_ConnectionRejected,&bsReject,HIGH_PRIORITY,RELIABLE,0,sender,false, false, UNASSIGNED_NETWORK_ID, NULL);
 		pRak->Kick(sender);
 		return;
 	}	
@@ -80,7 +79,7 @@ void ClientJoin(RPCParameters *rpcParams)
 	if(iVersion != NETGAME_VERSION || _uiRndSrvChallenge != (uiChallengeResponse ^ NETGAME_VERSION)) {
 		byteRejectReason = REJECT_REASON_BAD_VERSION;
 		bsReject.Write(byteRejectReason);
-		pRak->RPC(RPC_ConnectionRejected,&bsReject,HIGH_PRIORITY,RELIABLE,0,sender,FALSE,FALSE);
+		pRak->RPC(&RPC_ConnectionRejected,&bsReject,HIGH_PRIORITY,RELIABLE,0,sender,false, false, UNASSIGNED_NETWORK_ID, NULL);
 		pRak->Kick(sender);
 		return;
 	}
@@ -88,7 +87,7 @@ void ClientJoin(RPCParameters *rpcParams)
 	if(byteMod != pNetGame->m_byteMod) {
 		byteRejectReason = REJECT_REASON_BAD_MOD;
 		bsReject.Write(byteRejectReason);
-		pRak->RPC(RPC_ConnectionRejected,&bsReject,HIGH_PRIORITY,RELIABLE,0,sender,FALSE,FALSE);
+		pRak->RPC(&RPC_ConnectionRejected,&bsReject,HIGH_PRIORITY,RELIABLE,0,sender,false, false, UNASSIGNED_NETWORK_ID, NULL);
 		pRak->Kick(sender);
 		return;
 	}
@@ -97,7 +96,7 @@ void ClientJoin(RPCParameters *rpcParams)
 		byteNickLen < 3 || byteNickLen > 16 || pPlayerPool->IsNickInUse(szPlayerName)) {
 		byteRejectReason = REJECT_REASON_BAD_NICKNAME;
 		bsReject.Write(byteRejectReason);
-		pRak->RPC(RPC_ConnectionRejected,&bsReject,HIGH_PRIORITY,RELIABLE,0,sender,FALSE,FALSE);
+		pRak->RPC(&RPC_ConnectionRejected,&bsReject,HIGH_PRIORITY,RELIABLE,0,sender,false, false, UNASSIGNED_NETWORK_ID, NULL);
 		pRak->Kick(sender);
 		return;
 	}
@@ -116,7 +115,7 @@ void ClientJoin(RPCParameters *rpcParams)
 
 void Chat(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
@@ -127,7 +126,7 @@ void Chat(RPCParameters *rpcParams)
 
 	CPlayerPool *pPool = pNetGame->GetPlayerPool();
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 	bsData.Read(byteTextLen);
 
 	if(byteTextLen > MAX_CMD_INPUT) return;
@@ -181,7 +180,7 @@ void Chat(RPCParameters *rpcParams)
 
 void Privmsg(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
@@ -192,7 +191,7 @@ void Privmsg(RPCParameters *rpcParams)
 	BYTE byteTextLen;
 	CPlayerPool *pPool = pNetGame->GetPlayerPool();
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 	bsData.Read(byteToPlayerID);
 	bsData.Read(byteTextLen);
 
@@ -250,7 +249,7 @@ void Privmsg(RPCParameters *rpcParams)
 
 void TeamPrivmsg(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
@@ -260,7 +259,7 @@ void TeamPrivmsg(RPCParameters *rpcParams)
 
 	CPlayerPool *pPool = pNetGame->GetPlayerPool();
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 	bsData.Read(byteTextLen);
 
 	if(byteTextLen > MAX_CMD_INPUT) return;
@@ -312,11 +311,11 @@ void TeamPrivmsg(RPCParameters *rpcParams)
 
 void RequestClass(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 
 	if(pNetGame->GetGameState() != GAMESTATE_RUNNING) return;
 	if(!pNetGame->GetPlayerPool()->GetSlotState(pRak->GetIndexFromPlayerID(sender))) return;
@@ -347,7 +346,7 @@ void RequestClass(RPCParameters *rpcParams)
 
 	bsSpawnRequestReply.Write(byteRequestOutcome);
 	bsSpawnRequestReply.Write((PCHAR)pSpawnInfo,sizeof(PLAYER_SPAWN_INFO));
-	pRak->RPC(RPC_RequestClass,&bsSpawnRequestReply,HIGH_PRIORITY,RELIABLE,0,sender,false,false);
+	pRak->RPC(&RPC_RequestClass,&bsSpawnRequestReply,HIGH_PRIORITY,RELIABLE,0,sender,false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 //----------------------------------------------------
@@ -355,7 +354,7 @@ void RequestClass(RPCParameters *rpcParams)
 
 void RequestSpawn(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
@@ -372,7 +371,7 @@ void RequestSpawn(RPCParameters *rpcParams)
 	
 	RakNet::BitStream bsSpawnRequestReply;
 	bsSpawnRequestReply.Write(byteRequestOutcome);
-	pRak->RPC(RPC_RequestSpawn,&bsSpawnRequestReply,HIGH_PRIORITY,RELIABLE,0,sender,false,false);
+	pRak->RPC(&RPC_RequestSpawn,&bsSpawnRequestReply,HIGH_PRIORITY,RELIABLE,0,sender,false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 
@@ -381,7 +380,7 @@ void RequestSpawn(RPCParameters *rpcParams)
 
 void Spawn(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
@@ -404,11 +403,11 @@ void Spawn(RPCParameters *rpcParams)
 
 void Death(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 
 	if(pNetGame->GetGameState() != GAMESTATE_RUNNING) return;
 
@@ -433,11 +432,11 @@ void Death(RPCParameters *rpcParams)
 
 void EnterVehicle(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 
 	if(pNetGame->GetGameState() != GAMESTATE_RUNNING) return;
 	if(!pNetGame->GetPlayerPool()->GetSlotState(pRak->GetIndexFromPlayerID(sender))) return;
@@ -468,11 +467,11 @@ void EnterVehicle(RPCParameters *rpcParams)
 
 void ExitVehicle(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 
 	if(pNetGame->GetGameState() != GAMESTATE_RUNNING) return;
 	if(!pNetGame->GetPlayerPool()->GetSlotState(pRak->GetIndexFromPlayerID(sender))) return;
@@ -502,13 +501,13 @@ void ExitVehicle(RPCParameters *rpcParams)
 
 void ServerCommand(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 	int iStrLen=0;
 	unsigned char* szCommand=NULL;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 
 	if(pNetGame->GetGameState() != GAMESTATE_RUNNING) return;
 
@@ -543,11 +542,11 @@ void ServerCommand(RPCParameters *rpcParams)
 
 void UpdateScoresPingsIPs(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 
 	RakNet::BitStream bsParams;
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
@@ -565,18 +564,18 @@ void UpdateScoresPingsIPs(RPCParameters *rpcParams)
 		}
 	}
 
-	pRak->RPC(RPC_UpdateScoresPingsIPs, &bsParams, HIGH_PRIORITY, RELIABLE, 0, sender, false, false);
+	pRak->RPC(&RPC_UpdateScoresPingsIPs, &bsParams, HIGH_PRIORITY, RELIABLE, 0, sender, false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 //----------------------------------------------------
 
 void SvrStats(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 
 	RakNet::BitStream bsParams;
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
@@ -586,18 +585,18 @@ void SvrStats(RPCParameters *rpcParams)
 	if(!pPlayerPool->IsAdmin(bytePlayerId)) return;
 
 	bsParams.Write((const char *)pRak->GetStatistics(UNASSIGNED_PLAYER_ID),sizeof(RakNetStatisticsStruct));
-	pRak->RPC(RPC_SvrStats, &bsParams, HIGH_PRIORITY, RELIABLE, 0, sender, false, false);
+	pRak->RPC(&RPC_SvrStats, &bsParams, HIGH_PRIORITY, RELIABLE, 0, sender, false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 //----------------------------------------------------
 
 void SetInteriorId(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 
 	BYTE byteInteriorId;
 	bsData.Read(byteInteriorId);
@@ -626,11 +625,11 @@ void SetInteriorId(RPCParameters *rpcParams)
 
 void ScmEvent(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 	RakNet::BitStream bsSend;
 	BYTE bytePlayerID;
 	int iEvent;
@@ -694,13 +693,13 @@ void ScmEvent(RPCParameters *rpcParams)
 			bsSend.Write(dwParams1);
 			bsSend.Write(dwParams2);
 			bsSend.Write(dwParams3);
-			pRak->RPC(RPC_ScmEvent, &bsSend, HIGH_PRIORITY, RELIABLE, 0, sender, true, false);
+			pRak->RPC(&RPC_ScmEvent, &bsSend, HIGH_PRIORITY, RELIABLE, 0, sender, true, false, UNASSIGNED_NETWORK_ID, NULL);
 		}
 		else
 		{
 			bsSend.Write((VEHICLEID)dwParams1);
 			bsSend.Write(dwParams2);
-			pRak->RPC(RPC_ScrRemoveComponent, &bsSend, HIGH_PRIORITY, RELIABLE, 0, sender, false, false);
+			pRak->RPC(&RPC_ScrRemoveComponent, &bsSend, HIGH_PRIORITY, RELIABLE, 0, sender, false, false, UNASSIGNED_NETWORK_ID, NULL);
 		}
 	}
 	else if (iEvent == EVENT_TYPE_PAINTJOB)
@@ -719,7 +718,7 @@ void ScmEvent(RPCParameters *rpcParams)
 			bsSend.Write(dwParams1);
 			bsSend.Write(dwParams2);
 			bsSend.Write(dwParams3);
-			pRak->RPC(RPC_ScmEvent, &bsSend, HIGH_PRIORITY, RELIABLE, 0, sender, true, false);
+			pRak->RPC(&RPC_ScmEvent, &bsSend, HIGH_PRIORITY, RELIABLE, 0, sender, true, false, UNASSIGNED_NETWORK_ID, NULL);
 		}
 	}
 	else if (iEvent == EVENT_TYPE_CARCOLOR)
@@ -740,7 +739,7 @@ void ScmEvent(RPCParameters *rpcParams)
 			bsSend.Write(dwParams1);
 			bsSend.Write(dwParams2);
 			bsSend.Write(dwParams3);
-			pRak->RPC(RPC_ScmEvent, &bsSend, HIGH_PRIORITY, RELIABLE, 0, sender, true, false);
+			pRak->RPC(&RPC_ScmEvent, &bsSend, HIGH_PRIORITY, RELIABLE, 0, sender, true, false, UNASSIGNED_NETWORK_ID, NULL);
 		}
 	}
 	else 
@@ -750,17 +749,17 @@ void ScmEvent(RPCParameters *rpcParams)
 		bsSend.Write(dwParams1);
 		bsSend.Write(dwParams2);
 		bsSend.Write(dwParams3);
-		pRak->RPC(RPC_ScmEvent, &bsSend, HIGH_PRIORITY, RELIABLE, 0, sender, true, false);
+		pRak->RPC(&RPC_ScmEvent, &bsSend, HIGH_PRIORITY, RELIABLE, 0, sender, true, false, UNASSIGNED_NETWORK_ID, NULL);
 	}
 }
 
 void AdminMapTeleport(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 	
 	VECTOR vecPos;
 	bsData.Read(vecPos.X);
@@ -784,19 +783,19 @@ void AdminMapTeleport(RPCParameters *rpcParams)
 			bsParams.Write(vecPos.Z);	// Z
 
 			RakServerInterface* pRak = pNetGame->GetRakServer();
-			pRak->RPC(RPC_ScrSetPlayerPos, &bsParams, HIGH_PRIORITY, RELIABLE, 0,
-					sender, false, false);
+			pRak->RPC(&RPC_ScrSetPlayerPos, &bsParams, HIGH_PRIORITY, RELIABLE, 0,
+					sender, false, false, UNASSIGNED_NETWORK_ID, NULL);
 		}
 	}
 }
 
 void VehicleDestroyed(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 	VEHICLEID VehicleID;
 	bsData.Read(VehicleID);
 
@@ -820,11 +819,11 @@ void VehicleDestroyed(RPCParameters *rpcParams)
 void PickedUpWeapon(RPCParameters *rpcParams)
 {
 	// Tells all other clients to destroy this pickup as it's been got already
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 
 	BYTE bytePlayerID;
 	bsData.Read(bytePlayerID);
@@ -832,17 +831,17 @@ void PickedUpWeapon(RPCParameters *rpcParams)
 	RakNet::BitStream bsSend;
 	bsSend.Write(bytePlayerID);
 	
-	pRak->RPC(RPC_DestroyWeaponPickup, &bsSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+	pRak->RPC(&RPC_DestroyWeaponPickup, &bsSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void PickedUpPickup(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 
 	BYTE bytePlayerID = pRak->GetIndexFromPlayerID(rpcParams->sender);
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 
 	int iPickup;
 	bsData.Read(iPickup);
@@ -856,12 +855,12 @@ void PickedUpPickup(RPCParameters *rpcParams)
 
 void MenuSelect(RPCParameters *rpcParams)
 {
-	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	
 	BYTE bytePlayerID = pRak->GetIndexFromPlayerID(rpcParams->sender);
 
-	RakNet::BitStream bsData(Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData(rpcParams->input,(iBitLength/8)+1,false);
 
 	BYTE byteRow;
 	bsData.Read(byteRow);
@@ -890,27 +889,27 @@ void RegisterRPCs(RakServerInterface * pRakServer)
 {
 	pRak = pRakServer;
 
-	REGISTER_STATIC_RPC(pRakServer, ClientJoin);
-	REGISTER_STATIC_RPC(pRakServer, Chat);
-	REGISTER_STATIC_RPC(pRakServer, Privmsg);
-	REGISTER_STATIC_RPC(pRakServer, TeamPrivmsg);
-	REGISTER_STATIC_RPC(pRakServer, RequestClass);
-	REGISTER_STATIC_RPC(pRakServer, RequestSpawn);
-	REGISTER_STATIC_RPC(pRakServer, Spawn);
-	REGISTER_STATIC_RPC(pRakServer, Death);
-	REGISTER_STATIC_RPC(pRakServer, EnterVehicle);
-	REGISTER_STATIC_RPC(pRakServer, ExitVehicle);
-	REGISTER_STATIC_RPC(pRakServer, ServerCommand);
-	REGISTER_STATIC_RPC(pRakServer, UpdateScoresPingsIPs);
-	REGISTER_STATIC_RPC(pRakServer, SvrStats);
-	REGISTER_STATIC_RPC(pRakServer, SetInteriorId);
-	REGISTER_STATIC_RPC(pRakServer, ScmEvent);
-	REGISTER_STATIC_RPC(pRakServer, AdminMapTeleport);
-	REGISTER_STATIC_RPC(pRakServer, VehicleDestroyed);
-	REGISTER_STATIC_RPC(pRakServer, PickedUpWeapon);
-	REGISTER_STATIC_RPC(pRakServer, PickedUpPickup);
-	REGISTER_STATIC_RPC(pRakServer, MenuSelect);
-	REGISTER_STATIC_RPC(pRakServer, MenuQuit);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_ClientJoin, ClientJoin);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_Chat, Chat);
+	//pRakServer->RegisterAsRemoteProcedureCall(&RPC_Privmsg, Privmsg);
+	//pRakServer->RegisterAsRemoteProcedureCall(&RPC_TeamPrivmsg);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_RequestClass, RequestClass);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_RequestSpawn, RequestSpawn);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_Spawn, Spawn);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_Death, Death);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_EnterVehicle, EnterVehicle);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_ExitVehicle, ExitVehicle);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_ServerCommand, ServerCommand);
+	//pRakServer->RegisterAsRemoteProcedureCall(&RPC_UpdateScoresPingsIPs, UpdateScoresPings);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_SvrStats, SvrStats);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_SetInteriorId, SetInteriorId);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_ScmEvent, ScmEvent);
+	//pRakServer->RegisterAsRemoteProcedureCall(&RPC_AdminMapTeleport);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_VehicleDestroyed, VehicleDestroyed);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_PickedUpWeapon, PickedUpWeapon);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_PickedUpPickup, PickedUpPickup);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_MenuSelect, MenuSelect);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_MenuQuit, MenuQuit);
 }
 
 //----------------------------------------------------
@@ -919,27 +918,27 @@ void UnRegisterRPCs(RakServerInterface * pRakServer)
 {
 	pRak = 0;
 
-	UNREGISTER_STATIC_RPC(pRakServer, ClientJoin);
-	UNREGISTER_STATIC_RPC(pRakServer, Chat);
-	UNREGISTER_STATIC_RPC(pRakServer, Privmsg);
-	UNREGISTER_STATIC_RPC(pRakServer, TeamPrivmsg);
-	UNREGISTER_STATIC_RPC(pRakServer, RequestClass);
-	UNREGISTER_STATIC_RPC(pRakServer, RequestSpawn);
-	UNREGISTER_STATIC_RPC(pRakServer, Spawn);
-	UNREGISTER_STATIC_RPC(pRakServer, Death);
-	UNREGISTER_STATIC_RPC(pRakServer, EnterVehicle);
-	UNREGISTER_STATIC_RPC(pRakServer, ExitVehicle);
-	UNREGISTER_STATIC_RPC(pRakServer, ServerCommand);
-	UNREGISTER_STATIC_RPC(pRakServer, UpdateScoresPingsIPs);
-	UNREGISTER_STATIC_RPC(pRakServer, SvrStats);
-	UNREGISTER_STATIC_RPC(pRakServer, SetInteriorId);
-	UNREGISTER_STATIC_RPC(pRakServer, ScmEvent);
-	UNREGISTER_STATIC_RPC(pRakServer, AdminMapTeleport);
-	UNREGISTER_STATIC_RPC(pRakServer, VehicleDestroyed);
-	UNREGISTER_STATIC_RPC(pRakServer, PickedUpWeapon);
-	UNREGISTER_STATIC_RPC(pRakServer, PickedUpPickup);
-	UNREGISTER_STATIC_RPC(pRakServer, MenuSelect);
-	UNREGISTER_STATIC_RPC(pRakServer, MenuQuit);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_ClientJoin);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_Chat);
+	//pRakServer->UnregisterAsRemoteProcedureCall(&RPC_Privmsg);
+	//pRakServer->UnregisterAsRemoteProcedureCall(&RPC_TeamPrivmsg);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_RequestClass);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_RequestSpawn);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_Spawn);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_Death);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_EnterVehicle);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_ExitVehicle);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_ServerCommand);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_UpdateScoresPingsIPs);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_SvrStats);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_SetInteriorId);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_ScmEvent);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_AdminMapTeleport);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_VehicleDestroyed);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_PickedUpWeapon);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_PickedUpPickup);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_MenuSelect);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_MenuQuit);
 }
 
 //----------------------------------------------------

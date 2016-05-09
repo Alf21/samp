@@ -127,21 +127,21 @@ void ApplyInGamePatches()
 		dwFarClipReturnAddr = dwFarClipHookAddr+9;
 	}
 
-	//RelocateScanListHack();
-	//RelocatePedsListHack(); // allows us to use all 300 ped model slots
+	RelocateScanListHack();
+	RelocatePedsListHack(); // allows us to use all 300 ped model slots
 
 	// Frame limiter default ~40 fps
-	/****UnFuck(0xC1704C,1);
-	*(PDWORD)0xC1704C = 55UL; // yes that means 40..*/
+	UnFuck(0xC1704C,1);
+	*(PDWORD)0xC1704C = 55UL; // yes that means 40..
 
 	// APPLY THE DAMN NOP PATCH AND QUIT ASCIING QUESTIONS!
 
 	// Increase the vehicle pool limit (see top of proc for patch)
-	/****UnFuckAndCheck(0x551024,sizeof(pbyteVehiclePoolAllocPatch),0x68);
-	memcpy((PVOID)0x551024,pbyteVehiclePoolAllocPatch,sizeof(pbyteVehiclePoolAllocPatch));*/
+	UnFuckAndCheck(0x551024,sizeof(pbyteVehiclePoolAllocPatch),0x68);
+	memcpy((PVOID)0x551024,pbyteVehiclePoolAllocPatch,sizeof(pbyteVehiclePoolAllocPatch));
 	
 	// Increase the ped pool limit (210)
-	/*****UnFuck(0x550FF2,1);
+	UnFuck(0x550FF2,1);
 	*(PBYTE)0x550FF2 = 210;
 
 	// And we need 210 ped intelligence too plz
@@ -163,30 +163,29 @@ void ApplyInGamePatches()
 
 	// Increase the collision model ptr
 	UnFuck(0x551106,sizeof(pbyteCollisionPoolAllocPatch));
-	memcpy((PVOID)0x551106,pbyteCollisionPoolAllocPatch,sizeof(pbyteCollisionPoolAllocPatch));*/
+	memcpy((PVOID)0x551106,pbyteCollisionPoolAllocPatch,sizeof(pbyteCollisionPoolAllocPatch));
 	
 	// Increase the entry info nodes (no need for more enter/exits really)
 	// UnFuck(0x550FB9,sizeof(pbyteEntryInfoPoolAllocPatch));
 	// memcpy((PVOID)0x550FB9,pbyteEntryInfoPoolAllocPatch,sizeof(pbyteEntryInfoPoolAllocPatch));
 
 	// VehicleStruct increase
-	/****UnFuck(0x5B8FDE, 7);
+	UnFuck(0x5B8FDE, 7);
 	*(BYTE*)0x5B8FDE = 0x6A;	// push imm8
 	*(BYTE*)0x5B8FDF = 0x00;	// 0
 	*(BYTE*)0x5B8FE0 = 0x68;	// push imm32
 	*(BYTE*)0x5B8FE1 = 127;
 	*(BYTE*)0x5B8FE2 = 0x00;
 	*(BYTE*)0x5B8FE3 = 0x00;
-	*(BYTE*)0x5B8FE4 = 0x00;*/
+	*(BYTE*)0x5B8FE4 = 0x00;
 
 	// Increase the building pool
-	/***UnFuck(0x551060,1);
+	UnFuck(0x551060,1);
 	*(BYTE*)0x551060 = 0x42; // 17096 from 13000
-	*/
-
+	
 	// Stop ped rotations from the camera
-	/***UnFuck(0x6884C4,6);
-	memset((PVOID)0x6884C4,0x90,6);*/
+	UnFuck(0x6884C4,6);
+	memset((PVOID)0x6884C4,0x90,6);
 
 	/* clouds RenderEffects (needs checking)
 	UnFuck(0x53E1AF,10);
@@ -215,7 +214,7 @@ void ApplyInGamePatches()
 	}
 
 	//Cursor hiding
-	/****UnFuck(0x7481CD,16);
+	UnFuck(0x7481CD,16);
 	memset((PVOID)0x7481CD,0x90,16);
     
 	UnFuck(0x747FEA,1);
@@ -248,11 +247,11 @@ void ApplyInGamePatches()
 
 	// Make the shadows slightly darker by increasing the alpha
 	UnFuck(0x71162C,1);
-	*(PBYTE)0x71162C = 80;**/
+	*(PBYTE)0x71162C = 80;
 
 	// Anti-pause 
-	/****UnFuck(0x561AF0,7);
-	memset((PVOID)0x561AF0,0x90,7);*/
+	UnFuck(0x561AF0,7);
+	memset((PVOID)0x561AF0,0x90,7);
 	/* A likely solution for the 0x crash
 	UnFuck(0x411458,2);
 	*(BYTE*)0x411458 = 0xF4;
@@ -263,7 +262,7 @@ void ApplyInGamePatches()
 	*(BYTE *)0x616650 = 0xC3;*/
 
 	// Unknown from CPlayerPed::ProcessControl causes crash
-	/****UnFuck(0x609C08,39);
+	UnFuck(0x609C08,39);
 	memset((PVOID)0x609C08,0x90,39);
 
 	// FindPlayerVehicle (Always use nPlayerPed)
@@ -301,10 +300,10 @@ void ApplyInGamePatches()
 	memset((PVOID)0x62D331,0x90,11);
 
 	UnFuck(0x741FFF,27);
-	memset((PVOID)0x741FFF,0x90,27);*/
+	memset((PVOID)0x741FFF,0x90,27);
 	
 	// hack to remove motion blur in high speed vehicle
-	/******UnFuck(0x704E8A,5);
+	UnFuck(0x704E8A,5);
 	memset((PVOID)0x704E8A,0x90,5);
 
 	// Respawn and Interior
@@ -347,12 +346,12 @@ void ApplyInGamePatches()
 
 	// Don't go back to player anims, use the peds IDE
 	UnFuck(0x609A4E,6);
-	memset((PVOID)0x609A4E, 0x90, 6);*/
+	memset((PVOID)0x609A4E, 0x90, 6);
 
 // note: siren issue not below here
 
 	// Train derailment 
-	/*****UnFuck(0x006F8CF8, 12);
+	UnFuck(0x006F8CF8, 12);
 	memset((PVOID)0x006F8CF8, 0x90, 5); // (Actual hook is installed in hooks.cpp)
 	memcpy((PVOID)(0x006F8CF8+5), pbyteTrainDelrailmentPatch, sizeof(pbyteTrainDelrailmentPatch));
 
@@ -374,15 +373,15 @@ void ApplyInGamePatches()
 	
 	// No wasted message
 	UnFuck(0x56E5AD,5);
-	memset((PVOID)0x56E5AD,0x90,5);*/
+	memset((PVOID)0x56E5AD,0x90,5);
 
 	// For the input disabling in CGame.
-	/***UnFuck(0x541DF5,5);*/
+	UnFuck(0x541DF5,5);
 
 	/* Ret at CCamera::ClearPlayerWeaponMode
 	UnFuck(0x50AB10,2);
 	*(PBYTE)0x50AB10 = 0xC3;*/
-	/****UnFuck(0x609CB4,5);
+	UnFuck(0x609CB4,5);
 	memset((PVOID)0x609CB4,0x90,5);
 
 	// PlayerInfo checks in CPlayerPed::ProcessControl
@@ -406,7 +405,7 @@ void ApplyInGamePatches()
 	UnFuck(0x6F1793,5);
 	memset((PVOID)0x6F1793,0x90,5);
 	UnFuck(0x6F86B6,5);
-	memset((PVOID)0x6F86B6,0x90,5);**/
+	memset((PVOID)0x6F86B6,0x90,5);
 
 	// TEMP VEHICLE AUDIO PATCHES -------------------
 	/* Audio_SwitchRadioOff (nulled)
@@ -434,7 +433,7 @@ void ApplyInGamePatches()
 	//-----------------------------------------------
 	
 	// camera_on_actor patch, tsk tsk R*
-	/*****UnFuck(0x0047C477,1);
+	UnFuck(0x0047C477,1);
 	*(BYTE*)0x0047C477 = 0xEB;
 
 	// CPushBike fires set on CPed patch
@@ -466,10 +465,10 @@ void ApplyInGamePatches()
 	
 	// Remove the blue(-ish) fog in the map
 	UnFuck(0x00575B0E, 5);
-	memset((PVOID)0x00575B0E, 0x90, 5);*/
+	memset((PVOID)0x00575B0E, 0x90, 5);
 
-	/*UnFuck(0x47BF54,4);
-	InstallSCMEventsProcessor();*/
+	UnFuck(0x47BF54,4);
+	InstallSCMEventsProcessor();
 }
 
 //----------------------------------------------------------

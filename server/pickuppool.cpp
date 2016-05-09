@@ -37,7 +37,7 @@ int CPickupPool::New(int iModel, int iType, float fX, float fY, float fZ, BYTE s
 			RakNet::BitStream bsPickup;
 			bsPickup.Write(i);
 			bsPickup.Write((PCHAR)&m_Pickups[i], sizeof (PICKUP));
-			pNetGame->GetRakServer()->RPC(RPC_Pickup, &bsPickup, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+			pNetGame->GetRakServer()->RPC(&RPC_Pickup, &bsPickup, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 			return i;
 		}
 	}
@@ -52,7 +52,7 @@ int CPickupPool::Destroy(int iPickup)
 		m_iPickupCount--;
 		RakNet::BitStream bsPickup;
 		bsPickup.Write(iPickup);
-		pNetGame->GetRakServer()->RPC(RPC_DestroyPickup, &bsPickup, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+		pNetGame->GetRakServer()->RPC(&RPC_DestroyPickup, &bsPickup, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 		return 1;
 		
 	}
@@ -76,8 +76,8 @@ void CPickupPool::InitForPlayer(BYTE bytePlayerID)
 			pbsPickup->Write(x);
 			pbsPickup->Write((PCHAR)&m_Pickups[x], sizeof (PICKUP));
 		
-			pNetGame->GetRakServer()->RPC(RPC_Pickup,pbsPickup,HIGH_PRIORITY,RELIABLE,
-				0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),false,false);
+			pNetGame->GetRakServer()->RPC(&RPC_Pickup,pbsPickup,HIGH_PRIORITY,RELIABLE,
+				0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),false, false, UNASSIGNED_NETWORK_ID, NULL);
 
 			pbsPickup->Reset();
 		}

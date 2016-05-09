@@ -85,7 +85,7 @@ void CRcon::Packet_NewIncomingConnection(Packet* pPacket)
 	bsSend.Write( byteHostnameLength );
 	bsSend.Write( szHostname, byteHostnameLength );
 
-	m_pRakServer->RPC( RPC_RconConnect,&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_PLAYER_ID,true,false);
+	m_pRakServer->RPC( RPC_RconConnect,&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_PLAYER_ID,true, false, UNASSIGNED_NETWORK_ID, NULL);
 	bsSend.Reset();
 
 	for( int i = 0; i < MAX_PLAYERS; i++ )
@@ -159,7 +159,7 @@ void CRcon::SendEventString(char *szString)
 	RakNet::BitStream bsRconSend;
 	bsRconSend.Write(byteLen);
 	bsRconSend.Write(szString, byteLen);
-	pRcon->GetRakServer()->RPC(RPC_RconEvent, &bsRconSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+	pRcon->GetRakServer()->RPC(&RPC_RconEvent, &bsRconSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void CRcon::RegisterRPCs(RakServerInterface *pRakServer)
@@ -170,8 +170,8 @@ void CRcon::RegisterRPCs(RakServerInterface *pRakServer)
 
 void CRcon::UnregisterRPCs(RakServerInterface *pRakServer)
 {
-	UNREGISTER_STATIC_RPC(pRakServer, RconConnect);
-	UNREGISTER_STATIC_RPC(pRakServer, RconCommand);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_RconConnect);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_RconCommand);
 }
 
 #endif

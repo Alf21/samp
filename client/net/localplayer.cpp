@@ -1060,7 +1060,7 @@ void CLocalPlayer::SendWastedNotification()
 	
 	bsPlayerDeath.Write(byteDeathReason);
 	bsPlayerDeath.Write(WhoWasResponsible);
-	pNetGame->GetRakClient()->RPC(&RPC_Death,&bsPlayerDeath,HIGH_PRIORITY,RELIABLE_ORDERED,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakClient()->RPC(&RPC_Death, &bsPlayerDeath, HIGH_PRIORITY, RELIABLE_ORDERED, 0, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 //----------------------------------------------------------
@@ -1069,7 +1069,7 @@ void CLocalPlayer::RequestClass(int iClass)
 {
 	RakNet::BitStream bsSpawnRequest;
 	bsSpawnRequest.Write(iClass);
-	pNetGame->GetRakClient()->RPC(&RPC_RequestClass,&bsSpawnRequest,HIGH_PRIORITY,RELIABLE,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakClient()->RPC(&RPC_RequestClass,&bsSpawnRequest,HIGH_PRIORITY,RELIABLE,0,false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 //----------------------------------------------------------
@@ -1077,7 +1077,7 @@ void CLocalPlayer::RequestClass(int iClass)
 void CLocalPlayer::RequestSpawn()
 {
 	RakNet::BitStream bsSpawnRequest;
-	pNetGame->GetRakClient()->RPC(&RPC_RequestSpawn,&bsSpawnRequest,HIGH_PRIORITY,RELIABLE,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);;
+	pNetGame->GetRakClient()->RPC(&RPC_RequestSpawn,&bsSpawnRequest,HIGH_PRIORITY,RELIABLE,0,false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 //----------------------------------------------------------
@@ -1095,7 +1095,7 @@ void CLocalPlayer::UpdateRemoteInterior(BYTE byteInterior)
 	m_byteCurInterior = byteInterior;
 	RakNet::BitStream bsUpdateInterior;
 	bsUpdateInterior.Write(byteInterior);
-	pNetGame->GetRakClient()->RPC(&RPC_SetInteriorId,&bsUpdateInterior,HIGH_PRIORITY,RELIABLE,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakClient()->RPC(&RPC_SetInteriorId,&bsUpdateInterior,HIGH_PRIORITY,RELIABLE,0,false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 //----------------------------------------------------------
@@ -1159,7 +1159,7 @@ BOOL CLocalPlayer::Spawn()
 	// Let the rest of the network know we're spawning.
 	RakNet::BitStream bsSendSpawn;
 	pNetGame->GetRakClient()->RPC(&RPC_Spawn,&bsSendSpawn,HIGH_PRIORITY,
-		RELIABLE_SEQUENCED,0,FALSE, UNASSIGNED_NETWORK_ID, NULL);
+		RELIABLE_SEQUENCED,0,false, UNASSIGNED_NETWORK_ID, NULL);
 
 	m_iDisplayZoneTick = GetTickCount() + 1000;
 	
@@ -1176,7 +1176,7 @@ void CLocalPlayer::Say(PCHAR szText)
 	bsSend.Write(byteTextLen);
 	bsSend.Write(szText,byteTextLen);
 
-	pNetGame->GetRakClient()->RPC(&RPC_Chat,&bsSend,HIGH_PRIORITY,RELIABLE,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakClient()->RPC(&RPC_Chat,&bsSend,HIGH_PRIORITY,RELIABLE,0,false, UNASSIGNED_NETWORK_ID, NULL);
 	
 	// Comment by spookie:
 	//   Local player chat is now sent to the server so it can be filtered by the
@@ -1203,7 +1203,7 @@ void CLocalPlayer::Msg(PLAYERID ToPlayer, PCHAR szText)
 	bsSend.Write(byteTextLen);
 	bsSend.Write(szText,byteTextLen);
 
-//	pNetGame->GetRakClient()->RPC(&RPC_Privmsg,&bsSend,HIGH_PRIORITY,RELIABLE,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+	//pNetGame->GetRakClient()->RPC(&RPC_Privmsg,&bsSend,HIGH_PRIORITY,RELIABLE,0,false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 //----------------------------------------------------------
@@ -1216,7 +1216,7 @@ void CLocalPlayer::TeamMsg(PCHAR szText)
 	bsSend.Write(byteTextLen);
 	bsSend.Write(szText,byteTextLen);
 
-//	pNetGame->GetRakClient()->RPC(&RPC_TeamPrivmsg,&bsSend,HIGH_PRIORITY,RELIABLE,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+//	pNetGame->GetRakClient()->RPC(&RPC_TeamPrivmsg,&bsSend,HIGH_PRIORITY,RELIABLE,0,false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 //----------------------------------------------------------
@@ -1234,7 +1234,7 @@ void CLocalPlayer::SendEnterVehicleNotification(VEHICLEID VehicleID, BOOL bPasse
 	bsSend.Write(VehicleID);
 	bsSend.Write(bytePassenger);
 
-	pNetGame->GetRakClient()->RPC(&RPC_EnterVehicle,&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakClient()->RPC(&RPC_EnterVehicle,&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,false, UNASSIGNED_NETWORK_ID, NULL);
 
 	CVehiclePool *pVehiclePool = pNetGame->GetVehiclePool();
 	CVehicle* pVehicle = pVehiclePool->GetAt(VehicleID);
@@ -1269,7 +1269,7 @@ void CLocalPlayer::SendExitVehicleNotification(VEHICLEID VehicleID)
 
 		if(!pVehicle->IsRCVehicle()) {
 			bsSend.Write(VehicleID);
-			pNetGame->GetRakClient()->RPC(&RPC_ExitVehicle,&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+			pNetGame->GetRakClient()->RPC(&RPC_ExitVehicle,&bsSend,HIGH_PRIORITY,RELIABLE_SEQUENCED,0,false, UNASSIGNED_NETWORK_ID, NULL);
 		}
 	}
 }
@@ -1709,7 +1709,7 @@ void CLocalPlayer::ProcessVehicleDamageUpdates(VEHICLEID CurrentVehicle)
 			bsVehicleDamageUpdate.Write(m_dwLastPanelDamageStatus);
 			bsVehicleDamageUpdate.Write(m_dwLastDoorDamageStatus);
             bsVehicleDamageUpdate.Write(m_byteLastLightsDamageStatus);
-			pNetGame->GetRakClient()->RPC(&RPC_DamageVehicle,&bsVehicleDamageUpdate,HIGH_PRIORITY,RELIABLE,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+			pNetGame->GetRakClient()->RPC(&RPC_DamageVehicle,&bsVehicleDamageUpdate,HIGH_PRIORITY,RELIABLE,0,false, UNASSIGNED_NETWORK_ID, NULL);
 	}    
 }
 

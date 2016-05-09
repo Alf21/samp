@@ -133,7 +133,7 @@ public:
 						BOOL bBroadcastLocalRangeOnly = FALSE,
 						BOOL bAimSync = FALSE );
 
-	void BroadcastDistanceRPC( char *szUniqueID, 
+	void BroadcastDistanceRPC( int *szUniqueID, 
 							   RakNet::BitStream *bitStream,
 							   PacketReliability reliability,
 							   BYTE byteExcludedPlayer,

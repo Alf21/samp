@@ -77,7 +77,7 @@ void CPickupPool::PickedUp(int iPickup)
 		// Allright, we've got a normal pickup;
 		RakNet::BitStream bsPickup;
 		bsPickup.Write( iPickup );
-		pNetGame->GetRakClient()->RPC(&RPC_PickedUpPickup, &bsPickup, HIGH_PRIORITY, RELIABLE_SEQUENCED, 0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakClient()->RPC(&RPC_PickedUpPickup, &bsPickup, HIGH_PRIORITY, RELIABLE_SEQUENCED, 0, false, UNASSIGNED_NETWORK_ID, NULL);
 		m_iTimer[ iPickup ] = 15; // Ignore for about 5-10 seconds
 	}
 }
@@ -100,10 +100,10 @@ void CPickupPool::Process()
 					if (m_droppedWeapon[i].bDroppedWeapon) {
 						// Other people may not have it in the same slot depending on position
 						bsPickup.Write(m_droppedWeapon[i].fromPlayer);
-						pNetGame->GetRakClient()->RPC(&RPC_PickedUpWeapon, &bsPickup, HIGH_PRIORITY, RELIABLE_SEQUENCED, 0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+						pNetGame->GetRakClient()->RPC(&RPC_PickedUpWeapon, &bsPickup, HIGH_PRIORITY, RELIABLE_SEQUENCED, 0, false, UNASSIGNED_NETWORK_ID, NULL);
 					} else { 
 						bsPickup.Write( i );
-						pNetGame->GetRakClient()->RPC(&RPC_PickedUpPickup, &bsPickup, HIGH_PRIORITY, RELIABLE_SEQUENCED, 0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+						pNetGame->GetRakClient()->RPC(&RPC_PickedUpPickup, &bsPickup, HIGH_PRIORITY, RELIABLE_SEQUENCED, 0, false, UNASSIGNED_NETWORK_ID, NULL);
 					}
 				}
 			}

@@ -106,7 +106,7 @@ void CTextDrawPool::ShowForPlayer(BYTE bytePlayer, WORD wText)
 	bsParams.Write(wText);
 	bsParams.Write((PCHAR)m_TextDraw[wText], sizeof (TEXT_DRAW_TRANSMIT));
 	bsParams.Write(m_szFontText[wText], MAX_TEXT_DRAW_LINE);
-	pRak->RPC(RPC_ScrShowTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false);
+	pRak->RPC(&RPC_ScrShowTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false, UNASSIGNED_NETWORK_ID, NULL);
 	m_bHasText[wText][bytePlayer] = true;
 }
 
@@ -116,7 +116,7 @@ void CTextDrawPool::ShowForAll(WORD wText)
 	bsParams.Write(wText);
 	bsParams.Write((PCHAR)m_TextDraw[wText], sizeof (TEXT_DRAW_TRANSMIT));
 	bsParams.Write(m_szFontText[wText], MAX_TEXT_DRAW_LINE);
-	pNetGame->GetRakServer()->RPC(RPC_ScrShowTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+	pNetGame->GetRakServer()->RPC(&RPC_ScrShowTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		m_bHasText[wText][i] = true;
@@ -128,7 +128,7 @@ void CTextDrawPool::HideForPlayer(BYTE bytePlayer, WORD wText)
 	RakServerInterface* pRak = pNetGame->GetRakServer();
 	RakNet::BitStream bsParams;
 	bsParams.Write(wText);
-	if (m_bHasText[wText][bytePlayer]) pRak->RPC(RPC_ScrHideTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false);
+	if (m_bHasText[wText][bytePlayer]) pRak->RPC(&RPC_ScrHideTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false, UNASSIGNED_NETWORK_ID, NULL);
 	m_bHasText[wText][bytePlayer] = false;
 }
 
@@ -141,7 +141,7 @@ void CTextDrawPool::HideForAll(WORD wText)
 	{
 		if (m_bHasText[wText][i])
 		{
-			pRak->RPC(RPC_ScrHideTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(i), false, false);
+			pRak->RPC(&RPC_ScrHideTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(i), false, false, UNASSIGNED_NETWORK_ID, NULL);
 			m_bHasText[wText][i] = false;
 		}
 	}
@@ -172,7 +172,7 @@ void CTextDrawPool::SetTextString(WORD wText, char* szText)
 		{
 			if (m_bHasText[wText][i])
 			{
-				pRak->RPC(RPC_ScrEditTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(i), false, false);
+				pRak->RPC(&RPC_ScrEditTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(i), false, false, UNASSIGNED_NETWORK_ID, NULL);
 			}
 		}
 	}

@@ -54,8 +54,8 @@ BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName)
 		bsSend.Write(namelen);
 		bsSend.Write(szPlayerName,namelen);
 
-		pNetGame->GetRakServer()->RPC(RPC_ServerJoin ,&bsSend,HIGH_PRIORITY,RELIABLE,0,
-			pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),true,false);
+		pNetGame->GetRakServer()->RPC(&RPC_ServerJoin ,&bsSend,HIGH_PRIORITY,RELIABLE,0,
+			pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),true, false, UNASSIGNED_NETWORK_ID, NULL);
 
 		RakServerInterface* pRak = pNetGame->GetRakServer();
 		PlayerID Player = pRak->GetPlayerIDFromIndex(bytePlayerID);
@@ -113,8 +113,8 @@ BOOL CPlayerPool::Delete(BYTE bytePlayerID, BYTE byteReason)
 	RakNet::BitStream bsSend;
 	bsSend.Write(bytePlayerID);
 	bsSend.Write(byteReason);
-	pNetGame->GetRakServer()->RPC(RPC_ServerQuit ,&bsSend,HIGH_PRIORITY,RELIABLE,0,
-		pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),true,false);
+	pNetGame->GetRakServer()->RPC(&RPC_ServerQuit ,&bsSend,HIGH_PRIORITY,RELIABLE,0,
+		pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),true, false, UNASSIGNED_NETWORK_ID, NULL);
 		
 	CObjectPool* pObjectPool = pNetGame->GetObjectPool();
 	for (BYTE i = 0; i < MAX_OBJECTS; i++)
@@ -127,7 +127,7 @@ BOOL CPlayerPool::Delete(BYTE bytePlayerID, BYTE byteReason)
 
 #ifdef RAKRCON
 	pRcon->GetRakServer()->RPC( RPC_ServerQuit, &bsSend, HIGH_PRIORITY, RELIABLE, 0,
-		UNASSIGNED_PLAYER_ID, true, false);
+		UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 #endif
 
 	m_iPlayerCount--;
@@ -172,7 +172,7 @@ void CPlayerPool::InitPlayersForPlayer(BYTE bytePlayerID)
 			bsExistingClient.Write(namelen);
 			bsExistingClient.Write(GetPlayerName(lp),namelen);
 
-			pNetGame->GetRakServer()->RPC(RPC_ServerJoin,&bsExistingClient,HIGH_PRIORITY,RELIABLE,0,Player,false,false);
+			pNetGame->GetRakServer()->RPC(&RPC_ServerJoin,&bsExistingClient,HIGH_PRIORITY,RELIABLE,0,Player,false, false, UNASSIGNED_NETWORK_ID, NULL);
 			bsExistingClient.Reset();
 			
 			// Send all the VW data in one lump
@@ -184,7 +184,7 @@ void CPlayerPool::InitPlayersForPlayer(BYTE bytePlayerID)
 	}
 	if (send)
 	{
-		pRak->RPC(RPC_ScrSetPlayerVirtualWorld , &bsPlayerVW, HIGH_PRIORITY, RELIABLE, 0, Player, false, false);
+//		pRak->RPC(&RPC_ScrSetPlayerVirtualWorld , &bsPlayerVW, HIGH_PRIORITY, RELIABLE, 0, Player, false, false, UNASSIGNED_NETWORK_ID, NULL);
 	}
 }
 
@@ -324,7 +324,7 @@ void CPlayerPool::SetPlayerVirtualWorld(BYTE bytePlayerID, BYTE byteVirtualWorld
 	bsData.Write(bytePlayerID); // player id
 	bsData.Write(byteVirtualWorld); // vw id
 	RakServerInterface *pRak = pNetGame->GetRakServer();
-	pRak->RPC(RPC_ScrSetPlayerVirtualWorld , &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+//	pRak->RPC(&RPC_ScrSetPlayerVirtualWorld , &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 	
 //----------------------------------------------------

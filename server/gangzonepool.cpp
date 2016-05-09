@@ -39,7 +39,8 @@ void CGangZonePool::Delete(WORD wZone)
 	m_bSlotState[wZone] = FALSE;
 	RakNet::BitStream bsParams;
 	bsParams.Write(wZone);
-	pNetGame->GetRakServer()->RPC(RPC_ScrRemoveGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+	//pNetGame->GetRakServer()->RPC(&RPC_ScrRemoveGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(&RPC_ScrRemoveGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void CGangZonePool::ShowForPlayer(BYTE bytePlayer, WORD wZone, DWORD dwColor)
@@ -53,7 +54,7 @@ void CGangZonePool::ShowForPlayer(BYTE bytePlayer, WORD wZone, DWORD dwColor)
 	bsParams.Write(m_fGangZone[wZone][3]);
 	dwColor = RGBA_ABGR(dwColor);
 	bsParams.Write(dwColor);
-	pRak->RPC(RPC_ScrAddGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false);
+	pRak->RPC(&RPC_ScrAddGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void CGangZonePool::ShowForAll(WORD wZone, DWORD dwColor)
@@ -66,7 +67,7 @@ void CGangZonePool::ShowForAll(WORD wZone, DWORD dwColor)
 	bsParams.Write(m_fGangZone[wZone][3]);
 	dwColor = RGBA_ABGR(dwColor);
 	bsParams.Write(dwColor);
-	pNetGame->GetRakServer()->RPC(RPC_ScrAddGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+	pNetGame->GetRakServer()->RPC(&RPC_ScrAddGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void CGangZonePool::HideForPlayer(BYTE bytePlayer, WORD wZone)
@@ -74,14 +75,14 @@ void CGangZonePool::HideForPlayer(BYTE bytePlayer, WORD wZone)
 	RakServerInterface* pRak = pNetGame->GetRakServer();
 	RakNet::BitStream bsParams;
 	bsParams.Write(wZone);
-	pRak->RPC(RPC_ScrRemoveGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false);
+	pRak->RPC(&RPC_ScrRemoveGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void CGangZonePool::HideForAll(WORD wZone)
 {
 	RakNet::BitStream bsParams;
 	bsParams.Write(wZone);
-	pNetGame->GetRakServer()->RPC(RPC_ScrRemoveGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+	pNetGame->GetRakServer()->RPC(&RPC_ScrRemoveGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void CGangZonePool::FlashForPlayer(BYTE bytePlayer, WORD wZone, DWORD dwColor)
@@ -91,7 +92,7 @@ void CGangZonePool::FlashForPlayer(BYTE bytePlayer, WORD wZone, DWORD dwColor)
 	bsParams.Write(wZone);
 	dwColor = RGBA_ABGR(dwColor);
 	bsParams.Write(dwColor);
-	pRak->RPC(RPC_ScrFlashGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false);
+	pRak->RPC(&RPC_ScrFlashGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void CGangZonePool::FlashForAll(WORD wZone, DWORD dwColor)
@@ -100,7 +101,7 @@ void CGangZonePool::FlashForAll(WORD wZone, DWORD dwColor)
 	bsParams.Write(wZone);
 	dwColor = RGBA_ABGR(dwColor);
 	bsParams.Write(dwColor);
-	pNetGame->GetRakServer()->RPC(RPC_ScrFlashGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+	pNetGame->GetRakServer()->RPC(&RPC_ScrFlashGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void CGangZonePool::StopFlashForPlayer(BYTE bytePlayer, WORD wZone)
@@ -108,12 +109,12 @@ void CGangZonePool::StopFlashForPlayer(BYTE bytePlayer, WORD wZone)
 	RakServerInterface* pRak = pNetGame->GetRakServer();
 	RakNet::BitStream bsParams;
 	bsParams.Write(wZone);
-	pRak->RPC(RPC_ScrStopFlashGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false);
+	pRak->RPC(&RPC_ScrStopFlashGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void CGangZonePool::StopFlashForAll(WORD wZone)
 {
 	RakNet::BitStream bsParams;
 	bsParams.Write(wZone);
-	pNetGame->GetRakServer()->RPC(RPC_ScrStopFlashGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+	pNetGame->GetRakServer()->RPC(&RPC_ScrStopFlashGangZone, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 }

@@ -346,26 +346,26 @@ void TheGraphicsLoop()
 	_asm pushad // because we're called from a hook
 
 	DoInitStuff();
-		
+
 	SetupD3DFog(TRUE);
-		
+
 	// Process the netgame if it's active.
-	if(pNetGame) {
+	if (pNetGame) {
 		pNetGame->Process();
-//		pGame->ForceFrameLimiterOn();
+		pGame->ForceFrameLimiterOn();
 	}
 
 	// We have to call the real Render2DStuff
 	// because we overwrote its call to get here.
-	/*_asm popad
+	_asm popad
 
 	_asm mov edx, ADDR_RENDER2DSTUFF
 	_asm call edx
 
-	_asm pushad*/
+	_asm pushad
 
-	/*if(bQuitGame) {
-		if((GetTickCount() - dwStartQuitTick) > 1000) {
+	if (bQuitGame) {
+		if ((GetTickCount() - dwStartQuitTick) > 1000) {
 			if (pNetGame)
 			{
 				delete pNetGame;
@@ -375,16 +375,16 @@ void TheGraphicsLoop()
 		}
 		_asm popad
 		return;
-	}*/
+	}
 
-	//if(pGame) pGame->ProcessInputDisabling();
+	if (pGame) pGame->ProcessInputDisabling();
 
 	//pGame->UpdateFarClippingPlane();
-	  // this causes invulnerability to car explosions!!
-	/*if (bGameModded == TRUE)
+	// this causes invulnerability to car explosions!!
+	if (bGameModded == TRUE)
 	{
 		FORCE_EXIT(0x4);
-	}*/
+	}
 
 	_asm popad
 }
@@ -419,9 +419,9 @@ void QuitGame()
 
 void CALLBACK OnGUIEvent( UINT nEvent, int nControlID, CDXUTControl* pControl, void* pUserContext )
 {
-	if (pChatWindow) {
+	/*if (pChatWindow) {
 		pChatWindow->AddDebugMessage("GUI: %i %i");
-	}
+	}*/
 
 	switch( nControlID )
     {

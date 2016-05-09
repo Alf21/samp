@@ -243,7 +243,7 @@ void CVehiclePool::NotifyVehicleDeath(VEHICLEID VehicleID)
 {
 	RakNet::BitStream bsDeath;
 	bsDeath.Write(VehicleID);
-	pNetGame->GetRakClient()->RPC(&RPC_VehicleDestroyed, &bsDeath, HIGH_PRIORITY, RELIABLE_SEQUENCED, 0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakClient()->RPC(&RPC_VehicleDestroyed, &bsDeath, HIGH_PRIORITY, RELIABLE_SEQUENCED, 0, false, UNASSIGNED_NETWORK_ID, NULL);
 	pNetGame->GetPlayerPool()->GetLocalPlayer()->m_LastVehicle = 0xFFFF; // Mark as notification sent
 }
 

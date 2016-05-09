@@ -107,8 +107,8 @@ void CMenu::InitForPlayer(BYTE bytePlayerID)
 		}
 	}
 
-	pRak->RPC(RPC_ScrInitMenu, &bsMenu, HIGH_PRIORITY, 
-		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false);
+	pRak->RPC(&RPC_ScrInitMenu, &bsMenu, HIGH_PRIORITY, 
+		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void CMenu::ShowForPlayer(BYTE bytePlayerID)
@@ -121,8 +121,8 @@ void CMenu::ShowForPlayer(BYTE bytePlayerID)
 	RakServerInterface* pRak = pNetGame->GetRakServer();
 	RakNet::BitStream bsMenu;
 	bsMenu.Write(m_byteMenuID);
-	pRak->RPC(RPC_ScrShowMenu, &bsMenu, HIGH_PRIORITY, 
-		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false);
+	pRak->RPC(&RPC_ScrShowMenu, &bsMenu, HIGH_PRIORITY, 
+		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 void CMenu::HideForPlayer(BYTE bytePlayerID)
@@ -131,6 +131,6 @@ void CMenu::HideForPlayer(BYTE bytePlayerID)
 	RakServerInterface* pRak = pNetGame->GetRakServer();
 	RakNet::BitStream bsMenu;
 	bsMenu.Write(m_byteMenuID);
-	pRak->RPC(RPC_ScrHideMenu, &bsMenu, HIGH_PRIORITY, 
-		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false);
+	pRak->RPC(&RPC_ScrHideMenu, &bsMenu, HIGH_PRIORITY, 
+		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
