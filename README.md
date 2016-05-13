@@ -5,3 +5,5 @@ I have changed somethings to get compiling, but isn't working yet..
 The network was updated to work with SA-MP 0.3.7 thanks to RakSAMP.
 It just need to fix an error (packet receive crash trying to read-
 ing packet identifier)
+
+The crash still (ignore commit 6)
