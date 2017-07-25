@@ -25,8 +25,6 @@
 #include <assert.h>
 #include "MTUSize.h"
 
-#include "main.h"
-
 #ifdef _WIN32
 #include <process.h>
 #define COMPATIBILITY_2_RECV_FROM_FLAGS 0
@@ -395,9 +393,6 @@ int SocketLayer::RecvFrom( const SOCKET s, RakPeer *rakPeer, int *errorCode )
 
 	len = recvfrom( s, data, MAXIMUM_MTU_SIZE, COMPATIBILITY_2_RECV_FROM_FLAGS, ( sockaddr* ) & sa, ( socklen_t* ) & len2 );
 
-	if(len < 1 && len != -1) // thanks to n3ptun0
-		return 1;
-
 	// if (len>0)
 	//  printf("Got packet on port %i\n",ntohs(sa.sin_port));
 
@@ -414,26 +409,13 @@ int SocketLayer::RecvFrom( const SOCKET s, RakPeer *rakPeer, int *errorCode )
 
 	if ( len != SOCKET_ERROR )
 	{
-#ifndef RAKSAMP_CLIENT
-		if(*reinterpret_cast<DWORD *>(data) == 'PMAS')
-		{
-			handleQueries(s, len2, sa, data);
-			return 1;
-		}
-
-		unKyretardizeDatagram((unsigned char *)data, len, iPort, 0);
-
-#else
-
-#endif
-
 		unsigned short portnum;
 		portnum = ntohs( sa.sin_port );
-#ifndef RAKSAMP_CLIENT
-		ProcessNetworkPacket( sa.sin_addr.s_addr, portnum, (char *)decrBuffer, len - 1, rakPeer );
-#else
+		//strcpy(ip, inet_ntoa(sa.sin_addr));
+		//if (strcmp(ip, "0.0.0.0")==0)
+		// strcpy(ip, "127.0.0.1");
 		ProcessNetworkPacket( sa.sin_addr.s_addr, portnum, data, len, rakPeer );
-#endif
+
 		return 1;
 	}
 	else
@@ -499,19 +481,10 @@ int SocketLayer::SendTo( SOCKET s, const char *data, int length, unsigned int bi
 	sa.sin_addr.s_addr = binaryAddress;
 	sa.sin_family = AF_INET;
 
-#ifdef RAKSAMP_CLIENT
-
-	kyretardizeDatagram((unsigned char *)data, length, port, 0);
-
-#endif
 	do
 	{
 		// TODO - use WSASendTo which is faster.
-#ifdef RAKSAMP_CLIENT
-		len = sendto( s, (char *)encrBuffer, length + 1, 0, ( const sockaddr* ) & sa, sizeof( struct sockaddr_in ) );
-#else
-		len = sendto( s, (char *)data, length, 0, ( const sockaddr* ) & sa, sizeof( struct sockaddr_in ) );
-#endif
+		len = sendto( s, data, length, 0, ( const sockaddr* ) & sa, sizeof( struct sockaddr_in ) );
 	}
 	while ( len == 0 );
 

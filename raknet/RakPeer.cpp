@@ -2633,7 +2633,7 @@ void RakPeer::OnConnectionRequest( RakPeer::RemoteSystemStruct *remoteSystem, un
 		bitStream.Write(remoteSystem->playerId.port);
 		bitStream.Write(( PlayerIndex ) GetIndexFromPlayerID( remoteSystem->playerId, true ));
 #ifndef RAKSAMP_CLIENT
-		bitStream.Write(_uiRndSrvChallenge); // RAKSAMP SERVER HACK PONPON
+		bitStream.Write(rand()); // RAKSAMP SERVER HACK PONPON
 #endif
 
 		SendImmediate((char*)bitStream.GetData(), bitStream.GetNumberOfBitsUsed(), SYSTEM_PRIORITY, RELIABLE, 0, remoteSystem->playerId, false, false, RakNet::GetTime());

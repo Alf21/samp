@@ -18,7 +18,7 @@
 #ifndef __PACKET_ENUMERATIONS_H
 #define __PACKET_ENUMERATIONS_H
 
-#include "SAMP_VER.h"
+#include "SAMP/SAMP_VER.h"
 
 /// You should not edit the file PacketEnumerations.h as it is a part of RakNet static library
 /// To define your own message id, define an enum following the code example that follows. 
