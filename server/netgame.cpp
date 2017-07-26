@@ -432,6 +432,7 @@ void CNetGame::ShutdownForGameModeRestart()
 	m_fGravity		= 0.008f;
 	m_iDeathDropMoney = 0;
 	m_bZoneNames = FALSE;
+	m_bDisableEnterExits = false;
 	m_longSynchedWeapons = DEFAULT_WEAPONS;
 
 #ifdef _DEBUG
