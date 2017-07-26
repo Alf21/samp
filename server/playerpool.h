@@ -28,7 +28,7 @@ private:
 	BOOL	m_bIsAnAdmin[MAX_PLAYERS];
 	BYTE	m_byteVirtualWorld[MAX_PLAYERS];
 	int		m_iPlayerCount;
-	int		m_iPlayerPoolCount;
+
 public:
 	
 	CPlayerPool();
@@ -115,8 +115,6 @@ public:
 	BOOL  IsNickInUse(PCHAR szNick, BYTE bytePlayerID = -1);
 
 	int GetPlayerCount() { return m_iPlayerCount; };
-
-	int GetPlayerPoolCount() { return m_iPlayerPoolCount; };
 
 	void DeactivateAll();
 

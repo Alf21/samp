@@ -15,7 +15,6 @@ CPlayerPool::CPlayerPool()
 		m_pPlayers[bytePlayerID] = NULL;
 	}
 	m_iPlayerCount = 0;
-	m_iPlayerPoolCount = -1;
 }
 
 //----------------------------------------------------
@@ -26,7 +25,6 @@ CPlayerPool::~CPlayerPool()
 		Delete(bytePlayerID,0);
 	}
 	m_iPlayerCount = 0;
-	m_iPlayerPoolCount = -1;
 }
 
 //----------------------------------------------------
@@ -82,8 +80,6 @@ BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName)
 		}
 		
 		m_iPlayerCount++;
-		
-		if (bytePlayerID > m_iPlayerPoolCount) m_iPlayerPoolCount = bytePlayerID;
 
 		return TRUE;
 	}
@@ -127,14 +123,6 @@ BOOL CPlayerPool::Delete(BYTE bytePlayerID, BYTE byteReason)
 		pObjectPool->DeleteForPlayer(bytePlayerID, i);
 	}
 
-	if (bytePlayerID == m_iPlayerPoolCount) {
-		m_iPlayerPoolCount = -1;
-		for (int x = 0; x < MAX_PLAYERS; x++) {
-			if (GetSlotState(x) && m_iPlayerPoolCount < x) {
-				m_iPlayerPoolCount = x;
-			}
-		}
-	}
 	logprintf("[part] %s has left the server (%u:%u)",m_szPlayerName[bytePlayerID],bytePlayerID,byteReason);
 
 #ifdef RAKRCON

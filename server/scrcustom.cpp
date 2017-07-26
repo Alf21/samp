@@ -3502,7 +3502,7 @@ static cell AMX_NATIVE_CALL n_SetMenuColumnHeader(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(3);
 	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
-	if (!pMenuPool || !pMenuPool->GetSlotState((BYTE)params[1])) return 0;
+	if (!pMenuPool) return 0;
 	char* szItemText;
 	amx_StrParam(amx, params[3], szItemText);
 	pMenuPool->GetAt((BYTE)params[1])->SetColumnTitle(params[2], szItemText);
@@ -3515,7 +3515,7 @@ static cell AMX_NATIVE_CALL n_ShowMenuForPlayer(AMX *amx, cell *params)
 	CHECK_PARAMS(2);
 	if (!pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[2])) return 0;
 	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
-	if (!pMenuPool || !pMenuPool->GetSlotState((BYTE)params[1])) return 0;
+	if (!pMenuPool) return 0;
 	pMenuPool->GetAt((BYTE)params[1])->ShowForPlayer((BYTE)params[2]);
 	pMenuPool->SetPlayerMenu((BYTE)params[2], (BYTE)params[1]);
 	return 1;
@@ -3526,8 +3526,8 @@ static cell AMX_NATIVE_CALL n_HideMenuForPlayer(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(2);
 	if (!pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[2])) return 0;
-	CMenuPool* pMenuPool = pNetGame->GetMenuPool(); 
-	if (!pMenuPool || !pMenuPool->GetSlotState((BYTE)params[1])) return 0;
+	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
+	if (!pMenuPool) return 0;
 	pMenuPool->GetAt((BYTE)params[1])->HideForPlayer((BYTE)params[2]);
 	pMenuPool->SetPlayerMenu((BYTE)params[2], 255);
 	return 1;
@@ -3547,7 +3547,7 @@ static cell AMX_NATIVE_CALL n_DisableMenu(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(1);
 	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
-	if (!pMenuPool || !pMenuPool->GetSlotState((BYTE)params[1])) return 0;
+	if (!pMenuPool) return 0;
 	pMenuPool->GetAt((BYTE)params[1])->DisableInteraction();
 	return 1;
 }
@@ -3557,7 +3557,7 @@ static cell AMX_NATIVE_CALL n_DisableMenuRow(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(2);
 	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
-	if (!pMenuPool || !pMenuPool->GetSlotState((BYTE)params[1])) return 0;
+	if (!pMenuPool) return 0;
 	pMenuPool->GetAt((BYTE)params[1])->DisableRow((BYTE)params[2]);
 	return 1;
 }
@@ -4186,16 +4186,6 @@ static cell AMX_NATIVE_CALL n_IsPlayerInRangeOfPoint(AMX *amx, cell *params)
 
 //----------------------------------------------------------------------------------
 
-// native GetPlayerPoolSize();
-static cell AMX_NATIVE_CALL n_GetPlayerPoolSize(AMX *amx, cell *params) {
-
-	if (!pNetGame || !pNetGame->GetPlayerPool()) return -1;
-
-	return pNetGame->GetPlayerPool()->GetPlayerPoolCount();
-}
-
-//----------------------------------------------------------------------------------
-
 AMX_NATIVE_INFO custom_Natives[] =
 {
 	// Util
@@ -4447,7 +4437,7 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "SetPlayerTime",			n_SetPlayerTime },
 	{ "TogglePlayerClock",		n_TogglePlayerClock },
 	{ "GetPlayerTime",			n_GetPlayerTime },
-	{ "GetPlayerPoolSize",		n_GetPlayerPoolSize },
+
 	{ NULL, NULL }
 };
 
