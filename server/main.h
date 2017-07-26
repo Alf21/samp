@@ -48,7 +48,7 @@ Leaked by ZYRONIX.net.
 // VERSION INFO
 // ------------
 
-#define SAMP_VERSION "0.3.7"
+#define SAMP_VERSION "0.2.5"
 
 #define NETCODE_CONNCOOKIELULZ 0x6969
 #define NETGAME_VERSION 4057

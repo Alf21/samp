@@ -180,7 +180,7 @@ void CGame::InitGame()
 
 void CGame::StartGame()
 {		
-	//ApplyInGamePatches();
+	ApplyInGamePatches();
 
 	// Install all hooks
 	GameInstallHooks();

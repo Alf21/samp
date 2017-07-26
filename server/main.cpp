@@ -256,7 +256,7 @@ int main (int argc, char** argv)
 
 	// Create a challenge number for the clients to be able to connect
 	srand(time(NULL));
-	_uiRndSrvChallenge = (unsigned int)rand();
+	_uiRndSrvChallenge = (unsigned int)rand() ^ NETGAME_VERSION;
     
 	// Create the Console
 	pConsole = new CConsole();

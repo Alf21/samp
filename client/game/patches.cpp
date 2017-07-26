@@ -464,8 +464,8 @@ void ApplyInGamePatches()
 	*(BYTE*)0x58DB67 = 0x90;
 	
 	// Remove the blue(-ish) fog in the map
-	UnFuck(0x00575B0E, 5);
-	memset((PVOID)0x00575B0E, 0x90, 5);
+	//UnFuck(0x00575B0E, 5);
+	//memset((PVOID)0x00575B0E, 0x90, 5);
 
 	UnFuck(0x47BF54,4);
 	InstallSCMEventsProcessor();
@@ -473,7 +473,7 @@ void ApplyInGamePatches()
 
 //----------------------------------------------------------
 
-#pragma pack(1)
+
 typedef struct _PED_MODEL
 {
 	DWORD func_tbl;

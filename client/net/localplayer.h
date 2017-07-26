@@ -17,7 +17,7 @@
 #define SPECIAL_ACTION_NIGHTVISION		14
 #define SPECIAL_ACTION_THERMALVISION	15
 
-#pragma pack(1)
+
 typedef struct _PLAYER_SPAWN_INFO
 {
 	BYTE byteTeam;
@@ -28,7 +28,7 @@ typedef struct _PLAYER_SPAWN_INFO
 	int iSpawnWeaponsAmmo[3];
 } PLAYER_SPAWN_INFO;
 
-#pragma pack(1)
+
 typedef struct _ONFOOT_SYNC_DATA
 {
 	WORD lrAnalog;
@@ -53,7 +53,7 @@ enum eWeaponState
 	WS_RELOADING = 3,
 };
 
-#pragma pack(1)
+
 typedef struct _AIM_SYNC_DATA
 {
 	BYTE byteCamMode;
@@ -65,7 +65,7 @@ typedef struct _AIM_SYNC_DATA
 	float fAimZ;
 } AIM_SYNC_DATA;
 
-#pragma pack(1)
+
 typedef struct _UNOCCUPIED_SYNC_DATA
 {
 	VEHICLEID VehicleID;
@@ -77,7 +77,7 @@ typedef struct _UNOCCUPIED_SYNC_DATA
 	float fHealth;
 } UNOCCUPIED_SYNC_DATA;
 
-#pragma pack(1)
+
 typedef struct _TAGINFO
 {
 	char szTag[MAX_PLAYER_NAME+1];
@@ -87,7 +87,7 @@ typedef struct _TAGINFO
 	BOOL bActive;
 } TAG_INFO;
 
-#pragma pack(1)
+
 typedef struct _INCAR_SYNC_DATA
 {
 	VEHICLEID VehicleID;
@@ -110,7 +110,7 @@ typedef struct _INCAR_SYNC_DATA
 	FLOAT fTrainSpeed;
 } INCAR_SYNC_DATA;
 
-#pragma pack(1)
+
 typedef struct _PASSENGER_SYNC_DATA
 {
 	VEHICLEID VehicleID;
@@ -125,7 +125,7 @@ typedef struct _PASSENGER_SYNC_DATA
 	VECTOR vecPos;
 } PASSENGER_SYNC_DATA;
 
-#pragma pack(1)
+
 typedef struct _SPECTATOR_SYNC_DATA
 {
 	WORD lrAnalog;
@@ -134,7 +134,7 @@ typedef struct _SPECTATOR_SYNC_DATA
 	VECTOR vecPos;
 } SPECTATOR_SYNC_DATA;
 
-#pragma pack(1)
+
 typedef struct _TRAILER_SYNC_DATA
 {
 	C_VECTOR1 cvecRoll;
@@ -143,7 +143,7 @@ typedef struct _TRAILER_SYNC_DATA
 	VECTOR vecMoveSpeed;
 } TRAILER_SYNC_DATA;
 
-#pragma pack(1)
+
 typedef struct _CAR_MOD_INFO
 {
 	BYTE byteCarMod[14];
@@ -154,7 +154,7 @@ typedef struct _CAR_MOD_INFO
 
 //----------------------------------------------------------
 
-#pragma pack(1)
+
 class CLocalPlayer
 {
 private:

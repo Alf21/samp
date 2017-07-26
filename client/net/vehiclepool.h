@@ -4,7 +4,7 @@
 #define UNOCCUPIED_SYNC_RADIUS		70.0f
 #define MAX_VEHICLE_WAITING_SLOTS	100
 
-#pragma pack(1)
+
 typedef struct _NEW_VEHICLE {
     VEHICLEID VehicleId;
 	int		  iVehicleType;
@@ -22,7 +22,7 @@ typedef struct _NEW_VEHICLE {
 
 //----------------------------------------------------
 
-#pragma pack(1)
+
 class CVehiclePool
 {
 private:

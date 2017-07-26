@@ -2,7 +2,7 @@
 
 #define INVALID_ACTOR_ID	0xFF
 
-#pragma pack(1)
+
 typedef struct _ACTOR_SPAWN_INFO
 {
 	BYTE byteTeam;
@@ -13,7 +13,7 @@ typedef struct _ACTOR_SPAWN_INFO
 
 //----------------------------------------------------
 
-#pragma pack(1)
+
 class CActorPool
 {
 private:

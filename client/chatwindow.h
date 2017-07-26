@@ -13,7 +13,7 @@ enum eChatMessageType {
 	CHAT_TYPE_DEBUG
 };
 
-#pragma pack(1)
+
 typedef struct _CHAT_WINDOW_ENTRY
 {
 	eChatMessageType eType;
@@ -29,7 +29,7 @@ typedef struct _CHAT_WINDOW_ENTRY
 
 //----------------------------------------------------
 
-#pragma pack(1)
+
 class CChatWindow
 {
 private:

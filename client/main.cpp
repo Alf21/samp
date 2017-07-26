@@ -152,7 +152,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 
 DWORD dwFogEnabled = 0;
 DWORD dwFogColor = 0x00FF00FF;
-BOOL gDisableAllFog = FALSE;
+BOOL gDisableAllFog = TRUE;
 
 void SetupD3DFog(BOOL bEnable)
 {
@@ -163,11 +163,11 @@ void SetupD3DFog(BOOL bEnable)
 
 	if(pD3DDevice) {
 		pD3DDevice->SetRenderState(D3DRS_FOGENABLE, bEnable);
-		//pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, dwFogColor);
+		pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, dwFogColor);
 		pD3DDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_NONE);
 		pD3DDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR);
-		//pD3DDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD*)(&fFogStart));
-		//pD3DDevice->SetRenderState(D3DRS_FOGEND, *(DWORD*)(&fFogEnd));
+		pD3DDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD*)(&fFogStart));
+		pD3DDevice->SetRenderState(D3DRS_FOGEND, *(DWORD*)(&fFogEnd));
 	}
 }
 
@@ -470,6 +470,7 @@ void InitSettings()
 					tSettings.bWindowedMode = TRUE;
 					break;
 				*/
+					
 				case 'h':
 					szCmdLine++;
 					SetStringFromCommandLine(szCmdLine,tSettings.szConnectHost);

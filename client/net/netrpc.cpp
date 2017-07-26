@@ -92,7 +92,7 @@ void InitGame(RPCParameters *rpcParams)
 
 	PLAYERID MyPlayerID;
 	bool bLanMode, bStuntBonus;
-	BYTE byteVehicleModels[212];
+//	BYTE byteVehicleModels[212];
 
 	bsInitGame.Read(pNetGame->m_iSpawnsAvailable);
 	bsInitGame.Read(MyPlayerID);
@@ -113,7 +113,7 @@ void InitGame(RPCParameters *rpcParams)
 	bsInitGame.Read(bStuntBonus);
 	bsInitGame.Read(pNetGame->m_fNameTagDrawDistance);
 	bsInitGame.Read(pNetGame->m_bDisableEnterExits);
-	bsInitGame.Read(pNetGame->m_bNameTagLOS);
+	/*bsInitGame.Read(pNetGame->m_bNameTagLOS);
 	pNetGame->m_bNameTagLOS = true;
 
 	// Server's send rate restrictions
@@ -123,7 +123,7 @@ void InitGame(RPCParameters *rpcParams)
 	bsInitGame.Read(iNetModeNormalIncarSendRate);
 	bsInitGame.Read(iNetModeFiringSendRate);
 	bsInitGame.Read(iNetModeSendMultiplier);
-
+	*/
 	BYTE byteStrLen;
 	bsInitGame.Read(byteStrLen);
 	if(byteStrLen) {
@@ -132,8 +132,9 @@ void InitGame(RPCParameters *rpcParams)
 	}
 	pNetGame->m_szHostName[byteStrLen] = '\0';
 
-	bsInitGame.Read((char *)&byteVehicleModels[0],212);
+	/*bsInitGame.Read((char *)&byteVehicleModels[0],212);
 	pGame->SetRequiredVehicleModels(byteVehicleModels);
+	*/
 
 	if (pPlayerPool) pPlayerPool->SetLocalPlayerID(MyPlayerID);
 	pGame->EnableStuntBonus(bStuntBonus);
@@ -152,7 +153,7 @@ void InitGame(RPCParameters *rpcParams)
 	pNetGame->SetGameState(GAMESTATE_CONNECTED);
 	if (pLocalPlayer) pLocalPlayer->HandleClassSelection();
 
-	pChatWindow->AddDebugMessage("Connected to %.64s",pNetGame->m_szHostName);
+	pChatWindow->AddDebugMessage("Connected to %s",pNetGame->m_szHostName);
 
 }
 

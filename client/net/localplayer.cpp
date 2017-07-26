@@ -1155,6 +1155,7 @@ BOOL CLocalPlayer::Spawn()
 	m_bIsWasted = FALSE;
 	m_bIsActive = TRUE;
 	m_bWaitingForSpawnRequestReply = FALSE;
+	m_pPlayerPed->TogglePlayerControllable(1);
 
 	// Let the rest of the network know we're spawning.
 	RakNet::BitStream bsSendSpawn;
@@ -1170,6 +1171,7 @@ BOOL CLocalPlayer::Spawn()
 
 void CLocalPlayer::Say(PCHAR szText)
 {
+	if (!pNetGame) return;
 	BYTE byteTextLen = strlen(szText);
 
 	RakNet::BitStream bsSend;

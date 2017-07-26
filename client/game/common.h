@@ -23,32 +23,32 @@ typedef unsigned short PLAYERID;
 #define RS_DEGTORAD(X) ((X)*3.1415926f/180.0f)
 #define RS_RADTODEG(X) ((X)*180.0f/3.1415926f)
 
-#pragma pack(1)
+
 typedef struct _C_VECTOR2 { // compressed velocity vector
 	short X,Y,Z;
 } C_VECTOR2;
 
-#pragma pack(1)
+
 typedef struct _C_VECTOR1 { // compressed normalised rotation vector
 	short X,Y,Z;
 } C_VECTOR1;
 
-#pragma pack(1)
+
 typedef struct _RGBA {
 	unsigned char r,g,b,a;
 } RGBA, *PRGBA;
 
-#pragma pack(1)
+
 typedef struct _VECTOR {
 	float X,Y,Z;
 } VECTOR, *PVECTOR;
 
-#pragma pack(1)
+
 typedef struct _VECTOR2D {
 	float X,Y;
 } VECTOR2D, *PVECTOR2D;
 
-#pragma pack(1)
+
 typedef struct _MATRIX4X4 {
 	VECTOR right;
 	DWORD  flags;
@@ -69,7 +69,7 @@ typedef struct _MATRIX4X4 {
 #define IN_VEHICLE(x) ((x->dwStateFlags & 256) >> 8)
 
 //-----------------------------------------------------------
-#pragma pack(1)
+
 typedef struct _WEAPON_SLOT_TYPE
 {
 	DWORD dwType;
@@ -80,7 +80,7 @@ typedef struct _WEAPON_SLOT_TYPE
 } WEAPON_SLOT_TYPE;  // MUST BE EXACTLY ALIGNED TO 28 bytes
 
 //-----------------------------------------------------------
-#pragma pack(1)
+
 typedef struct _PED_TASKS_TYPE
 {
 	DWORD * pdwPed;
@@ -100,7 +100,7 @@ typedef struct _PED_TASKS_TYPE
 } PED_TASKS_TYPE;
 
 //-----------------------------------------------------------
-#pragma pack(1)
+
 typedef struct _ENTITY_TYPE
 {
 	// ENTITY STUFF
@@ -127,7 +127,7 @@ typedef struct _ENTITY_TYPE
 
 
 //-----------------------------------------------------------
-#pragma pack(1)
+
 typedef struct _PED_TYPE
 {
 	ENTITY_TYPE entity; // 0-184
@@ -185,7 +185,7 @@ typedef struct _PED_TYPE
 } PED_TYPE;
 
 //-----------------------------------------------------------
-#pragma pack(1)
+
 typedef struct _VEHICLE_TYPE
 {
 	ENTITY_TYPE entity; // 0-184

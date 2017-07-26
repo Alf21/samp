@@ -76,7 +76,7 @@ void ClientJoin(RPCParameters *rpcParams)
 		return;
 	}	
 
-	if(iVersion != NETGAME_VERSION || _uiRndSrvChallenge != (uiChallengeResponse ^ NETGAME_VERSION)) {
+	if(iVersion != NETGAME_VERSION /*|| _uiRndSrvChallenge != (uiChallengeResponse ^ NETGAME_VERSION)*/) {
 		byteRejectReason = REJECT_REASON_BAD_VERSION;
 		bsReject.Write(byteRejectReason);
 		pRak->RPC(&RPC_ConnectionRejected,&bsReject,HIGH_PRIORITY,RELIABLE,0,sender,false, false, UNASSIGNED_NETWORK_ID, NULL);

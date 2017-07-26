@@ -155,15 +155,16 @@ void CSpawnScreen::RestoreDeviceObjects()
 {
 	if(m_pD3DDevice)
 	{
-		if (m_pTexture)
+		if (m_pTexture) {
 			m_pTexture->Release();
-
+			m_pTexture = NULL;
+		}
 		
 		
 		for(int i=0; i<2; i++)
 		{
 
-			m_pD3DDevice->BeginStateBlock();
+		/*	m_pD3DDevice->BeginStateBlock();
 			m_pD3DDevice->SetTexture( 0, m_pTexture );
 
 			m_pD3DDevice->SetRenderState( D3DRS_ALPHABLENDENABLE, TRUE );
@@ -200,7 +201,7 @@ void CSpawnScreen::RestoreDeviceObjects()
 			if (i==0)
 				m_pD3DDevice->EndStateBlock(&m_pStateBlockSaved);
 			else
-				m_pD3DDevice->EndStateBlock(&m_pStateBlockDraw);
+				m_pD3DDevice->EndStateBlock(&m_pStateBlockDraw);*/
 
 		}
 	}

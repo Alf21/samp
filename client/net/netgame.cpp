@@ -10,7 +10,7 @@ extern CCmdWindow	 *pCmdWindow;
 INCAR_SYNC_DATA DebugSync;
 BOOL bDebugUpdate=FALSE;
 
-#define NETGAME_VERSION 7776 // 0.2.5
+#define NETGAME_VERSION 8866 // 0.2.5
 //#define NETGAME_VERSION 7766 // 0.2.2
 
 int iExceptMessageDisplayed=0;
@@ -34,7 +34,7 @@ BYTE GetPacketID(Packet *p)
 {
 	if (p==0) return 255;
 
-	if ((unsigned char)p->data[0] == ID_TIMESTAMP) {
+	if (p->data[0] == ID_TIMESTAMP) {
 		assert(p->length > sizeof(unsigned char) + sizeof(unsigned long));
 		return (unsigned char) p->data[sizeof(unsigned char) + sizeof(unsigned long)];
 	}
@@ -65,9 +65,9 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_pActorPool = new CActorPool();
 
 	m_pRakClient = RakNetworkFactory::GetRakClientInterface();
-	//m_pRakClient->InitializeSecurity(0, 0);
-	//m_pRakClient->SetTrackFrequencyTable(true);
-	//m_pRakClient->SetTimeoutTime(30000);
+//	m_pRakClient->InitializeSecurity(0, 0);
+//	m_pRakClient->SetTrackFrequencyTable(true);
+//	m_pRakClient->SetTimeoutTime(30000);
 
 	// Use this to send all packets to the chat window
 	//pPacketLogger = new PacketLogger();
@@ -198,7 +198,7 @@ void CNetGame::ShutdownForGameModeRestart()
 
 void CNetGame::InitGameLogic()
 {
-	//GameResetRadarColors();
+	GameResetRadarColors();
 
 	m_WorldBounds[0] = 20000.0f;
 	m_WorldBounds[1] = -20000.0f;
@@ -210,7 +210,7 @@ void CNetGame::InitGameLogic()
 
 void CNetGame::Process()
 {	
-//	UpdateNetwork();
+	UpdateNetwork();
 
 	if (m_byteHoldTime)	{
 		pGame->SetWorldTime(m_byteWorldTime, m_byteWorldMinute);
@@ -342,14 +342,15 @@ void CNetGame::Process()
 
 void CNetGame::UpdateNetwork()
 {
-	Packet* pkt=NULL;
+	Packet* pkt = NULL;
 	unsigned char packetIdentifier;
 	
-	while((pkt = m_pRakClient->Receive()))
+	while (pkt = m_pRakClient->Receive())
 	{
 		packetIdentifier = GetPacketID(pkt);
 
-		switch(packetIdentifier)
+//		pChatWindow->AddDebugMessage("Packet Recieved: %i", packetIdentifier);
+		switch (packetIdentifier)
 		{
 		case ID_RSA_PUBLIC_KEY_MISMATCH:
 			Packet_RSAPublicKeyMismatch(pkt);
@@ -890,13 +891,13 @@ void CNetGame::Packet_ConnectionSucceeded(Packet *p)
 
 	int iVersion = NETGAME_VERSION;
 	unsigned int uiClientChallengeResponse = uiChallenge ^ iVersion;
-	BYTE byteMod = 1;
+	BYTE byteMod = 0x01;
 
-	char auth_bs[4 * 16] = { 0 };
-	gen_gpci(auth_bs, 0x3e9);
+	//char auth_bs[4 * 16] = { 0 };
+	//gen_gpci(auth_bs, 0x3e9);
 
-	BYTE byteAuthBSLen;
-	byteAuthBSLen = (BYTE)strlen(auth_bs);
+	//BYTE byteAuthBSLen;
+	//byteAuthBSLen = (BYTE)strlen(auth_bs);
 	BYTE byteNameLen = (BYTE)strlen(m_pPlayerPool->GetLocalPlayerName());
 	BYTE iClientVerLen = (BYTE)strlen(SAMP_VERSION);
 
@@ -907,10 +908,6 @@ void CNetGame::Packet_ConnectionSucceeded(Packet *p)
 	bsSend.Write(byteNameLen);
 	bsSend.Write(m_pPlayerPool->GetLocalPlayerName(), byteNameLen);
 	bsSend.Write(uiClientChallengeResponse);
-	bsSend.Write(byteAuthBSLen);
-	bsSend.Write(auth_bs, byteAuthBSLen);
-	bsSend.Write(iClientVerLen);
-	bsSend.Write(SAMP_VERSION, iClientVerLen);
 
 	m_pRakClient->RPC(&RPC_ClientJoin, &bsSend, HIGH_PRIORITY, RELIABLE, 0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
 }
