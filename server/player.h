@@ -188,7 +188,8 @@ public:
 	BOOL					m_bCheckpointEnabled;
 	BOOL					m_bRaceCheckpointEnabled;
 	int						m_iInteriorId;
-		
+	int						m_iCurrentSkin;
+
 	// Weapon data
 	DWORD					m_dwSlotAmmo[13];
 	BYTE					m_byteSlotWeapon[13];

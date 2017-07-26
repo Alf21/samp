@@ -636,7 +636,7 @@ static cell AMX_NATIVE_CALL n_SetPlayerSkin(AMX *amx, cell *params)
 			pRak->RPC(&RPC_ScrSetPlayerSkin , &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 		} 
 		pPlayer->m_SpawnInfo.iSkin = (int)params[2];
-
+		pPlayer->m_iCurrentSkin = (int)params[2];
 		return 1;
 	}
 	else
@@ -655,7 +655,7 @@ static cell AMX_NATIVE_CALL n_GetPlayerSkin(AMX *amx, cell *params)
 	CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt((BYTE)params[1]);
 	if (pPlayer)
 	{
-		return pPlayer->m_SpawnInfo.iSkin;
+		return pPlayer->m_iCurrentSkin;
 	}
 	return 0;
 }

@@ -73,7 +73,8 @@ CPlayer::CPlayer()
 	m_iInteriorId = 0;
 	m_byteSpectateType = 0;
 	m_SpectateID = 0xFFFFFFFF;
-	
+	m_iCurrentSkin = 0;
+
 	BYTE i;
 	for (i = 0; i < 13; i++)
 	{
@@ -770,6 +771,9 @@ void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 	pNetGame->GetRakServer()->RPC(&RPC_Death,&bsPlayerDeath,
 		HIGH_PRIORITY,RELIABLE,0,playerid,true, false, UNASSIGNED_NETWORK_ID, NULL);
 
+	// Fix player stuck if animation was applied.
+	pNetGame->BroadcastDistanceRPC(&RPC_ScrClearAnimations, &bsPlayerDeath, UNRELIABLE, (BYTE)UNASSIGNED_PLAYER_INDEX, 200.0f);
+
 	pNetGame->GetPlayerPool()->SetPlayerMoney(m_bytePlayerID, pNetGame->GetPlayerPool()->GetPlayerMoney(m_bytePlayerID) - pNetGame->m_iDeathDropMoney);
 
 #ifdef RAKRCON
@@ -851,6 +855,7 @@ void CPlayer::SpawnForWorld(BYTE byteTeam, int iSkin, VECTOR * vecPos, float fRo
 	m_ofSync.vecPos.X = vecPos->X;
 	m_ofSync.vecPos.Y = vecPos->Y;
 	m_ofSync.vecPos.Z = vecPos->Z;
+	m_iCurrentSkin = iSkin;
 }
 
 //----------------------------------------------------

@@ -1498,13 +1498,23 @@ void ScrSetSpecialAction(RPCParameters *rpcParams)
 {
 	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
 	int iBitLength = rpcParams->numberOfBitsOfData;
-	RakNet::BitStream bsData((unsigned char*)Data,(iBitLength/8)+1,false);
+	RakNet::BitStream bsData((unsigned char*)Data, (iBitLength / 8) + 1, false);
 
 	BYTE byteSpecialAction;
 	bsData.Read(byteSpecialAction);
-	
-	CPlayerPool *pPool=pNetGame->GetPlayerPool();
-	if(pPool) pPool->GetLocalPlayer()->ApplySpecialAction(byteSpecialAction);
+
+	CPlayerPool *pPool = pNetGame->GetPlayerPool();
+	if (pPool) {
+		MATRIX4X4 mat;
+		// Fixing setting special action 0 keeping the jetpack sound if the player had a jetpack.
+		// Credits to MP2 for finding this fix.
+		try {
+			pPool->GetLocalPlayer()->GetPlayerPed()->GetMatrix(&mat);
+			pPool->GetLocalPlayer()->GetPlayerPed()->TeleportTo(mat.pos.X, mat.pos.Y, mat.pos.Z);
+		}
+		catch (...) {}
+		pPool->GetLocalPlayer()->ApplySpecialAction(byteSpecialAction);
+	}
 }
 
 //----------------------------------------------------
