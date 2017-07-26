@@ -875,12 +875,12 @@ void MenuSelect(RPCParameters *rpcParams)
 void MenuQuit(RPCParameters *rpcParams)
 {
 	BYTE bytePlayerID = pRak->GetIndexFromPlayerID(rpcParams->sender);
-		
+
 	CGameMode *pGameMode = pNetGame->GetGameMode();
 	CFilterScripts *pFilters = pNetGame->GetFilterScripts();
 
-	if(pGameMode) pGameMode->OnPlayerExitedMenu(bytePlayerID);
-	if(pFilters) pFilters->OnPlayerExitedMenu(bytePlayerID);
+	if (pGameMode) pGameMode->OnPlayerExitedMenu(bytePlayerID);
+	if (pFilters) pFilters->OnPlayerExitedMenu(bytePlayerID);
 }
 
 //----------------------------------------------------
@@ -900,7 +900,7 @@ void RegisterRPCs(RakServerInterface * pRakServer)
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_EnterVehicle, EnterVehicle);
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_ExitVehicle, ExitVehicle);
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_ServerCommand, ServerCommand);
-	//pRakServer->RegisterAsRemoteProcedureCall(&RPC_UpdateScoresPingsIPs, UpdateScoresPings);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_UpdateScoresPingsIPs, UpdateScoresPingsIPs);
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_SvrStats, SvrStats);
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_SetInteriorId, SetInteriorId);
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_ScmEvent, ScmEvent);
