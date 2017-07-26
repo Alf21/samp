@@ -75,6 +75,9 @@ typedef struct _UNOCCUPIED_SYNC_DATA
 	VECTOR vecMoveSpeed;
 	VECTOR vecTurnSpeed;
 	float fHealth;
+	DWORD dwPanelDamage;
+	DWORD dwDoorDamage;
+	BYTE byteLightDamage;
 } UNOCCUPIED_SYNC_DATA;
 
 

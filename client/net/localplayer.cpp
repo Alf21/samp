@@ -487,6 +487,9 @@ void CLocalPlayer::ProcessUndrivenSync(VEHICLEID VehicleID, CVehicle *pVehicle, 
 			UnSync.vecPos.Y = matVehicle.pos.Y;
 			UnSync.vecPos.Z = matVehicle.pos.Z;
 			UnSync.fHealth = pVehicle->GetHealth();
+			UnSync.dwDoorDamage = pVehicle->GetDoorDamageStatus();
+			UnSync.dwPanelDamage = pVehicle->GetPanelDamageStatus();
+			UnSync.byteLightDamage = pVehicle->GetLightDamageStatus();
 
 			bsUnoccupiedSync.Write((BYTE)ID_UNOCCUPIED_SYNC);
 			bsUnoccupiedSync.Write((PCHAR)&UnSync,sizeof(UNOCCUPIED_SYNC_DATA));
@@ -853,6 +856,10 @@ void CLocalPlayer::SendInCarFullSyncData()
 			}
 		}
 	
+		icSync.dwPanelDamage = pGameVehicle->GetPanelDamageStatus();
+		icSync.dwDoorDamage = pGameVehicle->GetDoorDamageStatus();
+		icSync.byteLightDamage = pGameVehicle->GetLightDamageStatus();
+
 		icSync.TrailerID = 0;
 		VEHICLE_TYPE* vehTrailer = (VEHICLE_TYPE*)pGameVehicle->m_pVehicle->dwTrailer;
 		if (vehTrailer != NULL)	{

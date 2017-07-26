@@ -878,6 +878,7 @@ void CRemotePlayer::StoreUnoccupiedSyncData(UNOCCUPIED_SYNC_DATA * unocSync)
 		pVehicle->SetMoveSpeedVector(vec);				
 		pVehicle->m_bRemoteUnocSync = true;
 	}
+	pVehicle->UpdateDamageStatus(unocSync->dwPanelDamage, unocSync->dwDoorDamage, unocSync->byteLightDamage);
 }
 
 //----------------------------------------------------
