@@ -426,6 +426,8 @@ static cell AMX_NATIVE_CALL n_fopen(AMX *amx, cell *params)
   FILE *f = NULL;
 
   altattrib=NULL;
+
+  if (!(FILE*)params[1]) return 0;
   switch (params[2] & 0x7fff) {
   case io_read:
     attrib=__T("rb");
@@ -457,6 +459,7 @@ static cell AMX_NATIVE_CALL n_fopen(AMX *amx, cell *params)
 /* fclose(File: handle) */
 static cell AMX_NATIVE_CALL n_fclose(AMX *amx, cell *params)
 {
+  if (!(FILE*)params[1]) return 0;
   UNUSED_PARAM(amx);
   return fclose((FILE*)params[1]) == 0;
 }
@@ -469,6 +472,7 @@ static cell AMX_NATIVE_CALL n_fwrite(AMX *amx, cell *params)
   char *str;
   int len;
 
+  if (!(FILE*)params[1]) return 0;
   amx_GetAddr(amx,params[2],&cptr);
   amx_StrLen(cptr,&len);
   if (len==0)
@@ -491,6 +495,8 @@ static cell AMX_NATIVE_CALL n_fread(AMX *amx, cell *params)
   int chars,max;
   char *str;
   cell *cptr;
+
+  if (!(FILE*)params[1]) return 0;
 
   max=(int)params[3];
   if (max<=0)
@@ -524,6 +530,7 @@ static cell AMX_NATIVE_CALL n_fputchar(AMX *amx, cell *params)
 {
   size_t result;
 
+  if (!(FILE*)params[1]) return 0;
   UNUSED_PARAM(amx);
   if (params[3]) {
     cell str[2];
@@ -543,6 +550,7 @@ static cell AMX_NATIVE_CALL n_fgetchar(AMX *amx, cell *params)
   cell str[2];
   size_t result;
 
+  if (!(FILE*)params[1]) return 0;
   UNUSED_PARAM(amx);
   if (params[3]) {
     result=fgets_cell((FILE*)params[1],str,2,1);
@@ -573,6 +581,7 @@ static cell AMX_NATIVE_CALL n_fblockwrite(AMX *amx, cell *params)
   cell *cptr;
   cell count;
 
+  if (!(FILE*)params[1]) return 0;
   amx_GetAddr(amx,params[2],&cptr);
   if (cptr!=NULL) {
     cell max=params[3];
@@ -592,6 +601,7 @@ static cell AMX_NATIVE_CALL n_fblockread(AMX *amx, cell *params)
   cell *cptr;
   cell count;
 
+  if (!(FILE*)params[1]) return 0;
   amx_GetAddr(amx,params[2],&cptr);
   if (cptr!=NULL) {
     cell max=params[3];
@@ -610,6 +620,7 @@ static cell AMX_NATIVE_CALL n_ftemp(AMX *amx, cell *params)
 {
   UNUSED_PARAM(amx);
   UNUSED_PARAM(params);
+
   return (cell)tmpfile();
 }
 
@@ -617,6 +628,7 @@ static cell AMX_NATIVE_CALL n_ftemp(AMX *amx, cell *params)
 static cell AMX_NATIVE_CALL n_fseek(AMX *amx, cell *params)
 {
   int whence;
+  if (!(FILE*)params[1]) return 0;
   switch (params[3]) {
   case seek_start:
     whence=SEEK_SET;
@@ -663,6 +675,7 @@ static cell AMX_NATIVE_CALL n_fremove(AMX *amx, cell *params)
 /* flength(File: handle) */
 static cell AMX_NATIVE_CALL n_flength(AMX *amx, cell *params)
 {
+  if (!(FILE*)params[1]) return 0;
   long l,c;
   int fn=fileno((FILE*)params[1]);
   c=lseek(fn,0,SEEK_CUR); /* save the current position */
