@@ -3938,7 +3938,7 @@ static cell AMX_NATIVE_CALL n_GangZoneCreate(AMX *amx, cell *params)
 	CHECK_PARAMS(4);
 	CGangZonePool *pGangZonePool = pNetGame->GetGangZonePool();
 	if (!pGangZonePool) return -1;
-	WORD ret = pGangZonePool->New(amx_ctof(params[1]), amx_ctof(params[2]), amx_ctof(params[3]), amx_ctof(params[4]));
+	WORD ret = pGangZonePool->New(amx_ctof(params[1]) - (amx_ctof(params[1]) - (float)floor((double)amx_ctof(params[1])), amx_ctof(params[2]) - (amx_ctof(params[2]) - (float)floor((double)amx_ctof(params[2])), amx_ctof(params[3]) - (amx_ctof(params[3]) - (float)floor((double)amx_ctof(params[3])), amx_ctof(params[4]) - (amx_ctof(params[4]) - (float)floor((double)amx_ctof(params[4])));
 	if (ret == 0xFFFF) return -1;
 	return ret;
 }
@@ -4090,11 +4090,19 @@ static cell AMX_NATIVE_CALL n_EnableStuntBonusForPlayer(AMX *amx, cell *params)
 
 //----------------------------------------------------------------------------------
 
-// native DisableInteriorEnterExits()
+// native DisableInteriorEnterExits(bool:disable = true, playerid = -1)
 static cell AMX_NATIVE_CALL n_DisableInteriorEnterExits(AMX *amx, cell *params)
 {
-	pNetGame->m_bDisableEnterExits = true;
-
+	RakServerInterface* pRak = pNetGame->GetRakServer();
+	RakNet::BitStream bsData;
+	bsData.Write((bool)params[1]);
+	if (params[2] == -1) {
+		pNetGame->m_bDisableEnterExits = params[1];
+		pRak->RPC(&RPC_ScrDisableInteriorEnterExits, &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	} 
+	else if(pNetGame->GetPlayerPool() && pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[2])) {
+		pRak->RPC(&RPC_ScrDisableInteriorEnterExits, &bsData, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[2]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	}
 	return 1;
 }
 

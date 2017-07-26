@@ -134,3 +134,4 @@ int RPC_ScrSetVehicleTireStatus = 255;
 int RPC_ScrSetPlayerDrunkLevel = 35;
 int RPC_ScrDialogBox = 61;
 int RPC_ScrCreate3DTextLabel = 36;
+int RPC_ScrDisableInteriorEnterExits = 200;
