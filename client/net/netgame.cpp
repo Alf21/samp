@@ -897,20 +897,20 @@ void CNetGame::Packet_ConnectionSucceeded(Packet *p)
 
 	BYTE byteAuthBSLen;
 	byteAuthBSLen = (BYTE)strlen(auth_bs);
-	BYTE byteNameLen = (BYTE)strlen("Jos");
-	BYTE iClientVerLen = (BYTE)strlen("0.3.7");
+	BYTE byteNameLen = (BYTE)strlen(m_pPlayerPool->GetLocalPlayerName());
+	BYTE iClientVerLen = (BYTE)strlen(SAMP_VERSION);
 
 	RakNet::BitStream bsSend;
 
 	bsSend.Write(iVersion);
 	bsSend.Write(byteMod);
 	bsSend.Write(byteNameLen);
-	bsSend.Write("Jos", byteNameLen);
+	bsSend.Write(m_pPlayerPool->GetLocalPlayerName(), byteNameLen);
 	bsSend.Write(uiClientChallengeResponse);
 	bsSend.Write(byteAuthBSLen);
 	bsSend.Write(auth_bs, byteAuthBSLen);
 	bsSend.Write(iClientVerLen);
-	bsSend.Write("0.3.7", iClientVerLen);
+	bsSend.Write(SAMP_VERSION, iClientVerLen);
 
 	m_pRakClient->RPC(&RPC_ClientJoin, &bsSend, HIGH_PRIORITY, RELIABLE, 0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
 }
