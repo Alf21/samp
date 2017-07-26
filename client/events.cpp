@@ -66,7 +66,7 @@ void ProcessIncommingEvent(PLAYERID playerId, int iEventType, DWORD dwParam1, DW
 				//pChatWindow->AddDebugMessage("Timeout on car component.");
 				break;
 			}
-			ScriptCommand(&add_car_component,iVehicleID,iComponent,&v);
+			if (ScriptCommand(&is_component_available, iComponent)) ScriptCommand(&add_car_component, iVehicleID, iComponent, &v);
 			//pChatWindow->AddDebugMessage("Added car component: %d",iComponent);
 			break;
 
