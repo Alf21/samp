@@ -3938,7 +3938,7 @@ static cell AMX_NATIVE_CALL n_GangZoneCreate(AMX *amx, cell *params)
 	CHECK_PARAMS(4);
 	CGangZonePool *pGangZonePool = pNetGame->GetGangZonePool();
 	if (!pGangZonePool) return -1;
-	WORD ret = pGangZonePool->New(amx_ctof(params[1]) - (amx_ctof(params[1]) - (float)floor((double)amx_ctof(params[1])), amx_ctof(params[2]) - (amx_ctof(params[2]) - (float)floor((double)amx_ctof(params[2])), amx_ctof(params[3]) - (amx_ctof(params[3]) - (float)floor((double)amx_ctof(params[3])), amx_ctof(params[4]) - (amx_ctof(params[4]) - (float)floor((double)amx_ctof(params[4])));
+	WORD ret = pGangZonePool->New(amx_ctof(params[1]) - (amx_ctof(params[1]) - (float)floor((double)amx_ctof(params[1]))), amx_ctof(params[2]) - (amx_ctof(params[2]) - (float)floor((double)amx_ctof(params[2]))), amx_ctof(params[3]) - (amx_ctof(params[3]) - (float)floor((double)amx_ctof(params[3]))), amx_ctof(params[4]) - (amx_ctof(params[4]) - (float)floor((double)amx_ctof(params[4]))));
 	if (ret == 0xFFFF) return -1;
 	return ret;
 }

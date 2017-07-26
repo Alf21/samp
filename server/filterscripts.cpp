@@ -141,6 +141,15 @@ bool CFilterScripts::LoadFilterScriptFromMemory(char* pFileName, char* pFileData
 	if (!amx_FindPublic(amx, "OnFilterScriptInit", &tmp))
 		amx_Exec(amx, (cell*)&tmp, tmp);
 		
+	if (pNetGame->GetPlayerPool()) {
+		for (int i = 0; i <= pNetGame->GetPlayerPool()->GetPlayerPoolCount(); i++) {
+			if (!amx_FindPublic(m_pFilterScripts[i], "OnPlayerConnect", &tmp))
+			{
+				amx_Push(m_pFilterScripts[i], i);
+				amx_Exec(m_pFilterScripts[i], (cell*)&tmp, tmp);
+			}
+		}
+	}
 	strcpy(m_szFilterScriptName[iSlot], pFileName);
 
 	m_iFilterScriptCount++;
@@ -191,6 +200,16 @@ void CFilterScripts::RemoveFilterScript(int iIndex)
 	if (!amx_FindPublic(m_pFilterScripts[iIndex], "OnFilterScriptExit", &tmp))
 		amx_Exec(m_pFilterScripts[iIndex], (cell*)&tmp, tmp);
 
+	if (pNetGame->GetPlayerPool()) {
+		for (int i = 0; i <= pNetGame->GetPlayerPool()->GetPlayerPoolCount(); i++) {
+			if (!amx_FindPublic(m_pFilterScripts[i], "OnPlayerDisconnect", &tmp))
+			{
+				amx_Push(m_pFilterScripts[i], 1);
+				amx_Push(m_pFilterScripts[i], i);
+				amx_Exec(m_pFilterScripts[i], (cell*)&tmp, tmp);
+			}
+		}
+	}
 	// Kill the timers
 	pNetGame->GetTimers()->DeleteForMode(m_pFilterScripts[iIndex]);
 	
