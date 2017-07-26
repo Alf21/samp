@@ -8,6 +8,8 @@
 
 extern CGame *pGame;
 extern CNetGame	*pNetGame;
+extern CChatWindow *pChatWindow;
+
 //-----------------------------------------------------------
 
 void CEntity::GetMatrix(PMATRIX4X4 Matrix)
@@ -123,13 +125,20 @@ void CEntity::SetModelIndex(UINT uiModel)
 {
 	if(!m_pEntity) return;
 
+	int i = 0;
+
 	if(!pGame->IsModelLoaded(uiModel)) {
 		pGame->RequestModel(uiModel);
 		pGame->LoadRequestedModels();
-		while(!pGame->IsModelLoaded(uiModel)) Sleep(1);
+		while(!pGame->IsModelLoaded(uiModel) && i != 10) i++; // if i == 10, non existant model. 
 	}
 
 	DWORD dwThisEntity = (DWORD)m_pEntity;
+
+	if (i == 10) {
+		pChatWindow->AddDebugMessage("Warning: tried to set model id %i", uiModel);
+		uiModel = 0;
+	}
 
 	_asm {
 		mov		esi, dwThisEntity
