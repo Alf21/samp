@@ -989,9 +989,10 @@ static cell AMX_NATIVE_CALL n_RemovePlayerFromVehicle(AMX *amx, cell *params)
 	if (!pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
 	RakNet::BitStream bsParams;
 
+	bsParams.Write(params[1]);
 	RakServerInterface *pRak = pNetGame->GetRakServer();
 	pNetGame->GetRakServer()->RPC(&RPC_ScrRemovePlayerFromVehicle , &bsParams, HIGH_PRIORITY,
-		RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
 
 	return 1;
 }
@@ -1779,7 +1780,7 @@ static cell AMX_NATIVE_CALL n_GetPlayerWeaponData(AMX *amx, cell *params)
 		cell* cptr;
 		
 		amx_GetAddr(amx, params[3], &cptr);
-		*cptr = (cell)pPlayer->m_byteSlotWeapon[bIndex];
+		*cptr = pPlayer->m_dwSlotAmmo[bIndex] == 0 ? 0 : (cell)pPlayer->m_byteSlotWeapon[bIndex];
 		amx_GetAddr(amx, params[4], &cptr);
 		*cptr = (cell)pPlayer->m_dwSlotAmmo[bIndex];
 		/*amx_GetAddr(amx, params[4], &cptr);
@@ -2298,11 +2299,7 @@ static cell AMX_NATIVE_CALL n_GetPlayerWeapon(AMX *amx, cell *params)
 	CHECK_PARAMS(1);
 	CPlayer* pPlayer = pNetGame->GetPlayerPool()->GetAt((BYTE)params[1]);
 	if(!pPlayer) return -1;	
-	BYTE byteState = pPlayer->GetState();
-	if ((byteState != PLAYER_STATE_DRIVER) || (byteState != PLAYER_STATE_PASSENGER))
-	{
-		return pPlayer->GetCurrentWeapon();
-	} else { return 0; }
+	return pPlayer->GetCurrentWeapon();
 	
 }
 

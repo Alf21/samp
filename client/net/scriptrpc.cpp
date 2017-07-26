@@ -221,9 +221,12 @@ void ScrRemovePlayerFromVehicle(RPCParameters *rpcParams)
 	PlayerID sender = rpcParams->sender;
 
 	RakNet::BitStream bsData((unsigned char*)Data,(iBitLength/8)+1,false);
+	PLAYERID playerId;
+	bsData.Read(playerId);
 
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-	pPlayerPool->GetLocalPlayer()->GetPlayerPed()->ExitCurrentVehicle();
+	if (playerId == pPlayerPool->GetLocalPlayerID()) pPlayerPool->GetLocalPlayer()->GetPlayerPed()->ExitCurrentVehicle();
+	else if (pPlayerPool->GetSlotState(playerId)) pPlayerPool->GetAt(playerId)->GetPlayerPed()->ExitCurrentVehicle();
 }
 
 //----------------------------------------------------
