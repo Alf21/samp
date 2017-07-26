@@ -132,3 +132,4 @@ extern int RPC_ScrDialogBox;
 extern int RPC_PlayerUpdate;
 extern int RPC_ScrCreate3DTextLabel;
 extern int RPC_ScrDisableInteriorEnterExits;
+extern int RPC_ScrUsePlayerPedAnims;

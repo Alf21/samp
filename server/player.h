@@ -200,6 +200,8 @@ public:
 	BYTE					m_byteSpectateType;
 	DWORD					m_SpectateID; // Vehicle or player id
 
+	bool					m_bUseCJWalk;
+
 	ONFOOT_SYNC_DATA* GetOnFootSyncData() { return &m_ofSync; }
 	INCAR_SYNC_DATA* GetInCarSyncData() { return &m_icSync; }
 	PASSENGER_SYNC_DATA* GetPassengerSyncData() { return &m_psSync; }
@@ -232,6 +234,7 @@ public:
 		m_fGameTime = 720.0f; // 12 o'clock in minutes	
 		m_fHealth = 0.0f;
 		m_fArmour = 0.0f;
+		m_bUseCJWalk = false;
 	};
 
 	void UpdatePosition(float x, float y, float z);

@@ -990,6 +990,8 @@ void GameBuildSelectVehicle()
 		pCam->Restore();
 		pCam->SetBehindPlayer();	
 		pGame->FindPlayerPed()->TogglePlayerControllable(1);
+		pGame->FindPlayerPed()->SetCollisionChecking(1);
+		pGame->FindPlayerPed()->SetGravityProcessing(1);
 		pGame->DisplayHud(TRUE);
 		bSelVehicleInit=FALSE;
 

@@ -163,7 +163,7 @@ void SetupD3DFog(BOOL bEnable)
 
 	if(pD3DDevice) {
 		pD3DDevice->SetRenderState(D3DRS_FOGENABLE, bEnable);
-		pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, dwFogColor);
+		//pD3DDevice->SetRenderState(D3DRS_FOGCOLOR, dwFogColor);
 		pD3DDevice->SetRenderState(D3DRS_FOGTABLEMODE, D3DFOG_NONE);
 		pD3DDevice->SetRenderState(D3DRS_FOGVERTEXMODE, D3DFOG_LINEAR);
 		pD3DDevice->SetRenderState(D3DRS_FOGSTART, *(DWORD*)(&fFogStart));

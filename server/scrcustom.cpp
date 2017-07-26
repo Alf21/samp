@@ -2254,11 +2254,31 @@ static cell AMX_NATIVE_CALL n_AllowInteriorWeapons(AMX *amx, cell *params)
 
 //----------------------------------------------------------------------------------
 
-// native UsePlayerPedAnims()
+// native UsePlayerPedAnims(bool:enable = true, playerid = -1)
 static cell AMX_NATIVE_CALL n_UsePlayerPedAnims(AMX *amx, cell *params)
 {
-	pNetGame->m_bUseCJWalk = TRUE;
+	RakNet::BitStream bsData;
+	bsData.Write((bool)params[1]);
+	if (params[2] == -1) {
+		pNetGame->m_bUseCJWalk = TRUE;
+		
+		pNetGame->GetRakServer()->RPC(&RPC_ScrUsePlayerPedAnims, &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	}
+	else {
+		if (!pNetGame->GetPlayerPool() || pNetGame->GetPlayerPool()->GetSlotState(params[2])) return 0;
+		pNetGame->GetPlayerPool()->GetAt(params[2])->m_bUseCJWalk = (bool)params[1];
+		pNetGame->GetRakServer()->RPC(&RPC_ScrUsePlayerPedAnims, &bsData, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[2]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	}
 	return 1;
+}
+
+//----------------------------------------------------------------------------------
+
+// native GetPlayerPedAnims(playerid);
+static cell AMX_NATIVE_CALL n_GetPlayerPedAnims(AMX *amx, cell *params) {
+	if (!pNetGame || !pNetGame->GetPlayerPool() || !pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
+
+	return pNetGame->GetPlayerPool()->GetAt(params[1])->m_bUseCJWalk;
 }
 
 //----------------------------------------------------------------------------------

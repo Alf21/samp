@@ -1110,6 +1110,8 @@ BOOL CLocalPlayer::Spawn()
 	pGameCamera->SetBehindPlayer();
 	pGame->DisplayHud(TRUE);
 	m_pPlayerPed->TogglePlayerControllable(1);
+	m_pPlayerPed->SetCollisionChecking(1);
+	m_pPlayerPed->SetGravityProcessing(1);
 
 	iTimesDataModified = 0;
 
@@ -1155,7 +1157,6 @@ BOOL CLocalPlayer::Spawn()
 	m_bIsWasted = FALSE;
 	m_bIsActive = TRUE;
 	m_bWaitingForSpawnRequestReply = FALSE;
-	m_pPlayerPed->TogglePlayerControllable(1);
 
 	// Let the rest of the network know we're spawning.
 	RakNet::BitStream bsSendSpawn;

@@ -74,6 +74,7 @@ CPlayer::CPlayer()
 	m_byteSpectateType = 0;
 	m_SpectateID = 0xFFFFFFFF;
 	m_iCurrentSkin = 0;
+	m_bUseCJWalk = false;
 
 	BYTE i;
 	for (i = 0; i < 13; i++)

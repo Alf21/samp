@@ -354,7 +354,9 @@ void cmdCreateVehicle(PCHAR szCmd)
 
 void cmdSelectVehicle(PCHAR szCmd)
 {
+#ifndef _DEBUG
 	if(!tSettings.bDebug) return;
+#endif
 
 	GameDebugEntity(0,0,10);
 }
@@ -441,8 +443,8 @@ void cmdCreatePlayer(PCHAR szCmd)
 
 			pTestPlayer = pGame->NewPlayer(0,(matPlayer.pos.X - 5.0f),(matPlayer.pos.Y - 5.0f),matPlayer.pos.Z,0.0f);
 
-			//pTestPlayer->SetSkin(iActorSkin);
-			//pTestPlayer->ShowMarker(1);
+			pTestPlayer->SetModelIndex(iActorSkin);
+			pTestPlayer->ShowMarker(1);
 
 			return;
 		}

@@ -1926,6 +1926,14 @@ void ScrDisableInteriorEnterExits(RPCParameters *rpcParams) {
 	pGame->ToggleEnterExits(disable);
 }
 
+void ScrUsePlayerPedAnims(RPCParameters *rpcParams) {
+	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	int iBitLength = rpcParams->numberOfBitsOfData;
+	RakNet::BitStream bsData((unsigned char*)Data, (iBitLength / 8) + 1, false);
+
+	bsData.Read((bool)pNetGame->m_bUseCJWalk);
+}
+
 void RegisterScriptRPCs(RakClientInterface* pRakClient)
 {
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetSpawnInfo, ScrSetSpawnInfo);
@@ -2011,6 +2019,7 @@ void RegisterScriptRPCs(RakClientInterface* pRakClient)
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrToggleWidescreen,ScrToggleWidescreen);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetVehicleTireStatus,ScrSetVehicleTireStatus );
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrDisableInteriorEnterExits, ScrDisableInteriorEnterExits);
+	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrUsePlayerPedAnims, ScrUsePlayerPedAnims);
 	//pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetPlayerDrunkVisuals,ScrSetPlayerDrunkVisuals );
 //	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetPlayerDrunkHandling,ScrSetPlayerDrunkHandling );
 }
@@ -2101,6 +2110,7 @@ void UnRegisterScriptRPCs(RakClientInterface* pRakClient)
 	pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrToggleWidescreen);
 	pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrSetVehicleTireStatus );
 	pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrDisableInteriorEnterExits);
+	pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrUsePlayerPedAnims);
 	//pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrSetPlayerDrunkVisuals );
 	//pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrSetPlayerDrunkHandling );
 }

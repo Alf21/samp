@@ -42,6 +42,7 @@ BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName)
 	{
 		strcpy(m_szPlayerName[bytePlayerID],szPlayerName);
 		m_pPlayers[bytePlayerID]->SetID(bytePlayerID);
+		m_pPlayers[bytePlayerID]->m_bUseCJWalk = pNetGame->m_bUseCJWalk;
 		m_bPlayerSlotState[bytePlayerID] = TRUE;
 		m_iPlayerScore[bytePlayerID] = 0;
 		m_iPlayerMoney[bytePlayerID] = 0;

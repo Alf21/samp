@@ -115,6 +115,7 @@ BYTE CWeapon__Satchel__Activate_HookJmpCode[] = { 0xFF, 0x25, 0x5B, 0x88, 0x73, 
 BYTE SetColor_HookJmpCode[] = {0xFF, 0x25, 0x36, 0xA0, 0x63, 0x00, 0x90 };
 BYTE Rand_HookJmpCode[] = {0xFF, 0x25, 0x77, 0xAB, 0x5E, 0x00, 0x90 }; // 5EAB77
 BYTE VehicleModel_SetEnvironmentMap_JmpCode[] = { 0xFF, 0x25, 0x39, 0x88, 0x4C, 0x00, 0x90, 0x90 }; // 4C8839
+
 //-----------------------------------------------------------
 
 DWORD dwLastExecTick = 0;
@@ -1426,6 +1427,13 @@ NUDE VehicleModel_SetEnvironmentMapHook()
 
 //-----------------------------------------------------------
 
+NUDE SCM_TogglePlayerControllable() {
+	_asm mov edx, 0x47DF56;
+	_asm jmp edx;
+}
+
+//-----------------------------------------------------------
+
 void InstallMethodHook(	DWORD dwInstallAddress,
 						DWORD dwHookFunction )
 {
@@ -1515,7 +1523,7 @@ void GameInstallHooks()
 	//InstallMethodHook(0x86D190,(DWORD)CPlayerPed_ProcessControl_Hook);
 	InstallMethodHook(0x86D744,(DWORD)TaskUseGun_Hook);
 	InstallMethodHook(0x86D194,(DWORD)CPlayerPed_ProcessCollision_Hook);
-    
+	
 	//InstallMethodHook(0x870904,(DWORD)TaskOnFoot1_Hook);
 	//InstallMethodHook(0x870908,(DWORD)TaskOnFoot2_Hook);
 
@@ -1551,6 +1559,8 @@ void GameInstallHooks()
 
 	InstallHook(0x63B8C0,(DWORD)TaskExitVehicle,
 		0x63B8BA,TaskExitVehicle_HookJmpCode,sizeof(TaskExitVehicle_HookJmpCode));
+
+	//InstallHook(0x47D3C8, (DWORD)SCM_TogglePlayerControllable, 0x47DF56, (BYTE*)0x47DF56, sizeof((BYTE*)0x47DF56));
 
 	/*
 	InstallHook(0x421440,(DWORD)AddVehicleHook,
