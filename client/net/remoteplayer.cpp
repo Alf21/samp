@@ -156,6 +156,7 @@ void CRemotePlayer::Process()
 							m_pCurrentVehicle->SetWheelPopped(3, m_icSync.byteTires[3]);
 						}
 					}
+					m_pCurrentVehicle->UpdateDamageStatus(m_icSync.dwPanelDamage, m_icSync.dwDoorDamage, m_icSync.byteLightDamage);
 				}
 
 				// HYDRA THRUSTERS

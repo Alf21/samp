@@ -316,6 +316,10 @@
   <ItemGroup>
     <None Include="amx\amxdefn.asm" />
     <None Include="Makefile" />
+    <None Include="pawn_includes\a_objects.inc" />
+    <None Include="pawn_includes\a_players.inc" />
+    <None Include="pawn_includes\a_samp.inc" />
+    <None Include="pawn_includes\a_vehicles.inc" />
     <None Include="server.vcproj" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

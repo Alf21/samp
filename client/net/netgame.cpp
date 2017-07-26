@@ -637,6 +637,10 @@ void CNetGame::Packet_VehicleSync(Packet *p)
 		if (bTire) icSync.byteTires[3] = 1;
 	}
 
+	bsSync.Read(icSync.dwPanelDamage);
+	bsSync.Read(icSync.dwDoorDamage);
+	bsSync.Read(icSync.byteLightDamage);
+		
 	// HYDRA SPECIAL
 	bsSync.Read(bHydra);
 	if(bHydra) bsSync.Read(icSync.dwHydraThrustAngle);

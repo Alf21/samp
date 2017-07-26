@@ -464,6 +464,18 @@
     <None Include="amx\amxdefn.asm">
       <Filter>amx</Filter>
     </None>
+    <None Include="pawn_includes\a_objects.inc">
+      <Filter>pawn_includes</Filter>
+    </None>
+    <None Include="pawn_includes\a_players.inc">
+      <Filter>pawn_includes</Filter>
+    </None>
+    <None Include="pawn_includes\a_samp.inc">
+      <Filter>pawn_includes</Filter>
+    </None>
+    <None Include="pawn_includes\a_vehicles.inc">
+      <Filter>pawn_includes</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="sqlite">
@@ -477,6 +489,9 @@
     </Filter>
     <Filter Include="raknet\samp">
       <UniqueIdentifier>{53ee7b08-fa49-4226-aceb-fccb14f56b36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="pawn_includes">
+      <UniqueIdentifier>{38240121-2725-49d0-b712-df8c15ccee1d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
