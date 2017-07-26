@@ -151,12 +151,14 @@ void CTextDrawPool::SetLetterSize(WORD wText, float fXSize, float fYSize)
 {
 	m_TextDraw[wText]->fLetterWidth = fXSize;
 	m_TextDraw[wText]->fLetterHeight = fYSize;
+	SetTextString(wText, m_szFontText[wText]);
 }
 
 void CTextDrawPool::SetTextSize(WORD wText, float fXSize, float fYSize)
 {
 	m_TextDraw[wText]->fLineWidth = fXSize;
 	m_TextDraw[wText]->fLineHeight = fYSize;
+	SetTextString(wText, m_szFontText[wText]);
 }
 
 void CTextDrawPool::SetTextString(WORD wText, char* szText)
@@ -187,20 +189,24 @@ void CTextDrawPool::SetAlignment(WORD wText, BYTE byteAlign)
 	if (byteAlign == 1) m_TextDraw[wText]->byteLeft = 1;
 	else if (byteAlign == 2) m_TextDraw[wText]->byteCenter = 1;
 	else if (byteAlign == 3) m_TextDraw[wText]->byteRight = 1;
+	SetTextString(wText, m_szFontText[wText]);
 }
 
 void CTextDrawPool::SetColor(WORD wText, DWORD dwColor)
 {
 	// Needs converting from RGBA to ABGR
 	m_TextDraw[wText]->dwLetterColor = RGBA_ABGR(dwColor);
+	SetTextString(wText, m_szFontText[wText]);
 }
 
 void CTextDrawPool::SetBoxColor(WORD wText, DWORD dwColor)
 {
 	m_TextDraw[wText]->dwBoxColor = RGBA_ABGR(dwColor);
+	SetTextString(wText, m_szFontText[wText]);
 }
 
 void CTextDrawPool::SetBackgroundColor(WORD wText, DWORD dwColor)
 {
 	m_TextDraw[wText]->dwBackgroundColor = RGBA_ABGR(dwColor);
+	SetTextString(wText, m_szFontText[wText]);
 }

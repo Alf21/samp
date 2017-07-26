@@ -282,12 +282,12 @@ float CPlayerPool::GetDistanceSquaredFromPlayerToPlayer(BYTE bytePlayer1, BYTE b
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::IsNickInUse(PCHAR szNick)
+BOOL CPlayerPool::IsNickInUse(PCHAR szNick, BYTE bytePlayerID)
 {
 	int x=0;
 	while(x!=MAX_PLAYERS) {
 		if(GetSlotState((BYTE)x)) {
-			if(!stricmp(GetPlayerName((BYTE)x),szNick)) {
+			if(!stricmp(GetPlayerName((BYTE)x),szNick) && x != bytePlayerID) {
 				return TRUE;
 			}
 		}

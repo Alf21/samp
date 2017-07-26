@@ -112,7 +112,7 @@ public:
 
 	float GetDistanceFromPlayerToPlayer(BYTE bytePlayer1, BYTE bytePlayer2);
 	float GetDistanceSquaredFromPlayerToPlayer(BYTE bytePlayer1, BYTE bytePlayer2);
-	BOOL  IsNickInUse(PCHAR szNick);
+	BOOL  IsNickInUse(PCHAR szNick, BYTE bytePlayerID = -1);
 
 	int GetPlayerCount() { return m_iPlayerCount; };
 

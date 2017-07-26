@@ -590,7 +590,7 @@ static cell AMX_NATIVE_CALL n_SetPlayerName(AMX *amx, cell *params)
 
 		strncpy(szOldNick,pNetGame->GetPlayerPool()->GetPlayerName(bytePlayerID),MAX_PLAYER_NAME);
 		
-		if (byteNickLen == 0 || pNetGame->GetPlayerPool()->IsNickInUse(szNewNick)) byteSuccess = 0;
+		if (byteNickLen == 0 || pNetGame->GetPlayerPool()->IsNickInUse(szNewNick, bytePlayerID)) byteSuccess = 0;
 		else byteSuccess = 1;
 
 		RakNet::BitStream bsData;
