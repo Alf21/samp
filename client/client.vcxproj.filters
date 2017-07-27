@@ -272,6 +272,9 @@
     <ClCompile Include="..\raknet\SAMP\SAMPRPC.cpp">
       <Filter>raknet\samp</Filter>
     </ClCompile>
+    <ClCompile Include="net\labelpool.cpp">
+      <Filter>net</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="afxres.h" />
@@ -677,9 +680,7 @@
     <ClInclude Include="..\raknet\SAMP\SAMPRPC.h">
       <Filter>raknet\samp</Filter>
     </ClInclude>
-    <ClInclude Include="labelpool.h">
-      <Filter>net</Filter>
-    </ClInclude>
+    <ClInclude Include="net\labelpool.h" />
   </ItemGroup>
   <ItemGroup>
     <Filter Include="game">

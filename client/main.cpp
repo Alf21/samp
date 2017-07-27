@@ -120,7 +120,7 @@ BOOL WINAPI DllMain(HINSTANCE hinstDLL, DWORD fdwReason, LPVOID lpvReserved)
 		//InitKeybinds(); // unfinished
 
 		if(tSettings.bDebug || tSettings.bPlayOnline) {
-			//SetUnhandledExceptionFilter(exc_handler);
+			SetUnhandledExceptionFilter(exc_handler);
 			//dwGameLoop = (DWORD)TheGameLoop;
 			dwGraphicsLoop = (DWORD)TheGraphicsLoop;
 

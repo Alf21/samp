@@ -75,8 +75,6 @@ void CLabelPool::SetLabelFontName(int iLabelID, char *szFontName) {
 	if (!GetSlotState(iLabelID) || !m_pLabels[iLabelID]) return;
 	m_pLabelInfo[iLabelID]->szFontFace = szFontName;
 	m_pLabels[iLabelID]->SetFont(szFontName);
-	delete m_pLabels[iLabelID];
-	m_pLabels[iLabelID] = new CLabel((IDirect3DDevice9*)pGame->GetD3DDevice(), m_pLabelInfo[iLabelID]->szFontFace, true);
 }
 
 //----------------------------------------------------------------------------------

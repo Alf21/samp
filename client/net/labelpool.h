@@ -40,7 +40,7 @@ public:
 	void SetLabelText(int iLabelID, char *szText);
 	void SetLabelPosition(int iLabelID, VECTOR vPosition);
 	void SetLabelFontName(int iLabelID, char *szFontName);
-	void SetLabelAttachedPlayer(int iLabelID, BYTE iPlayerID);
+	//void SetLabelAttachedPlayer(int iLabelID, BYTE iPlayerID); todo
 	void SetLabelSize(int iLabelID, float fSize);
 
 	void DeleteDeviceObjects();
