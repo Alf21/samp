@@ -835,6 +835,23 @@ int CGameMode::OnVehiclePaintjob(cell playerid, cell vehicleid, cell paintjobid)
 }
 
 //----------------------------------------------------------------------------------
+// forward OnPlayerClickMap(playerid, Float:fX, Float:fY, Float:fZ)
+
+int CGameMode::OnPlayerClickMap(cell playerid, float x, float y, float z) {
+	CHECK_INIT();
+	int idx;
+	cell ret = 1;
+	if (!amx_FindPublic(&m_amx, "OnPlayerClickMap", &idx)) {
+		amx_Push(&m_amx, amx_ftoc(z));
+		amx_Push(&m_amx, amx_ftoc(y));
+		amx_Push(&m_amx, amx_ftoc(x));
+		amx_Push(&m_amx, playerid);
+		amx_Exec(&m_amx, &ret, idx);
+	}
+	return (int)ret;
+}
+
+//----------------------------------------------------------------------------------
 // forward OnPlayerUpdate(playerid)
 
 int CGameMode::OnPlayerUpdate(cell playerid)

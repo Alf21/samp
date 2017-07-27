@@ -298,6 +298,8 @@ public:
 	int DetermineNumberOfPlayersInLocalRange();
 
 	void ProcessVehicleDamageUpdates(VEHICLEID CurrentVehicle);
+
+	void SetWaypoint(float x, float y);
 };
 
 //----------------------------------------------------------

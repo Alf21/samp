@@ -883,6 +883,33 @@ void MenuQuit(RPCParameters *rpcParams)
 	if (pFilters) pFilters->OnPlayerExitedMenu(bytePlayerID);
 }
 
+void ClickMap(RPCParameters *rpcParams)
+{
+	int iBitLength = rpcParams->numberOfBitsOfData;
+
+	BYTE bytePlayerID = pRak->GetIndexFromPlayerID(rpcParams->sender);
+
+	RakNet::BitStream bsData(rpcParams->input, (iBitLength / 8) + 1, false);
+
+	float fx, fy, fz;
+
+	bsData.Read(fx);
+	bsData.Read(fy);
+	bsData.Read(fz);
+
+	CGameMode *pGameMode = pNetGame->GetGameMode();
+	CFilterScripts *pFliterScripts = pNetGame->GetFilterScripts();
+	CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt(bytePlayerID);
+
+	if (pGameMode) pGameMode->OnPlayerClickMap(bytePlayerID, fx, fy, fz);
+	if (pFliterScripts) pFliterScripts->OnPlayerClickMap(bytePlayerID, fx, fy, fz);
+	if (pPlayer) {
+		pPlayer->m_vecWaypointPos.X = fx;
+		pPlayer->m_vecWaypointPos.Y = fy;
+		pPlayer->m_vecWaypointPos.Z = fz;
+	}
+}
+
 //----------------------------------------------------
 
 void RegisterRPCs(RakServerInterface * pRakServer)
@@ -904,7 +931,7 @@ void RegisterRPCs(RakServerInterface * pRakServer)
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_SvrStats, SvrStats);
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_SetInteriorId, SetInteriorId);
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_ScmEvent, ScmEvent);
-	//pRakServer->RegisterAsRemoteProcedureCall(&RPC_AdminMapTeleport);
+	pRakServer->RegisterAsRemoteProcedureCall(&RPC_ClickMap, ClickMap);
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_VehicleDestroyed, VehicleDestroyed);
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_PickedUpWeapon, PickedUpWeapon);
 	pRakServer->RegisterAsRemoteProcedureCall(&RPC_PickedUpPickup, PickedUpPickup);
@@ -933,12 +960,12 @@ void UnRegisterRPCs(RakServerInterface * pRakServer)
 	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_SvrStats);
 	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_SetInteriorId);
 	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_ScmEvent);
-	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_AdminMapTeleport);
 	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_VehicleDestroyed);
 	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_PickedUpWeapon);
 	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_PickedUpPickup);
 	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_MenuSelect);
 	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_MenuQuit);
+	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_ClickMap);
 }
 
 //----------------------------------------------------

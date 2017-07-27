@@ -64,6 +64,7 @@ public:
 	int OnVehiclePaintjob(cell playerid, cell vehicleid, cell paintjobid);
 	int OnPlayerInteriorChange(cell playerid, cell newid, cell oldid);
 	int OnPlayerKeyStateChange(cell playerid, cell newkeys, cell oldkeys);
+	int OnPlayerClickMap(cell playerid, float x, float y, float z);
 	int OnPlayerUpdate(cell playerid);
 };
 

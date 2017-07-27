@@ -63,6 +63,9 @@ CPlayer::CPlayer()
 	m_fHealth = 0.0f;
 	m_fArmour = 0.0f;
 	m_fGameTime = 0.0f;
+	m_vecWaypointPos.X = 0.0f;
+	m_vecWaypointPos.Y = 0.0f;
+	m_vecWaypointPos.Z = 0.0f;
 	m_byteTime = 0;
 	m_byteWantedLevel = 0;
 	m_bCanTeleport = false;
@@ -75,6 +78,7 @@ CPlayer::CPlayer()
 	m_SpectateID = 0xFFFFFFFF;
 	m_iCurrentSkin = 0;
 	m_bUseCJWalk = false;
+	
 
 	BYTE i;
 	for (i = 0; i < 13; i++)

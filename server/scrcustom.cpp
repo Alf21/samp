@@ -4262,6 +4262,40 @@ static cell AMX_NATIVE_CALL n_GetPlayerPoolSize(AMX *amx, cell *params) {
 
 //----------------------------------------------------------------------------------
 
+// native SetPlayerWaypoint(playerid, Float:fX, Float:fY);
+static cell AMX_NATIVE_CALL n_SetPlayerWaypoint(AMX *amx, cell *params) {
+	if (!pNetGame || !pNetGame->GetPlayerPool() || !pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
+
+	RakNet::BitStream bsData;
+	bsData.Write((float)params[2]);
+	bsData.Write((float)params[3]);
+
+	pNetGame->GetRakServer()->RPC(&RPC_ScrSetPlayerWaypoint, &bsData, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetPlayerPool()->GetAt(params[1])->m_vecWaypointPos.X = (float)params[2];
+	pNetGame->GetPlayerPool()->GetAt(params[1])->m_vecWaypointPos.Y = (float)params[3];
+	return 1;
+}
+
+//----------------------------------------------------------------------------------
+
+// native GetPlayerWaypoint(playerid, &Float:fX, &Float:fY);
+static cell AMX_NATIVE_CALL n_GetPlayerWaypoint(AMX *amx, cell *params) {
+	CPlayer* pPlayer = pNetGame->GetPlayerPool()->GetAt((BYTE)params[1]);
+
+	if (pPlayer)
+	{
+		cell* cptr;
+		amx_GetAddr(amx, params[2], &cptr);
+		*cptr = amx_ftoc(pPlayer->m_vecWaypointPos.X);
+		amx_GetAddr(amx, params[3], &cptr);
+		*cptr = amx_ftoc(pPlayer->m_vecWaypointPos.Y);
+		return 1;
+	}
+	return 0;
+}
+
+//----------------------------------------------------------------------------------
+
 AMX_NATIVE_INFO custom_Natives[] =
 {
 	// Util
@@ -4420,6 +4454,9 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "DestroyPlayerPickup",	n_DestroyPlayerPickup },
 	{ "IsPlayerInRangeOfPoint", n_IsPlayerInRangeOfPoint },
 
+	{ "SetPlayerWaypoint",		n_SetPlayerWaypoint },
+	{ "GetPlayerWaypoint",		n_GetPlayerWaypoint },
+	
 	// Vehicle
 	{ "CreateVehicle",			n_CreateVehicle },
 	{ "DestroyVehicle",			n_DestroyVehicle },

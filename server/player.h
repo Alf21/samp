@@ -205,6 +205,8 @@ public:
 
 	bool					m_bUseCJWalk;
 
+	VECTOR 					m_vecWaypointPos;
+
 	ONFOOT_SYNC_DATA* GetOnFootSyncData() { return &m_ofSync; }
 	INCAR_SYNC_DATA* GetInCarSyncData() { return &m_icSync; }
 	PASSENGER_SYNC_DATA* GetPassengerSyncData() { return &m_psSync; }

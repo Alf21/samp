@@ -1723,3 +1723,17 @@ void CLocalPlayer::ProcessVehicleDamageUpdates(VEHICLEID CurrentVehicle)
 }
 
 //-----------------------------------------------------------
+
+void CLocalPlayer::SetWaypoint(float x, float y) {
+	for (int i = 0; i<(0xAF * 0x28); i += 0x28) {
+		if (*(short*)(0xBA873D + i) == 4611) {
+			float* pos = (float*)(0xBA86F8 + 0x28 + i);
+			*(pos + 1) = y;
+			*pos = x;
+
+			pChatWindow->AddDebugMessage("CLocalPlayer::SetWaypoint(playerid, %f, %f) | pos = 0x%X", *pos, *(pos + 1), pos);
+		}
+	}
+}
+
+//-----------------------------------------------------------

@@ -90,6 +90,9 @@ native SetPlayerMarkerForPlayer(playerid, showplayerid, color);
 native ShowPlayerNameTagForPlayer(playerid, showplayerid, show);
 native SetPlayerMapIcon(playerid, iconid, Float:x, Float:y, Float:z, markertype, color);
 native RemovePlayerMapIcon(playerid, iconid);
+native SetPlayerWaypoint(playerid, Float:fX, Float:fY);
+native GetPlayerWaypoint(playerid, &Float:fX, &Float:fY);
+
 native SetPlayerCameraPos(playerid,Float:x, Float:y, Float:z);
 native SetPlayerCameraLookAt(playerid, Float:x, Float:y, Float:z);
 native SetCameraBehindPlayer(playerid);

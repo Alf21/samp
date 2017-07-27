@@ -406,7 +406,7 @@ HRESULT __stdcall IDirect3DDevice9Hook::Present(CONST RECT* pSourceRect, CONST R
 			bsSend.Write(mapY);
 			bsSend.Write(FindGroundZForCoord(mapX, mapY)+2.0f);
 
-			pNetGame->GetRakClient()->RPC(&RPC_AdminMapTeleport,&bsSend,HIGH_PRIORITY,RELIABLE,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
+			pNetGame->GetRakClient()->RPC(&RPC_ClickMap,&bsSend,HIGH_PRIORITY,RELIABLE,0, FALSE, UNASSIGNED_NETWORK_ID, NULL);
 		}
 	}
 	
