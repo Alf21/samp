@@ -27,6 +27,9 @@ private:
 	int		m_iPickupCount;
 	BYTE	m_bActive[MAX_PICKUPS];
 
+	BOOL	m_bPlayerPickups[MAX_PICKUPS];
+	PICKUP  m_pPlayerPickups[MAX_PLAYERS][MAX_PICKUPS];
+
 public:
 	
 	CPickupPool() {
@@ -40,7 +43,10 @@ public:
 	~CPickupPool() {};
 
 	int New(int iModel, int iType, float fX, float fY, float fZ, BYTE staticp = 0);
+	int New(BYTE bytePlayerID, int iModel, int iType, float fX, float fY, float fZ, BYTE staticp = 0);
+
 	int Destroy(int iPickup);
+	int DestroyPlayerPickup(BYTE bytePlayerID, int iPickup);
 	void InitForPlayer(BYTE bytePlayerID);
 };
 

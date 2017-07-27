@@ -424,6 +424,29 @@ static cell AMX_NATIVE_CALL n_DestroyPickup(AMX *amx, cell *params)
 }
 
 //----------------------------------------------------------------------------------
+// native CreatePlayerPickup(playerid, model, type, Float:X, Float:Y, Float:Z);
+
+static cell AMX_NATIVE_CALL n_CreatePlayerPickup(AMX *amx, cell *params)
+{
+	CHECK_PARAMS(6);
+	VECTOR vecPos;
+	vecPos.X = amx_ctof(params[3]);
+	vecPos.Y = amx_ctof(params[4]);
+	vecPos.Z = amx_ctof(params[5]);
+
+	return pNetGame->GetPickupPool()->New((BYTE)params[1], params[2], params[3], vecPos.X, vecPos.Y, vecPos.Z);
+}
+
+//----------------------------------------------------------------------------------
+// native DestroyPlayerPickup(playerid, pickup);
+
+static cell AMX_NATIVE_CALL n_DestroyPlayerPickup(AMX *amx, cell *params)
+{
+	CHECK_PARAMS(2);
+	return pNetGame->GetPickupPool()->DestroyPlayerPickup(params[1], params[2]);
+}
+
+//----------------------------------------------------------------------------------
 // native SetPlayerWorldBounds(playerid,Float:x_max,Float:y_max,Float:x_min,Float:y_min);
 
 static cell AMX_NATIVE_CALL n_SetPlayerWorldBounds(AMX *amx, cell *params)
@@ -4177,48 +4200,6 @@ static cell AMX_NATIVE_CALL n_SetNameTagDrawDistance(AMX *amx, cell *params)
 
 //----------------------------------------------------------------------------------
 
-// native CreatePlayerPickup(pickupid,playerid,model,type,Float:PosX,Float:PosY,Float:PosZ)
-static cell AMX_NATIVE_CALL n_CreatePlayerPickup(AMX *amx, cell *params)
-{
-	int iPickupId = params[1];
-	if(!pNetGame->GetPlayerPool()) return 0;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(params[2])) return 0;
-
-	PICKUP Pickup;
-    Pickup.iModel = params[3];
-	Pickup.iType = params[4];
-	Pickup.fX = amx_ctof(params[5]);
-	Pickup.fY = amx_ctof(params[6]);
-	Pickup.fZ = amx_ctof(params[7]);
-
-	RakNet::BitStream bsPickup;
-	bsPickup.Write(iPickupId);
-	bsPickup.Write((PCHAR)&Pickup,sizeof(PICKUP));
-	pNetGame->GetRakServer()->RPC(&RPC_Pickup, &bsPickup, HIGH_PRIORITY, RELIABLE, 0,
-		pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[2]), false, false, UNASSIGNED_NETWORK_ID, NULL);
-
-	return 1;
-}
-
-//----------------------------------------------------------------------------------
-
-// native DestroyPlayerPickup(pickupid,playerid)
-static cell AMX_NATIVE_CALL n_DestroyPlayerPickup(AMX *amx, cell *params)
-{
-	int iPickupId = params[1];
-	if(!pNetGame->GetPlayerPool()) return 0;
-	if(!pNetGame->GetPlayerPool()->GetSlotState(params[2])) return 0;
-
-	RakNet::BitStream bsPickup;
-	bsPickup.Write(iPickupId);
-	pNetGame->GetRakServer()->RPC(&RPC_DestroyPickup, &bsPickup, HIGH_PRIORITY, RELIABLE, 0,
-		pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[2]), false, false, UNASSIGNED_NETWORK_ID, NULL);
-
-	return 1;
-}
-
-//----------------------------------------------------------------------------------
-
 // native IsPlayerInRangeOfPoint(playerid,Float:fRange,Float:PosX,Float:PosY,Float:PosZ)
 static cell AMX_NATIVE_CALL n_IsPlayerInRangeOfPoint(AMX *amx, cell *params)
 {
@@ -4329,6 +4310,8 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "AddStaticPickup",		n_AddStaticPickup },
 	{ "CreatePickup",			n_CreatePickup },
 	{ "DestroyPickup",			n_DestroyPickup },
+	{ "CreatePlayerPickup",		n_CreatePlayerPickup },
+	{ "DestroyPlayerPickup",	n_DestroyPlayerPickup },
 	{ "SetPlayerWorldBounds",	n_SetPlayerWorldBounds },
 	{ "ShowNameTags",			n_ShowNameTags },
 	{ "ShowPlayerMarkers",		n_ShowPlayerMarkers },
@@ -4449,9 +4432,6 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "ClearAnimations",		n_ClearAnimations },
 	{ "SetPlayerSpecialAction", n_SetPlayerSpecialAction },
 	{ "GetPlayerSpecialAction", n_GetPlayerSpecialAction },
-
-	{ "CreatePlayerPickup",		n_CreatePlayerPickup },
-	{ "DestroyPlayerPickup",	n_DestroyPlayerPickup },
 	{ "IsPlayerInRangeOfPoint", n_IsPlayerInRangeOfPoint },
 
 	{ "SetPlayerWaypoint",		n_SetPlayerWaypoint },

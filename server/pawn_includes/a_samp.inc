@@ -62,6 +62,8 @@ native AddStaticVehicleEx(modelid, Float:spawn_x, Float:spawn_y, Float:spawn_z, 
 native AddStaticPickup(model,type,Float:X,Float:Y,Float:Z);
 native CreatePickup(model, type, Float:X, Float:Y, Float:Z);
 native DestroyPickup(pickup);
+native CreatePlayerPickup(model, type, Float:X, Float:Y, Float:Z);
+native DestroyPlayerPickup(playerid, pickup);
 native ShowNameTags(show);
 native ShowPlayerMarkers(show);
 native GameModeExit();
