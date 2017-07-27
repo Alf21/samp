@@ -1,4 +1,4 @@
 # samp
-Hi, this is the source code of SA-MP Client 0.2.5 leaked by zyronix.
+SA-MP 0.2.5
 
-This is mostly working.
+- If you have any requests please create an issue with then enhancement label and a client or server label
