@@ -125,8 +125,8 @@ void CVehicle::SpawnForPlayer(BYTE byteForPlayerID)
 		bsVehicleSpawn.Write((PCHAR)&m_CarModInfo, sizeof(m_CarModInfo));
 	}
 
-/*	pNetGame->GetRakServer()->RPC(&RPC_VehicleSpawn ,&bsVehicleSpawn,HIGH_PRIORITY,RELIABLE,
-		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(byteForPlayerID),false, false, UNASSIGNED_NETWORK_ID, NULL);*/
+	pNetGame->GetRakServer()->RPC(&RPC_WorldVehicleAdd ,&bsVehicleSpawn,HIGH_PRIORITY,RELIABLE,
+		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(byteForPlayerID),false, false, UNASSIGNED_NETWORK_ID, NULL);
 }
 
 //----------------------------------------------------------

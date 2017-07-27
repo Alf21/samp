@@ -254,7 +254,7 @@ BOOL CLocalPlayer::Process()
 			UpdateSurfing();
 
 			// MAKE MY HEAD MOVE WITH THE CAMERA
-			if((dwThisTick - m_dwLastHeadUpdate) > 1000) {
+			if((dwThisTick - m_dwLastHeadUpdate) > 200) {
                 VECTOR LookAt;
 				CAMERA_AIM *Aim = GameGetInternalAim();
 				LookAt.X = Aim->pos1x + (Aim->f1x * 20.0f);
@@ -644,7 +644,6 @@ void CLocalPlayer::UpdateSurfing()
 	VEHICLEID vehID = pNetGame->GetVehiclePool()->FindIDFromGtaPtr(Contact);
 
 	if(vehID && vehID != INVALID_VEHICLE_ID) {
-
 		CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(vehID);
 
 		if( pVehicle && pVehicle->IsOccupied() && 

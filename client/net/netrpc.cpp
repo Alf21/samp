@@ -132,10 +132,6 @@ void InitGame(RPCParameters *rpcParams)
 	}
 	pNetGame->m_szHostName[byteStrLen] = '\0';
 
-	/*bsInitGame.Read((char *)&byteVehicleModels[0],212);
-	pGame->SetRequiredVehicleModels(byteVehicleModels);
-	*/
-
 	if (pPlayerPool) pPlayerPool->SetLocalPlayerID(MyPlayerID);
 	pGame->EnableStuntBonus(bStuntBonus);
 	if (bLanMode) pNetGame->SetLanMode(TRUE);

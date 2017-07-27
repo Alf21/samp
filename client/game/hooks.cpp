@@ -1600,7 +1600,7 @@ void GameInstallHooks()
 	// Fix for ActorRunToPoint crash on invalid path 
 	//InstallHook(0x63a040, (DWORD)PathProcessingCrashFixHook, 0x63a036, PathProcessing_HookJmpCode, sizeof(PathProcessing_HookJmpCode));
 
-	// Fix for opcode 0x229 (set_car_color) crash - modshop related 
+#	// Fix for opcode 0x229 (set_car_color) crash - modshop related 
 	//InstallHook(0x47EAB2, (DWORD)SetCarColorCrashFix, 0x63a036, SetColor_HookJmpCode, sizeof(SetColor_HookJmpCode));
 
 	//InstallHook(0x4C8840,(DWORD)VehicleModel_SetEnvironmentMapHook,0x4C8839,
