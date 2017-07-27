@@ -45,6 +45,8 @@ private:
 	CMenuPool			*m_pMenuPool;
 	CTextDrawPool		*m_pTextDrawPool;
 	CGangZonePool		*m_pGangZonePool;
+	CLabelPool			*m_pLabelPool;
+
 	int					m_iGameState;
 	BOOL				m_bLanMode;
 	DWORD				m_dwLastConnectAttempt;
@@ -116,6 +118,7 @@ public:
 	CMenuPool * GetMenuPool() { return m_pMenuPool; };
 	CTextDrawPool * GetTextDrawPool() { return m_pTextDrawPool; };
 	CGangZonePool * GetGangZonePool() { return m_pGangZonePool; };
+	CLabelPool * GetLabelPool() { return m_pLabelPool; };
 	RakClientInterface * GetRakClient() { return m_pRakClient; };
 	void InitGameLogic();
 	void Process();

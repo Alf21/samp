@@ -74,6 +74,8 @@ typedef struct _GAME_SETTINGS {
 #include "net/gangzonepool.h"
 #include "net/menupool.h"
 #include "net/textdrawpool.h"
+#include "label.h"
+#include "net/labelpool.h"
 #include "net/netgame.h"
 #include "net/scriptrpc.h"
 
@@ -86,7 +88,6 @@ typedef struct _GAME_SETTINGS {
 #include "playertags.h"
 #include "newplayertags.h"
 #include "scoreboard.h"
-#include "label.h"
 #include "netstats.h"
 #include "svrnetstats.h"
 #include "helpdialog.h"

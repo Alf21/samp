@@ -6,7 +6,7 @@
 
 extern D3DXMATRIX matView, matProj;
 
-CLabel::CLabel(IDirect3DDevice9* pDevice, char* szFontFace, bool bFontBold)
+CLabel::CLabel(IDirect3DDevice9* pDevice, char* szFontFace, bool bFontBold, float fSize)
 {
 	m_pDevice			= pDevice;
 	m_pFont				= NULL;
@@ -14,6 +14,7 @@ CLabel::CLabel(IDirect3DDevice9* pDevice, char* szFontFace, bool bFontBold)
 	m_szFontFace		= (char*)malloc(strlen(szFontFace)+1);
 	strcpy(m_szFontFace, szFontFace);
 	m_bFontBold			= bFontBold;
+	m_fSize				= fSize;
 }
 
 CLabel::~CLabel()
@@ -47,6 +48,18 @@ void CLabel::Draw(D3DXVECTOR3* ppos, char* szText, DWORD dwColor)
 	m_pFont->DrawText(NULL, szText, -1, &rect, DT_NOCLIP|DT_CENTER, dwColor);
 }
 
+void CLabel::SetFont(char *szFontFace) {
+	m_szFontFace = szFontFace;
+	DeleteDeviceObjects();
+	RestoreDeviceObjects();
+}
+
+void CLabel::SetSize(float fSize) {
+	m_fSize = fSize;
+	DeleteDeviceObjects();
+	RestoreDeviceObjects();
+}
+
 void CLabel::DeleteDeviceObjects()
 {
 	SAFE_RELEASE(m_pFont);
@@ -56,7 +69,7 @@ void CLabel::RestoreDeviceObjects()
 {
 	if (!m_pFont)
 	{
-		D3DXCreateFont(m_pDevice, 12, 0, m_bFontBold?FW_BOLD:0,
+		D3DXCreateFont(m_pDevice, m_fSize, 0, m_bFontBold?FW_BOLD:0,
 			0, FALSE, ANSI_CHARSET, OUT_DEFAULT_PRECIS, ANTIALIASED_QUALITY, DEFAULT_PITCH,
 			m_szFontFace, &m_pFont);
 	}

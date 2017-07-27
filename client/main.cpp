@@ -525,6 +525,9 @@ void d3d9DestroyDeviceObjects()
 	if (pLabel)
 		pLabel->DeleteDeviceObjects();
 
+	if (pNetGame->GetLabelPool())
+		pNetGame->GetLabelPool()->DeleteDeviceObjects();
+
 	if (pDefaultFont)
 		pDefaultFont->DeleteDeviceObjects();
 
@@ -556,6 +559,9 @@ void d3d9RestoreDeviceObjects()
 
 	if (pLabel)
 		pLabel->RestoreDeviceObjects();
+	
+	if (pNetGame->GetLabelPool())
+		pNetGame->GetLabelPool()->RestoreDeviceObjects();
 
 	if (pDefaultFont)
 		pDefaultFont->RestoreDeviceObjects();

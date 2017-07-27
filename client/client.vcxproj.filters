@@ -677,6 +677,9 @@
     <ClInclude Include="..\raknet\SAMP\SAMPRPC.h">
       <Filter>raknet\samp</Filter>
     </ClInclude>
+    <ClInclude Include="labelpool.h">
+      <Filter>net</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="game">

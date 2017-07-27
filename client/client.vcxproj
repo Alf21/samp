@@ -365,6 +365,7 @@
     <ClInclude Include="gui\texture.h" />
     <ClInclude Include="helpdialog.h" />
     <ClInclude Include="label.h" />
+    <ClInclude Include="labelpool.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="md5.h" />
     <ClInclude Include="netstats.h" />

@@ -63,6 +63,7 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_pTextDrawPool = new CTextDrawPool();
 	m_pGangZonePool = new CGangZonePool();
 	m_pActorPool = new CActorPool();
+	m_pLabelPool = new CLabelPool();
 
 	m_pRakClient = RakNetworkFactory::GetRakClientInterface();
 //	m_pRakClient->InitializeSecurity(0, 0);
