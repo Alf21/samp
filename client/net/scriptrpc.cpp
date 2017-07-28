@@ -116,6 +116,8 @@ void ScrSetPlayerSkin(RPCParameters *rpcParams)
 	bsData.Read(iPlayerID);
 	bsData.Read(uiSkin);
 
+	pChatWindow->AddDebugMessage("SetPlayerSkin(%i, %i);", iPlayerID, uiSkin);
+
 	if (iPlayerID == pPlayerPool->GetLocalPlayerID()) {
 		pPlayerPool->GetLocalPlayer()->GetPlayerPed()->SetModelIndex(uiSkin);
 	}

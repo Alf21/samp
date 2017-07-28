@@ -608,7 +608,6 @@ void CConsole::SetBoolVariable(char* pVarName, bool bBool)
 void CConsole::SendRules(SOCKET s, char* data, const sockaddr_in* to, int tolen)
 {
 	const char* VarName;
-	char VarValue[1024];
 
 	StringConvarMap::iterator itor;
 
@@ -619,52 +618,33 @@ void CConsole::SendRules(SOCKET s, char* data, const sockaddr_in* to, int tolen)
 
 	char* newdata = (char*)malloc(13 + (wRuleCount * 62)); // malloc without a free
 	char* keep_ptr = newdata;
+	int datalen = 0;
 	// Previous Data
-	memcpy(newdata, data, 11);
-	newdata += 11;
+	memcpy(newdata, data, 10);
+	datalen += 10;
+	*(unsigned char *)&newdata[10] = 0x72; datalen += 1;
+	*(unsigned short *)&newdata[11] = wRuleCount; datalen += 2;
 
-	// Player Count
-	memcpy(newdata, &wRuleCount, sizeof(WORD));
-	newdata += sizeof(WORD);
-
-	BYTE byteStrLen;
+	char *curbufpos = &newdata[13];
 
 	for (itor = ConsoleVariables.begin(); itor != ConsoleVariables.end(); itor++)
 	{
 		if (itor->second->VarFlags & CON_VARFLAG_RULE)
 		{
 			VarName = itor->first.c_str();
-			switch (itor->second->VarType)
-			{
-				case CON_VARTYPE_FLOAT:
-					sprintf(VarValue, "%f", *(float*)itor->second->VarPtr);
-					break;
-				case CON_VARTYPE_INT:
-					sprintf(VarValue, "%d", *(int*)itor->second->VarPtr);
-					break;
-				case CON_VARTYPE_BOOL:
-					sprintf(VarValue, "%d", *(bool*)itor->second->VarPtr);
-					break;
-				case CON_VARTYPE_STRING:
-					strcpy(VarValue, (char*)itor->second->VarPtr);
-					break;
-			}
-
-			byteStrLen = (BYTE)strlen(VarName);
-			memcpy(newdata, &byteStrLen, sizeof(BYTE));
-			newdata += sizeof(BYTE);
-			memcpy(newdata, VarName, byteStrLen);
-			newdata += byteStrLen;
-
-			byteStrLen = (BYTE)strlen(VarValue);
-			memcpy(newdata, &byteStrLen, sizeof(BYTE));
-			newdata += sizeof(BYTE);
-			memcpy(newdata, VarValue, byteStrLen);
-			newdata += byteStrLen;
+			unsigned char rulelen = (unsigned char)strlen(VarName);
+			curbufpos[0] = rulelen;
+			strncpy(&curbufpos[1], VarName, rulelen);
+			unsigned char valuelen = (unsigned char)strlen((const char*)itor->second->VarPtr);
+			curbufpos[1 + rulelen] = valuelen;
+			strncpy(&curbufpos[1 + rulelen + 1], (const  char*)itor->second->VarPtr, valuelen);
+			curbufpos += (1 + rulelen + 1 + valuelen);
 		}
 	}
+	curbufpos = &newdata[13];
+	datalen += strlen(curbufpos);
 
-	sendto(s, keep_ptr, (int)(newdata - keep_ptr), 0, (sockaddr*)to, tolen);
+	sendto(s, newdata, datalen, 0, (sockaddr*)to, tolen);
 
 	free(keep_ptr);
 }

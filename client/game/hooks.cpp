@@ -1104,7 +1104,7 @@ NUDE GenTaskAlloc_Hook()
 		_asm call dword ptr [edx+4]
 		_asm mov dwParam2, eax
 	
-		pChatWindow->AddDebugMessage("TaskAlloc: 0x%X, 0x%X, 0x%X",dwParamThis,dwParam1,dwParam2);
+		
 	_asm popad
 
 	_asm mov eax, fs:0
@@ -1427,20 +1427,22 @@ NUDE VehicleModel_SetEnvironmentMapHook()
 
 //-----------------------------------------------------------
 
-NUDE SCM_TogglePlayerControllable() {
-	_asm mov edx, 0x47DF56;
-	_asm jmp edx;
+void InstallMethodHook(	DWORD dwInstallAddress,
+						DWORD dwHookFunction )
+{
+	
 }
 
 //-----------------------------------------------------------
 
-void InstallMethodHook(	DWORD dwInstallAddress,
-						DWORD dwHookFunction )
+void InstallJmpHook(DWORD dwInstallAddress, DWORD dwHookFunction)
 {
 	DWORD oldProt, oldProt2;
-	VirtualProtect((LPVOID)dwInstallAddress,4,PAGE_EXECUTE_READWRITE,&oldProt);
-	*(PDWORD)dwInstallAddress = (DWORD)dwHookFunction;
-	VirtualProtect((LPVOID)dwInstallAddress,4,oldProt,&oldProt2);
+	VirtualProtect((LPVOID)dwInstallAddress, 5, PAGE_EXECUTE_READWRITE, &oldProt);
+	*(BYTE *)dwInstallAddress = 0xE9;
+	*(DWORD *)(dwInstallAddress + 1) = (dwHookFunction - (dwInstallAddress + 5));
+	VirtualProtect((LPVOID)dwInstallAddress, 4, oldProt, &oldProt2);
+	
 }
 
 //-----------------------------------------------------------
@@ -1494,9 +1496,9 @@ void InstallGameAndGraphicsLoopHooks()
 	InstallMethodHook(0x86C248,(DWORD)CPed_Render_Hook);
 	InstallMethodHook(0x86C3A0,(DWORD)CPed_Render_Hook);
 
-	/*
+
 	InstallHook(0x5EFFE0,(DWORD)CPed_Say_Hook,
-		0x5EFFD8,PedSay_HookJmpCode,sizeof(PedSay_HookJmpCode));*/
+		0x5EFFD8,PedSay_HookJmpCode,sizeof(PedSay_HookJmpCode));
 }
 
 //-----------------------------------------------------------
@@ -1520,12 +1522,12 @@ void GameInstallHooks()
 		OutputDebugString("GTASA EU 1.0 rand() hook");
 	}*/
 
-	//InstallMethodHook(0x86D190,(DWORD)CPlayerPed_ProcessControl_Hook);
+	InstallMethodHook(0x86D190,(DWORD)CPlayerPed_ProcessControl_Hook);
 	InstallMethodHook(0x86D744,(DWORD)TaskUseGun_Hook);
 	InstallMethodHook(0x86D194,(DWORD)CPlayerPed_ProcessCollision_Hook);
 	
-	//InstallMethodHook(0x870904,(DWORD)TaskOnFoot1_Hook);
-	//InstallMethodHook(0x870908,(DWORD)TaskOnFoot2_Hook);
+	InstallMethodHook(0x870904,(DWORD)TaskOnFoot1_Hook);
+	InstallMethodHook(0x870908,(DWORD)TaskOnFoot2_Hook);
 
 	InstallMethodHook(0x871148,(DWORD)AllVehicles_ProcessControl_Hook); // Automobile
 	InstallMethodHook(0x8721C8,(DWORD)AllVehicles_ProcessControl_Hook); // boat
@@ -1560,8 +1562,6 @@ void GameInstallHooks()
 	InstallHook(0x63B8C0,(DWORD)TaskExitVehicle,
 		0x63B8BA,TaskExitVehicle_HookJmpCode,sizeof(TaskExitVehicle_HookJmpCode));
 
-	//InstallHook(0x47D3C8, (DWORD)SCM_TogglePlayerControllable, 0x47DF56, (BYTE*)0x47DF56, sizeof((BYTE*)0x47DF56));
-
 	/*
 	InstallHook(0x421440,(DWORD)AddVehicleHook,
 		0x421433,AddVehicleHook_HookJmpCode,sizeof(AddVehicleHook_HookJmpCode));*/
@@ -1572,8 +1572,8 @@ void GameInstallHooks()
 	InstallHook(0x584770,(DWORD)RadarTranslateColor,0x584A79,
 		RadarTranslateColor_HookJmpCode,sizeof(RadarTranslateColor_HookJmpCode));
 
-	//InstallHook(dwFarClipHookAddr,(DWORD)SetFarClipHook,0x533661,
-		//SetFarClip_HookJmpCode,sizeof(SetFarClip_HookJmpCode));
+	InstallHook(dwFarClipHookAddr,(DWORD)SetFarClipHook,0x533661,
+		SetFarClip_HookJmpCode,sizeof(SetFarClip_HookJmpCode));
 
 	InstallHook(0x53C900,(DWORD)CGameShutdownHook,0x53C8F1,
 		CGameShutdown_HookJmpCode,sizeof(CGameShutdown_HookJmpCode));
@@ -1587,8 +1587,8 @@ void GameInstallHooks()
 	// Fix for 0x00746929 crash
 	//InstallCallHook(0x00746924, (DWORD)SetForegroundWindowCrashFixHook, 0xE9);
 
-	//InstallHook(0x4C3870,(DWORD)GenTaskAlloc_Hook,0x4C3861, 
-		//GenTaskAlloc_HookJmpCode, sizeof(GenTaskAlloc_HookJmpCode));
+	InstallHook(0x4C3870,(DWORD)GenTaskAlloc_Hook,0x4C3861, 
+		GenTaskAlloc_HookJmpCode, sizeof(GenTaskAlloc_HookJmpCode));
 
 	// Fix for crash when the player who threw the satchel died
 	InstallHook(0x738F3A, (DWORD)CProjectile_Update_Hook, 0x738B1B, CProjectileInfo_Update_HookJmpCode, sizeof(CProjectileInfo_Update_HookJmpCode));

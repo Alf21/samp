@@ -941,19 +941,12 @@ void CPlayerPed::RestartIfWastedAt(VECTOR *vecRestart, float fRotation)
 void CPlayerPed::TogglePlayerControllable(int iControllable)
 {
 	MATRIX4X4 mat;
-
-	pChatWindow->AddDebugMessage("CPlayerPed::TogglePlayerControllable(%i) | m_pPed(0x%X) | m_pEntity(0x%X)", iControllable, m_pPed, m_pPed->entity);
 	if(!GamePool_Ped_GetAt(m_dwGTAId)) return;
 
 	if(!iControllable) {
 		ScriptCommand(&toggle_player_controllable,m_bytePlayerNumber,0);
-	//	*(BYTE*)(GameGetInternalKeys() + 0x10E) &= 0xDFu;
-		
-		ScriptCommand(&lock_actor,m_dwGTAId,1);
 	} else {
 		ScriptCommand(&toggle_player_controllable, m_bytePlayerNumber, 1);
-		
-		ScriptCommand(&lock_actor,m_dwGTAId,0);
 		if(!IsInVehicle()) {
 			GetMatrix(&mat);
 			TeleportTo(mat.pos.X,mat.pos.Y,mat.pos.Z);

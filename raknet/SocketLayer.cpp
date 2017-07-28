@@ -66,6 +66,8 @@ extern void __stdcall ProcessPortUnreachable( const unsigned int binaryAddress, 
 extern void ProcessPortUnreachable( const unsigned int binaryAddress, const unsigned short port, RakPeer *rakPeer );
 #endif
 
+extern void handleQueries(SOCKET sListen, int iAddrSize, struct sockaddr_in client, char *buffer);
+
 #ifdef _DEBUG
 #include <stdio.h>
 #endif
@@ -409,11 +411,15 @@ int SocketLayer::RecvFrom( const SOCKET s, RakPeer *rakPeer, int *errorCode )
 
 	if ( len != SOCKET_ERROR )
 	{
+#if defined RAK_SERVER
+		if(*reinterpret_cast<DWORD *>(data) == 'PMAS')
+		{
+			handleQueries(s, len2, sa, data);
+			return 1;
+		}
+#endif
 		unsigned short portnum;
 		portnum = ntohs( sa.sin_port );
-		//strcpy(ip, inet_ntoa(sa.sin_addr));
-		//if (strcmp(ip, "0.0.0.0")==0)
-		// strcpy(ip, "127.0.0.1");
 		ProcessNetworkPacket( sa.sin_addr.s_addr, portnum, data, len, rakPeer );
 
 		return 1;

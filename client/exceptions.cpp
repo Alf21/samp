@@ -242,8 +242,7 @@ LONG WINAPI exc_handler(_EXCEPTION_POINTERS* exc_inf)
 	ShowWindow(pGame->GetMainWindowHwnd(),SW_MINIMIZE);
 	DialogBox((HINSTANCE)hInstance,MAKEINTRESOURCE(IDD_DIALOG1),pGame->GetMainWindowHwnd(),(DLGPROC)GuiDlgProcMain);
 
-	return EXCEPTION_CONTINUE_SEARCH;
-	//return EXCEPTION_EXECUTE_HANDLER;
+	return EXCEPTION_EXECUTE_HANDLER;
 }
 
 //----------------------------------------------------

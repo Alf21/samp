@@ -48,6 +48,113 @@ int CheckQueryFlood(unsigned int binaryAddress)
 
 //----------------------------------------------------
 
+// Fixes launcher not getting server data. (https://github.com/J0shES/samp/issues/21)
+
+int queryLen = 0;
+char queryBufferSend[4092];
+void handleQueries(SOCKET sListen, int iAddrSize, struct sockaddr_in client, char *buffer)
+{
+	struct sockaddr_in *addrin = (struct sockaddr_in *)(struct sockaddr *)&client;
+	char *ip_address = inet_ntoa(addrin->sin_addr);
+
+
+	int queryLen = 0;
+	if (buffer[10] == 0x70) // Ping query
+	{
+		memcpy(queryBufferSend, buffer, 10); queryLen += 10;
+		*(unsigned char *)&queryBufferSend[10] = 0x70; queryLen += 1;
+		*(unsigned int *)&queryBufferSend[11] = *(unsigned int *)&buffer[11]; queryLen += 4;
+		sendto(sListen, queryBufferSend, queryLen, 0, (struct sockaddr *)&client, iAddrSize);
+	}
+
+	else if (buffer[10] == 0x69) // Server name, player count, game mode name, map name query
+	{
+		WORD wPlayerCount = 0;
+		CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
+		if (pPlayerPool)
+			for (int i = 0; i<MAX_PLAYERS; i++)
+				if (pPlayerPool->GetSlotState(i))
+					wPlayerCount++;
+
+		char* mapName = pConsole->GetStringVariable("mapname");
+		char* serverName = pConsole->GetStringVariable("hostname");
+		char* gmName = pConsole->GetStringVariable("gamemodetext");
+		int MaxPlayers = pConsole->GetIntVariable("maxplayers");
+
+		memcpy(queryBufferSend, buffer, 10); queryLen += 10;
+		*(unsigned short *)&queryBufferSend[10] = 0x69; queryLen += 2;
+		*(unsigned short *)&queryBufferSend[12] = wPlayerCount; queryLen += 2;
+		*(unsigned short *)&queryBufferSend[14] = MaxPlayers; queryLen += 2;
+		int serverNameLen = (int)strlen(serverName); *(int *)&queryBufferSend[16] = serverNameLen; queryLen += 4;
+		strncpy(&queryBufferSend[20], serverName, serverNameLen); queryLen += serverNameLen;
+		int gmNameLen = (int)strlen(gmName); *(int *)&queryBufferSend[20 + serverNameLen] = gmNameLen; queryLen += 4;
+		strncpy(&queryBufferSend[20 + serverNameLen + 4], gmName, gmNameLen); queryLen += gmNameLen;
+		int mapNameLen = (int)strlen(mapName); *(int *)&queryBufferSend[24 + serverNameLen + gmNameLen] = mapNameLen; queryLen += 4;
+		strncpy(&queryBufferSend[24 + serverNameLen + gmNameLen + 4], mapName, mapNameLen); queryLen += mapNameLen;
+
+		sendto(sListen, queryBufferSend, queryLen, 0, (struct sockaddr *)&client, iAddrSize);
+		return;
+	}
+
+	else if (buffer[10] == 0x63) // Player list query
+	{
+		memcpy(queryBufferSend, buffer, 10); queryLen += 10;
+		*(unsigned char *)&queryBufferSend[10] = 0x63; queryLen += 1;
+		WORD wPlayerCount = 0;
+		CPlayerPool* pPlayerPool = pNetGame->GetPlayerPool();
+		if (pPlayerPool)
+			for (int i = 0; i<MAX_PLAYERS; i++)
+				if (pPlayerPool->GetSlotState(i))
+					wPlayerCount++;
+
+		*(unsigned short *)&queryBufferSend[11] = wPlayerCount; queryLen += 2;
+		char *curbufpos = &queryBufferSend[13];
+		int bufcount = 0;
+		for (unsigned short i = 0; i < wPlayerCount; i++)
+		{
+			if (pNetGame->GetPlayerPool()->GetSlotState(wPlayerCount)) {
+				unsigned char pnamelen = (unsigned char)strlen(pNetGame->GetPlayerPool()->GetPlayerName(wPlayerCount));
+				curbufpos[0] = pnamelen;
+				strncpy(&curbufpos[1], pNetGame->GetPlayerPool()->GetPlayerName(wPlayerCount), pnamelen);
+				*(int *)&curbufpos[1 + pnamelen] = pNetGame->GetPlayerPool()->GetPlayerScore(wPlayerCount);
+				curbufpos += (1 + pnamelen + 4);
+				bufcount += (1 + pnamelen + 4);
+			}
+		}
+		queryLen += bufcount;
+
+		sendto(sListen, queryBufferSend, queryLen, 0, (struct sockaddr *)&client, iAddrSize);
+
+		return;
+	}
+
+	else if (buffer[10] == 0x72) // Rules query
+	{
+		pConsole->SendRules(sListen, buffer, addrin, iAddrSize);
+		/*
+		memcpy(queryBufferSend, buffer, 10); queryLen += 10;
+		*(unsigned char *)&queryBufferSend[10] = 0x72; queryLen += 1;
+		*(unsigned short *)&queryBufferSend[11] = pConsole->SendRules; queryLen += 2;
+		char *curbufpos = &queryBufferSend[13];
+		for (unsigned short i = 0; i < pConsole->SendRules; i++)
+		{
+			unsigned char rulelen = (unsigned char)strlen(rules[i].szRule);
+			curbufpos[0] = rulelen;
+			strncpy(&curbufpos[1], rules[i].szRule, rulelen);
+			unsigned char valuelen = (unsigned char)strlen(rules[i].szValue);
+			curbufpos[1 + rulelen] = valuelen;
+			strncpy(&curbufpos[1 + rulelen + 1], rules[i].szValue, valuelen);
+			curbufpos += (1 + rulelen + 1 + valuelen);
+		}
+		curbufpos = &queryBufferSend[13];
+		queryLen += strlen(curbufpos);
+
+		sendto(sListen, queryBufferSend, queryLen, 0, (struct sockaddr *)&client, iAddrSize);*/
+
+		return;
+	}
+}
+/*
 int ProcessQueryPacket(unsigned int binaryAddress, unsigned short port, char* data, int length, SOCKET s)
 {
 	char* szPassword=NULL;
@@ -55,7 +162,8 @@ int ProcessQueryPacket(unsigned int binaryAddress, unsigned short port, char* da
 	in_addr in;
 	in.s_addr = binaryAddress;
 
-	if ((length > 4) && (*(unsigned long*)(data) == 0x504D4153)) // 0x504D4153 = "SAMP" as hex.
+	logprintf("ProcessQueryPacket");
+	if ((length > 4) && (*(unsigned long*)(data) == 'PMAS')) // 0x504D4153 = "SAMP" as hex.
 	{
 		if(!pNetGame || (pNetGame->GetGameState() != GAMESTATE_RUNNING)) return 0;
 
@@ -356,7 +464,7 @@ int ProcessQueryPacket(unsigned int binaryAddress, unsigned short port, char* da
 	} else {
 		return 0;
 	}
-}
+}*/
 
 //----------------------------------------------------
 

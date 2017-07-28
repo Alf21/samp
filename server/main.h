@@ -52,7 +52,6 @@ Leaked by ZYRONIX.net.
 
 #define NETCODE_CONNCOOKIELULZ 0x6969
 #define NETGAME_VERSION 4057
-
 // ------------
 // OS SPECIFICS
 // ------------
@@ -119,7 +118,7 @@ typedef struct _SERVER_SETTINGS {
 #include "raknet/NetworkTypes.h"
 #include "raknet/BitStream.h"
 #include "raknet/StringCompressor.h"
-
+#include "raknet/SocketLayer.h"
 #include "samp_netencr.h"
 #include "samp_auth.h"
 #include "SAMPRPC.h"

@@ -1121,7 +1121,7 @@ BOOL CLocalPlayer::Spawn()
 
 	iTimesDataModified = 0;
 
-	if(!bFirstSpawn) {
+	if(bFirstSpawn) {
 		m_pPlayerPed->SetInitialState();
 	} else {
 		bFirstSpawn = FALSE;
@@ -1725,15 +1725,12 @@ void CLocalPlayer::ProcessVehicleDamageUpdates(VEHICLEID CurrentVehicle)
 //-----------------------------------------------------------
 
 void CLocalPlayer::SetWaypoint(float x, float y) {
-	for (int i = 0; i<(0xAF * 0x28); i += 0x28) {
-		if (*(short*)(0xBA873D + i) == 4611) {
-			float* pos = (float*)(0xBA86F8 + 0x28 + i);
-			*(pos + 1) = y;
-			*pos = x;
+	
+	*(float*)0xBAA248 = x;
+	*(float*)0xBAA24C = y;
 
-			pChatWindow->AddDebugMessage("CLocalPlayer::SetWaypoint(playerid, %f, %f) | pos = 0x%X", *pos, *(pos + 1), pos);
-		}
-	}
+	/*a1->x = FrontEndMenuManager.mapZoom * a2->x + FrontEndMenuManager.field_68;
+    a1->y = FrontEndMenuManager.field_6C - FrontEndMenuManager.mapZoom * a2->y;*/
 }
 
 //-----------------------------------------------------------

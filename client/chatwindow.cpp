@@ -55,18 +55,6 @@ void CChatWindow::ResetDialogControls(CDXUTDialog *pGameUI)
 		m_pScrollBar->SetPageSize(5);
 		m_pScrollBar->ShowItem(MAX_MESSAGES-1);
 
-		/*
-		m_pEditBackground->GetElement(0)->TextureColor.Init(D3DCOLOR_ARGB( 170, 20, 20, 20 ));
-		m_pEditBackground->GetElement(1)->TextureColor.Init(D3DCOLOR_ARGB( 200, 0, 0, 0 ));
-		m_pEditBackground->GetElement(2)->TextureColor.Init(D3DCOLOR_ARGB( 200, 0, 0, 0 ));
-		m_pEditBackground->GetElement(3)->TextureColor.Init(D3DCOLOR_ARGB( 200, 0, 0, 0 ));
-		m_pEditBackground->GetElement(4)->TextureColor.Init(D3DCOLOR_ARGB( 200, 0, 0, 0 ));
-		m_pEditBackground->GetElement(5)->TextureColor.Init(D3DCOLOR_ARGB( 200, 0, 0, 0 ));
-		m_pEditBackground->GetElement(6)->TextureColor.Init(D3DCOLOR_ARGB( 200, 0, 0, 0 ));
-		m_pEditBackground->GetElement(7)->TextureColor.Init(D3DCOLOR_ARGB( 200, 0, 0, 0 ));
-		m_pEditBackground->GetElement(8)->TextureColor.Init(D3DCOLOR_ARGB( 200, 0, 0, 0 ));
-		m_pEditBackground->SetEnabled(false);
-		m_pEditBackground->SetVisible(true);*/
 
 	}
 }

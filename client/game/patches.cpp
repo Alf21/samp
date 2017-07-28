@@ -102,6 +102,11 @@ BOOL ApplyPreGamePatches()
 	UnFuck(0x5B8E6A,4);
 	*(DWORD *)0x5B8E6A = 134217728; // 128MB		
 
+	//Widescreen fix - https://github.com/J0shES/samp/issues/20
+	UnFuck(0x745BC9, 1);
+	*(WORD *)0x745BC9 = 0x9090;
+	UnFuck(0x7459E1, 1);
+	*(WORD *)0x7459E1 = 0x9090;
 	return TRUE;
 }
 
@@ -252,14 +257,14 @@ void ApplyInGamePatches()
 	// Anti-pause 
 	UnFuck(0x561AF0,7);
 	memset((PVOID)0x561AF0,0x90,7);
-	/* A likely solution for the 0x crash
+	/* A likely solution for the 0x crash */
 	UnFuck(0x411458,2);
 	*(BYTE*)0x411458 = 0xF4;
-	*(BYTE*)0x411459 = 0x01;*/
+	*(BYTE*)0x411459 = 0x01;
 
-	/* Some main collision thing nulled
+	//Some main collision thing nulled
 	UnFuck(0x616650,1);
-	*(BYTE *)0x616650 = 0xC3;*/
+	*(BYTE *)0x616650 = 0xC3;
 
 	// Unknown from CPlayerPed::ProcessControl causes crash
 	UnFuck(0x609C08,39);
@@ -464,8 +469,8 @@ void ApplyInGamePatches()
 	*(BYTE*)0x58DB67 = 0x90;
 	
 	// Remove the blue(-ish) fog in the map
-	//UnFuck(0x00575B0E, 5);
-	//memset((PVOID)0x00575B0E, 0x90, 5);
+	UnFuck(0x00575B0E, 5);
+	memset((PVOID)0x00575B0E, 0x90, 5);
 
 	UnFuck(0x47BF54,4);
 	InstallSCMEventsProcessor();
