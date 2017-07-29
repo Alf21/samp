@@ -1439,7 +1439,7 @@ void CLocalPlayer::HandleClassSelection()
 	if(m_pPlayerPed) {
 		m_pPlayerPed->SetInitialState();
 		m_pPlayerPed->SetHealth(100.0f);
-		m_pPlayerPed->TogglePlayerControllable(0);
+		m_pPlayerPed->TogglePlayerControllable(1);
 	}
 	RequestClass(m_iSelectedClass);
 	m_dwInitialSelectionTick = GetTickCount();

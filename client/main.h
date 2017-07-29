@@ -47,6 +47,8 @@ typedef struct _GAME_SETTINGS {
 #include "d3d9/common/dxstdafx.h"
 #include "game/game.h"
 
+#include "archive/ArchiveCommon.h"
+#include "archive/ArchiveFS.h"
 
 #include "raknet/PacketEnumerations.h"
 #include "raknet/RakNetworkFactory.h"

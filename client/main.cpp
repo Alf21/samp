@@ -37,6 +37,7 @@ CNetStats				*pNetStats=NULL;
 CSvrNetStats			*pSvrNetStats=NULL;
 CHelpDialog				*pHelpDialog=NULL;
 
+
 bool					bShowDebugLabels = false;
 
 CGame					*pGame=0;

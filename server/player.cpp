@@ -777,7 +777,7 @@ void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 		HIGH_PRIORITY,RELIABLE,0,playerid,true, false, UNASSIGNED_NETWORK_ID, NULL);
 
 	// Fix player stuck if animation was applied.
-	pNetGame->BroadcastDistanceRPC(&RPC_ScrClearAnimations, &bsPlayerDeath, UNRELIABLE, (BYTE)UNASSIGNED_PLAYER_INDEX, 200.0f);
+	pNetGame->BroadcastDistanceRPC(&RPC_ScrClearAnimations, &bsPlayerDeath, UNRELIABLE, (BYTE)m_bytePlayerID, 200.0f);
 
 	pNetGame->GetPlayerPool()->SetPlayerMoney(m_bytePlayerID, pNetGame->GetPlayerPool()->GetPlayerMoney(m_bytePlayerID) - pNetGame->m_iDeathDropMoney);
 

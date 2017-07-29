@@ -704,5 +704,8 @@
     <Filter Include="raknet\samp">
       <UniqueIdentifier>{d29d2c36-2642-44c2-bec5-ed9793504dfc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="archive">
+      <UniqueIdentifier>{4c1bf13d-e8e6-4b26-9d11-698d5a43c2d6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
