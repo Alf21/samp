@@ -15,7 +15,7 @@ extern BOOL	bIgnoreNextEntry;
 extern BOOL	bIgnoreNextExit;
 
 extern BYTE	*pbyteCurrentPlayer;
-extern BYTE *byteUsedPlayerSlots;
+extern BYTE byteUsedPlayerSlots[PLAYER_PED_SLOTS];
 
 //-----------------------------------------------------------
 // Used for instancing the local player.
@@ -38,6 +38,7 @@ CPlayerPed::CPlayerPed()
 	m_iDanceState = 0;
 	m_iCellPhoneEnabled = 0;
 	m_bGoggleState = FALSE;
+	GameResetPlayerKeys(m_bytePlayerNumber);
 }
 
 //-----------------------------------------------------------

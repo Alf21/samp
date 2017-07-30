@@ -1,3 +1,4 @@
+#pragma once
 void Font_PrintString(float X, float Y, char *sz);
 void Font_SetColor(DWORD dwColor);
 void Font_SetDropColor(DWORD dwColor);
