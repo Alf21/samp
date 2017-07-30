@@ -4,6 +4,10 @@
 - [Server Issues](#server-issues)
 
 ## Build Instructions
+
+Requirements:
+	- DX9 SDK SHOULD be installed.
+	
 - Load samp.sln. (Project is being developed using VS 2013 so anything more later than that should also work.)
 - Then build! (Prefferbly with debug mode being as crashes can occur.)
 
