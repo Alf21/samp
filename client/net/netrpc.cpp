@@ -90,12 +90,12 @@ void InitGame(RPCParameters *rpcParams)
 
 	if (pPlayerPool) pLocalPlayer = pPlayerPool->GetLocalPlayer();
 
-	PLAYERID MyPlayerID;
+	BYTE bytePlayerID;
 	bool bLanMode, bStuntBonus;
 //	BYTE byteVehicleModels[212];
 
 	bsInitGame.Read(pNetGame->m_iSpawnsAvailable);
-	bsInitGame.Read(MyPlayerID);
+	bsInitGame.Read(bytePlayerID);
 	bsInitGame.Read(pNetGame->m_bShowPlayerTags);
 	bsInitGame.Read(pNetGame->m_bShowPlayerMarkers);
 	bsInitGame.Read(pNetGame->m_bTirePopping);
@@ -103,7 +103,7 @@ void InitGame(RPCParameters *rpcParams)
 	bsInitGame.Read(pNetGame->m_byteWeather);
 	bsInitGame.Read(pNetGame->m_fGravity);
 	bsInitGame.Read(bLanMode);
-	bsInitGame.Read((int)pNetGame->m_iDeathDropMoney);
+	bsInitGame.Read(pNetGame->m_iDeathDropMoney);
 	bsInitGame.Read(pNetGame->m_bInstagib);
 	bsInitGame.Read(pNetGame->m_bZoneNames);
 	bsInitGame.Read(pNetGame->m_bUseCJWalk);	
@@ -132,7 +132,7 @@ void InitGame(RPCParameters *rpcParams)
 	}
 	pNetGame->m_szHostName[byteStrLen] = '\0';
 
-	if (pPlayerPool) pPlayerPool->SetLocalPlayerID(MyPlayerID);
+	if (pPlayerPool) pPlayerPool->SetLocalPlayerID(bytePlayerID);
 	pGame->EnableStuntBonus(bStuntBonus);
 	if (bLanMode) pNetGame->SetLanMode(TRUE);
 
