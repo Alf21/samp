@@ -2,7 +2,9 @@
 
 #if defined(_MSC_VER) && _MSC_VER < 1299 // VC6 doesn't support template specialization
 
-#include "RakNetDefines.h"
+// This should be on by default for speed.  Turn it off if you actually need endian swapping
+#define __BITSTREAM_NATIVE_END
+
 #include "BitStream.h"
 #include <stdlib.h>
 #include <assert.h>

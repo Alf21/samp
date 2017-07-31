@@ -1,9 +1,14 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+    Version: $Id: netgame.cpp,v 1.86 2006/05/09 12:41:37 kyeman Exp $
+
 */
 
 #include "main.h"
-
+#include "anticheat.h"
 
 float fRestartWaitTime=0.0f;
 
@@ -401,8 +406,8 @@ void CNetGame::ShutdownForGameModeRestart()
 {
 	// Let the clients know the world is going down
 	RakNet::BitStream bsParams;
-	GetRakServer()->RPC(&RPC_GameModeRestart, &bsParams, HIGH_PRIORITY,
-		RELIABLE,0,UNASSIGNED_PLAYER_ID,true,false, UNASSIGNED_NETWORK_ID, NULL);
+	GetRakServer()->RPC(RPC_GameModeRestart, &bsParams, HIGH_PRIORITY,
+		RELIABLE,0,UNASSIGNED_PLAYER_ID,true,false);
 
 	m_pPlayerPool->DeactivateAll();
 	
@@ -432,8 +437,8 @@ void CNetGame::ShutdownForGameModeRestart()
 	m_fGravity		= 0.008f;
 	m_iDeathDropMoney = 0;
 	m_bZoneNames = FALSE;
-	m_bDisableEnterExits = false;
 	m_longSynchedWeapons = DEFAULT_WEAPONS;
+	m_bDisableEnterExits = false;
 
 #ifdef _DEBUG
 	/* dump the send freq table
@@ -757,7 +762,7 @@ void CNetGame::BroadcastData( RakNet::BitStream *bitStream,
 
 //--------------------------------------------------------
 
-void CNetGame::BroadcastDistanceRPC( int *szUniqueID, 
+void CNetGame::BroadcastDistanceRPC( char *szUniqueID, 
 									 RakNet::BitStream *bitStream,
 									 PacketReliability reliability,
 								     BYTE byteExcludedPlayer,
@@ -779,7 +784,7 @@ void CNetGame::BroadcastDistanceRPC( int *szUniqueID,
 				fDistance = m_pPlayerPool->GetDistanceFromPlayerToPlayer(byteExcludedPlayer,x);
 				if(fDistance <= fUseDistance) {
 					m_pRak->RPC(szUniqueID,bitStream,HIGH_PRIORITY,reliability,
-						0,m_pRak->GetPlayerIDFromIndex(x),false,false, UNASSIGNED_NETWORK_ID, NULL);
+						0,m_pRak->GetPlayerIDFromIndex(x),false,false);
 				}
 			}
 		}
@@ -787,7 +792,7 @@ void CNetGame::BroadcastDistanceRPC( int *szUniqueID,
 	}
 
 	m_pRak->RPC(szUniqueID,bitStream,HIGH_PRIORITY,reliability,
-			0,m_pRak->GetPlayerIDFromIndex(byteExcludedPlayer),false,false, UNASSIGNED_NETWORK_ID, NULL);
+			0,m_pRak->GetPlayerIDFromIndex(byteExcludedPlayer),false,false);
 }
 
 //--------------------------------------------------------
@@ -826,7 +831,7 @@ void CNetGame::AdjustAimSync(RakNet::BitStream *bitStream, BYTE byteTargetPlayer
 void CNetGame::Packet_PlayerSync(Packet *p)
 {
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->playerIndex);
-	RakNet::BitStream bsPlayerSync(p->data, p->length, false);
+	RakNet::BitStream bsPlayerSync((PCHAR)p->data, p->length, false);
 
 	if(GetGameState() != GAMESTATE_RUNNING) return;
 
@@ -846,7 +851,7 @@ void CNetGame::Packet_PlayerSync(Packet *p)
 void CNetGame::Packet_AimSync(Packet *p)
 {
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->playerIndex);
-	RakNet::BitStream bsPlayerSync(p->data, p->length, false);
+	RakNet::BitStream bsPlayerSync((PCHAR)p->data, p->length, false);
 
 	if(GetGameState() != GAMESTATE_RUNNING) return;
 
@@ -866,7 +871,7 @@ void CNetGame::Packet_AimSync(Packet *p)
 void CNetGame::Packet_VehicleSync(Packet *p)
 {
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->playerIndex);
-	RakNet::BitStream bsVehicleSync(p->data, p->length, false);
+	RakNet::BitStream bsVehicleSync((PCHAR)p->data, p->length, false);
 
 	if(GetGameState() != GAMESTATE_RUNNING) return;
 
@@ -891,7 +896,7 @@ void CNetGame::Packet_VehicleSync(Packet *p)
 void CNetGame::Packet_PassengerSync(Packet *p)
 {
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->playerIndex);
-	RakNet::BitStream bsPassengerSync(p->data, p->length, false);
+	RakNet::BitStream bsPassengerSync((PCHAR)p->data, p->length, false);
 
 	if(GetGameState() != GAMESTATE_RUNNING) return;
 
@@ -915,7 +920,7 @@ void CNetGame::Packet_PassengerSync(Packet *p)
 void CNetGame::Packet_SpectatorSync(Packet *p)
 {
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->playerIndex);
-	RakNet::BitStream bsSpectatorSync(p->data, p->length, false);
+	RakNet::BitStream bsSpectatorSync((PCHAR)p->data, p->length, false);
 
 	if(GetGameState() != GAMESTATE_RUNNING) return;
 
@@ -933,7 +938,7 @@ void CNetGame::Packet_SpectatorSync(Packet *p)
 void CNetGame::Packet_TrailerSync(Packet *p)
 {
 	CPlayer * pPlayer = GetPlayerPool()->GetAt((BYTE)p->playerIndex);
-	RakNet::BitStream bsTrailerSync(p->data, p->length, false);
+	RakNet::BitStream bsTrailerSync((PCHAR)p->data, p->length, false);
 
 	if(GetGameState() != GAMESTATE_RUNNING) return;
 
@@ -953,7 +958,7 @@ void CNetGame::Packet_TrailerSync(Packet *p)
 
 void CNetGame::Packet_StatsUpdate(Packet *p)
 {
-	RakNet::BitStream bsStats(p->data, p->length, false);
+	RakNet::BitStream bsStats((PCHAR)p->data, p->length, false);
 	CPlayerPool *pPlayerPool = GetPlayerPool();
 	BYTE bytePlayerID = (BYTE)p->playerIndex;
 	int iMoney;
@@ -977,7 +982,7 @@ void CNetGame::Packet_StatsUpdate(Packet *p)
 
 void CNetGame::Packet_WeaponsUpdate(Packet *p)
 {
-	RakNet::BitStream bsData(p->data, p->length, false);
+	RakNet::BitStream bsData((PCHAR)p->data, p->length, false);
 	CPlayerPool *pPlayerPool = GetPlayerPool();
 	BYTE bytePlayerID = (BYTE)p->playerIndex;
 
@@ -1125,11 +1130,10 @@ void CNetGame::ProcessClientJoin(BYTE bytePlayerID)
 		// Inform them of their VW as it doesn't actually work if called from OnPlayerConnect
 		// The server is updated but they're not connected fully so don't get it, so resend it
 		BYTE byteVW = m_pPlayerPool->GetPlayerVirtualWorld(bytePlayerID);
-		/*RakNet::BitStream bsData;
+		RakNet::BitStream bsData;
 		bsData.Write(bytePlayerID); // player id
 		bsData.Write(byteVW); // VW id
-		m_pRak->RPC(&RPC_ScrSetPlayerVirtualWorld, &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
-	*/
+		m_pRak->RPC(RPC_ScrSetPlayerVirtualWorld, &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	} 
 	else if(GetGameState() == GAMESTATE_RESTARTING)
 	{
@@ -1138,8 +1142,8 @@ void CNetGame::ProcessClientJoin(BYTE bytePlayerID)
 		// Tell them that the world is currently restarting.
 		RakNet::BitStream bsParams;
 		PlayerID sender = m_pRak->GetPlayerIDFromIndex(bytePlayerID);
-		m_pRak->RPC(&RPC_GameModeRestart, &bsParams, HIGH_PRIORITY,
-			RELIABLE,0,sender,false,false, UNASSIGNED_NETWORK_ID, NULL);
+		m_pRak->RPC(RPC_GameModeRestart, &bsParams, HIGH_PRIORITY,
+			RELIABLE,0,sender,false,false);
 	}
 	
 	//GetGameLogic()->HandleClientJoin(bytePlayerID);
@@ -1161,7 +1165,7 @@ void CNetGame::SendClientMessage(PlayerID pidPlayer, DWORD dwColor, char* szMess
 	bsParams.Write(dwColor);
 	bsParams.Write(dwStrLen);
 	bsParams.Write(szBuffer, dwStrLen);
-	GetRakServer()->RPC(&RPC_ClientMessage, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pidPlayer, false, false, UNASSIGNED_NETWORK_ID, NULL);
+	GetRakServer()->RPC(RPC_ClientMessage, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pidPlayer, false, false);
 }
 
 //----------------------------------------------------
@@ -1180,7 +1184,7 @@ void CNetGame::SendClientMessageToAll(DWORD dwColor, char* szMessage, ...)
 	bsParams.Write(dwColor);
 	bsParams.Write(dwStrLen);
 	bsParams.Write(szBuffer, dwStrLen);
-	GetRakServer()->RPC(&RPC_ClientMessage, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	GetRakServer()->RPC(RPC_ClientMessage, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 }
 
 //----------------------------------------------------
@@ -1213,16 +1217,15 @@ void CNetGame::InitGameForPlayer(BYTE bytePlayerID)
 	bsInitGame.Write(m_bDisableEnterExits);
 	
 	char* szHostName = pConsole->GetStringVariable("hostname");
-	DWORD dwStrLen = strlen(szHostName);
-	bsInitGame.Write(dwStrLen);
-
-	if(szHostName) {	
-		bsInitGame.Write(szHostName, dwStrLen);
+	if(szHostName) {
+		BYTE byteStrLen = strlen(szHostName);
+		bsInitGame.Write(byteStrLen);
+		bsInitGame.Write(szHostName, byteStrLen);
 	} else {
-		bsInitGame.Write("");
+		bsInitGame.Write((BYTE)0);
 	}
 
-	GetRakServer()->RPC(&RPC_InitGame,&bsInitGame,HIGH_PRIORITY,RELIABLE,0,GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),false,false, UNASSIGNED_NETWORK_ID, NULL);
+	GetRakServer()->RPC(RPC_InitGame,&bsInitGame,HIGH_PRIORITY,RELIABLE,0,GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),false,false);
 }
 
 //----------------------------------------------------
@@ -1233,7 +1236,7 @@ void CNetGame::SetWorldTime(BYTE byteHour)
 
 	m_byteWorldTime = byteHour;
 	bsTime.Write(m_byteWorldTime);
-	GetRakServer()->RPC(&RPC_WorldTime,&bsTime,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_PLAYER_ID,true,false, UNASSIGNED_NETWORK_ID, NULL);
+	GetRakServer()->RPC(RPC_WorldTime,&bsTime,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_PLAYER_ID,true,false);
 
 	char szTime[256];
 	sprintf(szTime, "%02d:%02d", m_byteWorldTime, 0);
@@ -1245,7 +1248,7 @@ void CNetGame::SetWeather(BYTE byteWeather)
 	RakNet::BitStream bsWeather;
 	m_byteWeather = byteWeather;
 	bsWeather.Write(m_byteWeather);
-	GetRakServer()->RPC(&RPC_Weather, &bsWeather, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	GetRakServer()->RPC(RPC_Weather, &bsWeather, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	
 	char szWeather[128];
 	sprintf(szWeather, "%d", m_byteWeather);
@@ -1265,7 +1268,7 @@ void CNetGame::SetGravity(float fGravity)
 	sprintf(szGravity, "%f", m_fGravity);
 
 	pConsole->SetStringVariable("gravity", szGravity);
-	GetRakServer()->RPC(&RPC_ScrSetGravity, &bsGravity, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	GetRakServer()->RPC(RPC_ScrSetGravity, &bsGravity, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 }
 
 //----------------------------------------------------
@@ -1391,9 +1394,9 @@ int CNetGame::AddSpawn(PLAYER_SPAWN_INFO *pSpawnInfo)
 
 void CNetGame::UpdateInstagib()
 {
-	/*RakNet::BitStream bsInstagib;
+	RakNet::BitStream bsInstagib;
 	bsInstagib.Write((BYTE)(pConsole->GetBoolVariable("instagib")?1:0));
-	GetRakServer()->RPC(&RPC_Instagib, &bsInstagib, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);*/
+	GetRakServer()->RPC(RPC_Instagib, &bsInstagib, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 }
 
 //----------------------------------------------------

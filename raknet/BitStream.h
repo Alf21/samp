@@ -67,7 +67,11 @@ namespace RakNet
 		/// \param[in] lengthInBytes Size of the \a _data.
 		/// \param[in] _copyData true or false to make a copy of \a _data or not.
 		BitStream( unsigned char* _data, unsigned int lengthInBytes, bool _copyData );
-		
+
+// SAMPSRV (adding this just as a tag for next RakNet upgrade)
+		BitStream( char* _dataC, unsigned int lengthInBytes, bool _copyData );
+// SAMPSRV end
+
 		/// Destructor 
 		~BitStream();
 		
@@ -1380,7 +1384,7 @@ namespace RakNet
 		if (cxNeg) x=-x;
 		if (cyNeg) y=-y;
 		if (czNeg) z=-z;
-		float difference = 1.0f - x*x - y*y - z*z;
+		float difference = 1.0 - x*x - y*y - z*z;
 		if (difference < 0.0f)
 			difference=0.0f;
 		w = (templateType)(sqrt(difference));

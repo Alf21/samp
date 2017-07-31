@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+    Version: $Id: vehiclepool.cpp,v 1.10 2006/04/12 19:26:45 mike Exp $
+
 */
 
 #include "main.h"
@@ -113,7 +118,7 @@ void CVehiclePool::SetVehicleVirtualWorld(VEHICLEID VehicleID, BYTE byteVirtualW
 	bsData.Write(VehicleID); // player id
 	bsData.Write(byteVirtualWorld); // vw id
 	RakServerInterface *pRak = pNetGame->GetRakServer();
-//	pRak->RPC(&RPC_ScrSetVehicleVirtualWorld , &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrSetVehicleVirtualWorld , &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 }
 	
 //----------------------------------------------------

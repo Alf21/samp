@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+    Version: $Id: netgame.h,v 1.26 2006/04/15 18:58:21 spookie Exp $
+
 */
 
 #ifndef SAMPSRV_NETGAME_H
@@ -133,7 +138,7 @@ public:
 						BOOL bBroadcastLocalRangeOnly = FALSE,
 						BOOL bAimSync = FALSE );
 
-	void BroadcastDistanceRPC( int *szUniqueID, 
+	void BroadcastDistanceRPC( char *szUniqueID, 
 							   RakNet::BitStream *bitStream,
 							   PacketReliability reliability,
 							   BYTE byteExcludedPlayer,

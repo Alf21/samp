@@ -16,7 +16,6 @@
 
 #include "RPCMap.h"
 #include <string.h>
-#include <stdio.h>
 
 RPCMap::RPCMap()
 {
@@ -34,6 +33,7 @@ void RPCMap::Clear(void)
 		node=rpcSet[i];
 		if (node)
 		{
+			delete [] node->uniqueIdentifier;
 			delete node;
 		}
 	}
@@ -45,7 +45,7 @@ RPCNode *RPCMap::GetNodeFromIndex(RPCIndex index)
 		return rpcSet[(unsigned)index];
 	return 0;
 }
-RPCNode *RPCMap::GetNodeFromFunctionName(int *uniqueIdentifier)
+RPCNode *RPCMap::GetNodeFromFunctionName(char *uniqueIdentifier)
 {
 	unsigned index;
 	index=(unsigned)GetIndexFromFunctionName(uniqueIdentifier);
@@ -53,19 +53,17 @@ RPCNode *RPCMap::GetNodeFromFunctionName(int *uniqueIdentifier)
 		return rpcSet[index];
 	return 0;
 }
-RPCIndex RPCMap::GetIndexFromFunctionName(int *uniqueIdentifier)
+RPCIndex RPCMap::GetIndexFromFunctionName(char *uniqueIdentifier)
 {
-	//if (*uniqueIdentifier > 0 && *uniqueIdentifier < 1000) 
-		//printf("%d\n", uniqueIdentifier);
 	unsigned index;
 	for (index=0; index < rpcSet.Size(); index++)
-		if (rpcSet[index] && (int *)rpcSet[index]->uniqueIdentifier == uniqueIdentifier)
+		if (rpcSet[index] && strcmp(rpcSet[index]->uniqueIdentifier, uniqueIdentifier)==0)
 			return (RPCIndex) index;
 	return UNDEFINED_RPC_INDEX;
 }
 
 // Called from the user thread for the local system
-void RPCMap::AddIdentifierWithFunction(int *uniqueIdentifier, void *functionPointer, bool isPointerToMember)
+void RPCMap::AddIdentifierWithFunction(char *uniqueIdentifier, void *functionPointer, bool isPointerToMember)
 {
 #ifdef _DEBUG
 	assert(rpcSet.Size()+1 < MAX_RPC_MAP_SIZE); // If this hits change the typedef of RPCIndex to use an unsigned short
@@ -82,13 +80,14 @@ void RPCMap::AddIdentifierWithFunction(int *uniqueIdentifier, void *functionPoin
 		// Trying to insert an identifier at any free slot and that identifier already exists
 		// The user should not insert nodes that already exist in the list
 #ifdef _DEBUG
-//		assert(0);
+		assert(0);
 #endif
 		return;
 	}
 
 	node = new RPCNode;
-	node->uniqueIdentifier = *uniqueIdentifier;
+	node->uniqueIdentifier = new char [strlen(uniqueIdentifier)+1];
+	strcpy(node->uniqueIdentifier, uniqueIdentifier);
 	node->functionPointer=functionPointer;
 	node->isPointerToMember=isPointerToMember;
 
@@ -105,16 +104,16 @@ void RPCMap::AddIdentifierWithFunction(int *uniqueIdentifier, void *functionPoin
 	rpcSet.Insert(node); // No empty spots available so just add to the end of the list
 
 }
-void RPCMap::AddIdentifierAtIndex(RPCIndex insertionIndex)
+void RPCMap::AddIdentifierAtIndex(char *uniqueIdentifier, RPCIndex insertionIndex)
 {
 #ifdef _DEBUG
-//	assert(uniqueIdentifier && uniqueIdentifier[0]);
+	assert(uniqueIdentifier && uniqueIdentifier[0]);
 #endif
 
 	unsigned existingNodeIndex;
 	RPCNode *node, *oldNode;
 
-	existingNodeIndex=GetIndexFromFunctionName((int *)insertionIndex);
+	existingNodeIndex=GetIndexFromFunctionName(uniqueIdentifier);
 
 	if (existingNodeIndex==insertionIndex)
 		return; // Already there
@@ -124,11 +123,13 @@ void RPCMap::AddIdentifierAtIndex(RPCIndex insertionIndex)
 		// Delete the existing one
 		oldNode=rpcSet[existingNodeIndex];
 		rpcSet[existingNodeIndex]=0;
+		delete [] oldNode->uniqueIdentifier;
 		delete oldNode;
 	}
 
 	node = new RPCNode;
-	node->uniqueIdentifier = insertionIndex;
+	node->uniqueIdentifier = new char [strlen(uniqueIdentifier)+1];
+	strcpy(node->uniqueIdentifier, uniqueIdentifier);
 	node->functionPointer=0;
 
 	// Insert at a user specified spot
@@ -138,6 +139,7 @@ void RPCMap::AddIdentifierAtIndex(RPCIndex insertionIndex)
 		oldNode=rpcSet[insertionIndex];
 		if (oldNode)
 		{
+			delete [] oldNode->uniqueIdentifier;
 			delete oldNode;
 		}
 		rpcSet[insertionIndex]=node;
@@ -149,7 +151,7 @@ void RPCMap::AddIdentifierAtIndex(RPCIndex insertionIndex)
 	}
 }
 
-void RPCMap::RemoveNode(int *uniqueIdentifier)
+void RPCMap::RemoveNode(char *uniqueIdentifier)
 {
 	unsigned index;
 	index=GetIndexFromFunctionName(uniqueIdentifier);
@@ -158,6 +160,7 @@ void RPCMap::RemoveNode(int *uniqueIdentifier)
 	#endif
 	RPCNode *node;
 	node = rpcSet[index];
+	delete [] node->uniqueIdentifier;
 	delete node;
 	rpcSet[index]=0;
 }

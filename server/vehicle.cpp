@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+    Version: $Id: vehicle.cpp,v 1.5 2006/05/07 15:35:32 kyeman Exp $
+
 */
 
 #include "main.h"
@@ -125,8 +130,8 @@ void CVehicle::SpawnForPlayer(BYTE byteForPlayerID)
 		bsVehicleSpawn.Write((PCHAR)&m_CarModInfo, sizeof(m_CarModInfo));
 	}
 
-	pNetGame->GetRakServer()->RPC(&RPC_WorldVehicleAdd ,&bsVehicleSpawn,HIGH_PRIORITY,RELIABLE,
-		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(byteForPlayerID),false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_VehicleSpawn ,&bsVehicleSpawn,HIGH_PRIORITY,RELIABLE,
+		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(byteForPlayerID),false,false);
 }
 
 //----------------------------------------------------------
@@ -239,8 +244,8 @@ void CVehicle::Respawn()
 				
 	RakNet::BitStream bsVehicle;
 	bsVehicle.Write(m_VehicleID);
-	pRak->RPC(&RPC_ScrRespawnVehicle , &bsVehicle, HIGH_PRIORITY, 
-		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrRespawnVehicle , &bsVehicle, HIGH_PRIORITY, 
+		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	
 	m_bDead = false;
 	m_bDeathHasBeenNotified = false;
@@ -261,7 +266,7 @@ void CVehicle::SetHealth(float fHealth)
 	RakNet::BitStream bsReturn;
 	bsReturn.Write(m_VehicleID);
 	bsReturn.Write(fHealth);
-	pNetGame->GetRakServer()->RPC(&RPC_ScrSetVehicleHealth , &bsReturn, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrSetVehicleHealth , &bsReturn, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 }
 
 //----------------------------------------------------------
@@ -272,7 +277,7 @@ void CVehicle::SetNumberPlate(PCHAR Plate)
 	RakNet::BitStream bsPlate;
 	bsPlate.Write(m_VehicleID);
 	bsPlate.Write(Plate, 9);
-	pNetGame->GetRakServer()->RPC(&RPC_ScrNumberPlate , &bsPlate, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrNumberPlate , &bsPlate, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 }
 
 //----------------------------------------------------------

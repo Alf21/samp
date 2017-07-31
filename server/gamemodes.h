@@ -1,5 +1,14 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+	file:
+		gamemodes.h
+	desc:
+		GameMode script functions and management header file. 
+
+	Version: $Id: gamemodes.h,v 1.12 2006/04/15 18:58:19 spookie Exp $
 */
 
 #ifndef SAMPSRV_GAMEMODES_H

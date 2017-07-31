@@ -1,7 +1,3 @@
-/*
-Leaked by ZYRONIX.net.
-*/
-
 #ifndef SAMPSRV_VEHMODS_H
 #define SAMPSRV_VEHMODS_H
 

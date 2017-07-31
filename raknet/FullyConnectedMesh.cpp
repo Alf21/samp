@@ -18,6 +18,7 @@
 #include "RakPeerInterface.h"
 #include "PacketEnumerations.h"
 #include "BitStream.h"
+#include "ConnectionGraph.h"
 #include <string.h>
 #include <assert.h>
 

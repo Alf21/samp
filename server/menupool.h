@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+SA:MP Multiplayer Modification
+Copyright 2004-2005 SA:MP Team
+
+Version: $Id: menupool.h,v 1.0 2007/02/13 19:26:45 Y_Less Exp $
+
 */
 
 #ifndef SAMPSRV_MENUPOOL_H

@@ -1,5 +1,15 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+	file:
+		system.h
+	desc:
+		System defines header file.
+
+    Version: $Id: system.h,v 1.6 2006/05/07 15:35:32 kyeman Exp $
+
 */
 
 #ifndef _SYSTEM_H

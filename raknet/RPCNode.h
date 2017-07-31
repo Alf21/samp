@@ -38,7 +38,7 @@ struct RAK_DLL_EXPORT RPCNode
 {
  
  	/// String identifier of the RPC
-	int uniqueIdentifier;
+	char *uniqueIdentifier;
 	
  /// Force casting of member functions to void *
 	union

@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+    Version: $Id: player.cpp,v 1.39 2006/05/07 15:35:32 kyeman Exp $
+
 */
 
 #include "main.h"
@@ -63,9 +68,6 @@ CPlayer::CPlayer()
 	m_fHealth = 0.0f;
 	m_fArmour = 0.0f;
 	m_fGameTime = 0.0f;
-	m_vecWaypointPos.X = 0.0f;
-	m_vecWaypointPos.Y = 0.0f;
-	m_vecWaypointPos.Z = 0.0f;
 	m_byteTime = 0;
 	m_byteWantedLevel = 0;
 	m_bCanTeleport = false;
@@ -78,8 +80,7 @@ CPlayer::CPlayer()
 	m_SpectateID = 0xFFFFFFFF;
 	m_iCurrentSkin = 0;
 	m_bUseCJWalk = false;
-	m_fMaxHealth = 100.0f;
-
+	
 	BYTE i;
 	for (i = 0; i < 13; i++)
 	{
@@ -188,8 +189,8 @@ void CPlayer::Process(float fElapsedTime)
 				bsPlayerTime.Write((BYTE)(iTime / 60));
 				bsPlayerTime.Write((BYTE)(iTime % 60));
 
-				pNetGame->GetRakServer()->RPC(&RPC_SetTimeEx,&bsPlayerTime,HIGH_PRIORITY,RELIABLE,
-					0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID),false, false, UNASSIGNED_NETWORK_ID, NULL);
+				pNetGame->GetRakServer()->RPC(RPC_SetTimeEx,&bsPlayerTime,HIGH_PRIORITY,RELIABLE,
+					0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID),false,false);
 			}
 		}
 	}
@@ -670,7 +671,7 @@ void CPlayer::StoreSpectatorFullSyncData(SPECTATOR_SYNC_DATA *pspSync)
 		bsSend.Write(m_bytePlayerID);
 		
 		RakServerInterface *pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrSetPlayerSpectating, &bsSend, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(m_bytePlayerID), true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrSetPlayerSpectating, &bsSend, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(m_bytePlayerID), true, false);
 	}
 	SetState(PLAYER_STATE_SPECTATING);
 }
@@ -702,19 +703,19 @@ void CPlayer::Say(unsigned char * szText, BYTE byteTextLen)
 			if((x != m_bytePlayerID) && pPlayerPool->GetSlotState(x)) {
 				fDist = pPlayerPool->GetDistanceFromPlayerToPlayer(m_bytePlayerID,(BYTE)x);
 				if(fDist <= fAllowedDist) {
-					pNetGame->GetRakServer()->RPC(&RPC_Chat,&bsSend,HIGH_PRIORITY,RELIABLE,0,
-						pNetGame->GetRakServer()->GetPlayerIDFromIndex(x),false, false, UNASSIGNED_NETWORK_ID, NULL);
+					pNetGame->GetRakServer()->RPC(RPC_Chat,&bsSend,HIGH_PRIORITY,RELIABLE,0,
+						pNetGame->GetRakServer()->GetPlayerIDFromIndex(x),false,false);
 				}
 			}
 			x++;
 		}
 
 		// send to the originating person
-		pNetGame->GetRakServer()->RPC(&RPC_Chat,&bsSend,HIGH_PRIORITY,RELIABLE,0,
-			pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID),false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_Chat,&bsSend,HIGH_PRIORITY,RELIABLE,0,
+			pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID),false,false);
 
 	} else {
-		pNetGame->GetRakServer()->RPC(&RPC_Chat,&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_PLAYER_ID,true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_Chat,&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_PLAYER_ID,true,false);
 	}
 }
 
@@ -722,7 +723,7 @@ void CPlayer::Say(unsigned char * szText, BYTE byteTextLen)
 
 void CPlayer::Privmsg(BYTE byteToPlayerID, unsigned char * szText, BYTE byteTextLen)
 {
-	/*PlayerID playerid = pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID);
+	PlayerID playerid = pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID);
 	PlayerID toplayerid = pNetGame->GetRakServer()->GetPlayerIDFromIndex(byteToPlayerID);
 	RakNet::BitStream bsSend;
 
@@ -731,8 +732,8 @@ void CPlayer::Privmsg(BYTE byteToPlayerID, unsigned char * szText, BYTE byteText
 	bsSend.Write(byteTextLen);
 	bsSend.Write((const char *)szText,byteTextLen);
 
-	pNetGame->GetRakServer()->RPC(&RPC_Privmsg,&bsSend,HIGH_PRIORITY,RELIABLE,0,playerid,false, false, UNASSIGNED_NETWORK_ID, NULL);
-	pNetGame->GetRakServer()->RPC(&RPC_Privmsg,&bsSend,HIGH_PRIORITY,RELIABLE,0,toplayerid,false, false, UNASSIGNED_NETWORK_ID, NULL);*/
+	pNetGame->GetRakServer()->RPC(RPC_Privmsg,&bsSend,HIGH_PRIORITY,RELIABLE,0,playerid,false,false);
+	pNetGame->GetRakServer()->RPC(RPC_Privmsg,&bsSend,HIGH_PRIORITY,RELIABLE,0,toplayerid,false,false);
 }
 
 //----------------------------------------------------
@@ -747,15 +748,15 @@ void CPlayer::TeamPrivmsg(unsigned char * szText, BYTE byteTextLen)
 	bsSend.Write((const char *)szText,byteTextLen);
 
 	CPlayerPool *pPlayerPool = pNetGame->GetPlayerPool();
-	/*
+	
 	for (int i=0; i<MAX_PLAYERS; i++) {
 		if(pPlayerPool->GetSlotState(i)) {
 			if(pPlayerPool->GetAt(m_bytePlayerID)->GetTeam() == pPlayerPool->GetAt(i)->GetTeam()) {
-				pNetGame->GetRakServer()->RPC(&RPC_TeamPrivmsg,&bsSend,HIGH_PRIORITY,RELIABLE,0,
-					pNetGame->GetRakServer()->GetPlayerIDFromIndex(i),false, false, UNASSIGNED_NETWORK_ID, NULL);
+				pNetGame->GetRakServer()->RPC(RPC_TeamPrivmsg,&bsSend,HIGH_PRIORITY,RELIABLE,0,
+					pNetGame->GetRakServer()->GetPlayerIDFromIndex(i),false,false);
 			}
 		}
-	}*/
+	}
 }
 
 //----------------------------------------------------
@@ -773,11 +774,8 @@ void CPlayer::HandleDeath(BYTE byteReason, BYTE byteWhoWasResponsible)
 
 	bsPlayerDeath.Write(m_bytePlayerID);
 
-	pNetGame->GetRakServer()->RPC(&RPC_Death,&bsPlayerDeath,
-		HIGH_PRIORITY,RELIABLE,0,playerid,true, false, UNASSIGNED_NETWORK_ID, NULL);
-
-	// Fix player stuck if animation was applied.
-	pNetGame->BroadcastDistanceRPC(&RPC_ScrClearAnimations, &bsPlayerDeath, UNRELIABLE, (BYTE)m_bytePlayerID, 200.0f);
+	pNetGame->GetRakServer()->RPC(RPC_Death,&bsPlayerDeath,
+		HIGH_PRIORITY,RELIABLE,0,playerid,true,false);
 
 	pNetGame->GetPlayerPool()->SetPlayerMoney(m_bytePlayerID, pNetGame->GetPlayerPool()->GetPlayerMoney(m_bytePlayerID) - pNetGame->m_iDeathDropMoney);
 
@@ -851,8 +849,8 @@ void CPlayer::SpawnForWorld(BYTE byteTeam, int iSkin, VECTOR * vecPos, float fRo
 	bsPlayerSpawn.Write(m_dwColor);
 	//bsPlayerSpawn.Write(m_byteShow);
 	
-	pNetGame->GetRakServer()->RPC(&RPC_Spawn,&bsPlayerSpawn,
-		HIGH_PRIORITY,RELIABLE,0,playerid,true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_Spawn,&bsPlayerSpawn,
+		HIGH_PRIORITY,RELIABLE,0,playerid,true,false);
 
 	SetState(PLAYER_STATE_SPAWNED);
 
@@ -880,8 +878,8 @@ void CPlayer::SpawnForPlayer(BYTE byteForPlayerID)
 	bsPlayerSpawn.Write(m_ofSync.fRotation);
 	bsPlayerSpawn.Write(m_dwColor);
 
-	pNetGame->GetRakServer()->RPC(&RPC_Spawn,&bsPlayerSpawn,HIGH_PRIORITY,RELIABLE,
-		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(byteForPlayerID),false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_Spawn,&bsPlayerSpawn,HIGH_PRIORITY,RELIABLE,
+		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(byteForPlayerID),false,false);
 }
 
 //----------------------------------------------------
@@ -892,14 +890,13 @@ void CPlayer::EnterVehicle(VEHICLEID VehicleID, BYTE bytePassenger)
 	RakNet::BitStream bsVehicle;
 	PlayerID playerid = pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID);
 
+	if (!pNetGame->GetVehiclePool()->GetSlotState(VehicleID)) return; // Attempted crash! Kill it!
 	
 	if(bytePassenger) {
 		SetState(PLAYER_STATE_ENTER_VEHICLE_PASSENGER);
 	} else {
 		SetState(PLAYER_STATE_ENTER_VEHICLE_DRIVER);
 	}
-
-	if (!pNetGame->GetVehiclePool()->GetSlotState(VehicleID)) return; // Script kiddie.
 	
 	pNetGame->GetFilterScripts()->OnPlayerEnterVehicle((cell)m_bytePlayerID, (cell)VehicleID, (cell)bytePassenger);
 	CGameMode *pGameMode = pNetGame->GetGameMode();
@@ -909,7 +906,7 @@ void CPlayer::EnterVehicle(VEHICLEID VehicleID, BYTE bytePassenger)
 	bsVehicle.Write(VehicleID);
 	bsVehicle.Write(bytePassenger);
 
-	pNetGame->GetRakServer()->RPC(&RPC_EnterVehicle,&bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_EnterVehicle,&bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,0,playerid,true,false);
 }
 
 //----------------------------------------------------
@@ -920,9 +917,8 @@ void CPlayer::ExitVehicle(VEHICLEID VehicleID)
 	RakNet::BitStream bsVehicle;
 	PlayerID playerid = pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID);
 
+	if (!pNetGame->GetVehiclePool()->GetSlotState(VehicleID)) return; // Attempted crash! Kill it!
 	SetState(PLAYER_STATE_EXIT_VEHICLE);
-
-	if (!pNetGame->GetVehiclePool()->GetSlotState(VehicleID)) return; // Script kiddie.
 
 	pNetGame->GetFilterScripts()->OnPlayerExitVehicle((cell)m_bytePlayerID, (cell)VehicleID);
 	CGameMode *pGameMode = pNetGame->GetGameMode();
@@ -931,8 +927,8 @@ void CPlayer::ExitVehicle(VEHICLEID VehicleID)
 	bsVehicle.Write(m_bytePlayerID);
 	bsVehicle.Write(VehicleID);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ExitVehicle,&bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,
-		0,playerid,true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ExitVehicle,&bsVehicle,HIGH_PRIORITY,RELIABLE_ORDERED,
+		0,playerid,true,false);
 }
 
 //----------------------------------------------------
@@ -946,8 +942,8 @@ void CPlayer::SetPlayerColor(DWORD dwColor)
 	bsColor.Write(m_bytePlayerID);
 	bsColor.Write(dwColor);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ScrSetPlayerColor,&bsColor,HIGH_PRIORITY,RELIABLE,
-		0,UNASSIGNED_PLAYER_ID,true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrSetPlayerColor,&bsColor,HIGH_PRIORITY,RELIABLE,
+		0,UNASSIGNED_PLAYER_ID,true,false);
 }
 
 //----------------------------------------------------
@@ -979,11 +975,11 @@ void CPlayer::ToggleCheckpoint(BOOL bEnabled)
 		bsParams.Write(m_vecCheckpoint.Y);
 		bsParams.Write(m_vecCheckpoint.Z);
 		bsParams.Write(m_fCheckpointSize);
-		pRak->RPC(&RPC_SetCheckpoint, &bsParams, HIGH_PRIORITY, RELIABLE, 0,
-			pRak->GetPlayerIDFromIndex(m_bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_SetCheckpoint, &bsParams, HIGH_PRIORITY, RELIABLE, 0,
+			pRak->GetPlayerIDFromIndex(m_bytePlayerID), false, false);
 	} else {
-		pRak->RPC(&RPC_DisableCheckpoint, &bsParams, HIGH_PRIORITY, RELIABLE, 0,
-			pRak->GetPlayerIDFromIndex(m_bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_DisableCheckpoint, &bsParams, HIGH_PRIORITY, RELIABLE, 0,
+			pRak->GetPlayerIDFromIndex(m_bytePlayerID), false, false);
 	}
 }
 
@@ -1051,11 +1047,11 @@ void CPlayer::ToggleRaceCheckpoint(BOOL bEnabled)
 		bsParams.Write(m_vecRaceNextCheckpoint.Y);
 		bsParams.Write(m_vecRaceNextCheckpoint.Z);
 		bsParams.Write(m_fRaceCheckpointSize);
-		pRak->RPC(&RPC_SetRaceCheckpoint, &bsParams, HIGH_PRIORITY, RELIABLE, 0,
-			pRak->GetPlayerIDFromIndex(m_bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_SetRaceCheckpoint, &bsParams, HIGH_PRIORITY, RELIABLE, 0,
+			pRak->GetPlayerIDFromIndex(m_bytePlayerID), false, false);
 	} else {
-		pRak->RPC(&RPC_DisableRaceCheckpoint, &bsParams, HIGH_PRIORITY, RELIABLE, 0,
-			pRak->GetPlayerIDFromIndex(m_bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_DisableRaceCheckpoint, &bsParams, HIGH_PRIORITY, RELIABLE, 0,
+			pRak->GetPlayerIDFromIndex(m_bytePlayerID), false, false);
 	}
 }
 
@@ -1069,8 +1065,8 @@ void CPlayer::SetTime(BYTE byteHour, BYTE byteMinute)
 	bsPlayerTime.Write(byteHour);
 	bsPlayerTime.Write(byteMinute);
 
-	pNetGame->GetRakServer()->RPC(&RPC_SetTimeEx,&bsPlayerTime,HIGH_PRIORITY,RELIABLE,
-		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID),false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_SetTimeEx,&bsPlayerTime,HIGH_PRIORITY,RELIABLE,
+		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID),false,false);
 
 	m_fGameTime = (float)((byteHour * 60) + byteMinute); // Save server representation
 
@@ -1086,8 +1082,8 @@ void CPlayer::SetClock(BYTE byteClock)
 
 	bsPlayerClock.Write(byteClock);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ToggleClock,&bsPlayerClock,HIGH_PRIORITY,RELIABLE,
-		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID),false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ToggleClock,&bsPlayerClock,HIGH_PRIORITY,RELIABLE,
+		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID),false,false);
 	
 }
 
@@ -1107,12 +1103,4 @@ void CPlayer::CheckKeyUpdatesForScript(WORD wKeys)
 }
 
 //----------------------------------------------------
-
-void CPlayer::SetMaxHealth(float max_health) {
-	m_fMaxHealth = max_health;
-	RakNet::BitStream bsData;
-	bsData.Write(max_health);
-	pNetGame->GetRakServer()->RPC(&RPC_ScrSetPlayerMaxHealth, &bsData, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
-}
-
 // EOF

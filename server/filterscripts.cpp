@@ -1,5 +1,13 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2006 SA:MP Team
+
+	file:
+		filterscripts.cpp
+	desc:
+		FilterScript Event Executive.
+
 */
 
 #include "main.h"
@@ -141,6 +149,8 @@ bool CFilterScripts::LoadFilterScriptFromMemory(char* pFileName, char* pFileData
 	if (!amx_FindPublic(amx, "OnFilterScriptInit", &tmp))
 		amx_Exec(amx, (cell*)&tmp, tmp);
 		
+	strcpy(m_szFilterScriptName[iSlot], pFileName);
+
 	if (pNetGame->GetPlayerPool()) {
 		for (int i = 0; i <= pNetGame->GetPlayerPool()->GetPlayerPoolCount(); i++) {
 			if (!amx_FindPublic(m_pFilterScripts[i], "OnPlayerConnect", &tmp))
@@ -150,8 +160,6 @@ bool CFilterScripts::LoadFilterScriptFromMemory(char* pFileName, char* pFileData
 			}
 		}
 	}
-	strcpy(m_szFilterScriptName[iSlot], pFileName);
-
 	m_iFilterScriptCount++;
 
 	return true;
@@ -1090,7 +1098,6 @@ int CFilterScripts::OnVehiclePaintjob(cell playerid, cell vehicleid, cell paintj
 
 //----------------------------------------------------------------------------------
 // forward OnPlayerClickMap(playerid, Float:fX, Float:fY, Float:fZ)
-
 int CFilterScripts::OnPlayerClickMap(cell playerid, float x, float y, float z) {
 	int idx;
 	cell ret = 1;
@@ -1102,10 +1109,14 @@ int CFilterScripts::OnPlayerClickMap(cell playerid, float x, float y, float z) {
 				amx_Push(m_pFilterScripts[i], amx_ftoc(x));
 				amx_Push(m_pFilterScripts[i], playerid);
 				amx_Exec(m_pFilterScripts[i], &ret, idx);
+				
 			}
+			
 		}
+		
 	}
 	return (int)ret;
+	
 }
 
 //----------------------------------------------------------------------------------

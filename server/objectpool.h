@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+SA:MP Multiplayer Modification
+Copyright 2004-2005 SA:MP Team
+
+Version: $Id: vehiclepool.h,v 1.8 2006/04/12 19:26:45 mike Exp $
+
 */
 
 #ifndef SAMPSRV_OBJECTPOOL_H

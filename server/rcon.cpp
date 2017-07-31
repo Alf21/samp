@@ -1,7 +1,9 @@
 /*
-Leaked by ZYRONIX.net.
-*/
 
+SA:MP Multiplayer Modification
+Copyright 2004-2005 SA:MP Team
+
+*/
 #include "main.h"
 #ifdef RAKRCON
 #include "rcon.h"
@@ -85,7 +87,7 @@ void CRcon::Packet_NewIncomingConnection(Packet* pPacket)
 	bsSend.Write( byteHostnameLength );
 	bsSend.Write( szHostname, byteHostnameLength );
 
-	m_pRakServer->RPC( RPC_RconConnect,&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_PLAYER_ID,true, false, UNASSIGNED_NETWORK_ID, NULL);
+	m_pRakServer->RPC( RPC_RconConnect,&bsSend,HIGH_PRIORITY,RELIABLE,0,UNASSIGNED_PLAYER_ID,true,false);
 	bsSend.Reset();
 
 	for( int i = 0; i < MAX_PLAYERS; i++ )
@@ -159,7 +161,7 @@ void CRcon::SendEventString(char *szString)
 	RakNet::BitStream bsRconSend;
 	bsRconSend.Write(byteLen);
 	bsRconSend.Write(szString, byteLen);
-	pRcon->GetRakServer()->RPC(&RPC_RconEvent, &bsRconSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRcon->GetRakServer()->RPC(RPC_RconEvent, &bsRconSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 }
 
 void CRcon::RegisterRPCs(RakServerInterface *pRakServer)
@@ -170,8 +172,8 @@ void CRcon::RegisterRPCs(RakServerInterface *pRakServer)
 
 void CRcon::UnregisterRPCs(RakServerInterface *pRakServer)
 {
-	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_RconConnect);
-	pRakServer->UnregisterAsRemoteProcedureCall(&RPC_RconCommand);
+	UNREGISTER_STATIC_RPC(pRakServer, RconConnect);
+	UNREGISTER_STATIC_RPC(pRakServer, RconCommand);
 }
 
 #endif

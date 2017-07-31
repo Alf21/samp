@@ -1,6 +1,9 @@
-/*
-Leaked by ZYRONIX.net.
-*/
+//-----------------------------------------
+// SAMP Server Plugins - Public Keys
+//
+// This file was automatically generated.
+// Do not modify this file!
+//-----------------------------------------
 
 #ifndef _PLUGINKEY_H_INCLUDED
 #define _PLUGINKEY_H_INCLUDED

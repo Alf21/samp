@@ -18,8 +18,6 @@
 #include "PacketEnumerations.h"
 #include "GetTime.h"
 
-#include "main.h"
-
 #ifdef _MSC_VER
 #pragma warning( push )
 #endif
@@ -115,7 +113,7 @@ bool RakClient::Send( RakNet::BitStream * bitStream, PacketPriority priority, Pa
 Packet* RakClient::Receive( void )
 {
 	Packet * packet = RakPeer::Receive();
-
+	
 	// Intercept specific client / server feature packets
 	
 	if ( packet )
@@ -230,6 +228,8 @@ Packet* RakClient::Receive( void )
 		if ( packet->data[ 0 ] == ID_TIMESTAMP &&
 			packet->length == sizeof(unsigned char)+sizeof(unsigned int)+sizeof(unsigned char)+sizeof(unsigned int)+sizeof(unsigned int) )
 		{
+			
+
 			RakNet::BitStream inBitStream(packet->data, packet->length, false);
 		
 			RakNetTime timeStamp;
@@ -350,22 +350,22 @@ bool RakClient::DeleteCompressionLayer( bool inputLayer )
 	return RakPeer::DeleteCompressionLayer( inputLayer );
 }
 
-void RakClient::RegisterAsRemoteProcedureCall( int* uniqueID, void ( *functionPointer ) ( RPCParameters *rpcParms ) )
+void RakClient::RegisterAsRemoteProcedureCall( char* uniqueID, void ( *functionPointer ) ( RPCParameters *rpcParms ) )
 {
 	RakPeer::RegisterAsRemoteProcedureCall( uniqueID, functionPointer );
 }
 
-void RakClient::RegisterClassMemberRPC( int* uniqueID, void *functionPointer )
+void RakClient::RegisterClassMemberRPC( char* uniqueID, void *functionPointer )
 {
 	RakPeer::RegisterClassMemberRPC( uniqueID, functionPointer );
 }
 
-void RakClient::UnregisterAsRemoteProcedureCall( int* uniqueID )
+void RakClient::UnregisterAsRemoteProcedureCall( char* uniqueID )
 {
 	RakPeer::UnregisterAsRemoteProcedureCall( uniqueID );
 }
 
-bool RakClient::RPC( int* uniqueID, const char *data, unsigned int bitLength, PacketPriority priority, PacketReliability reliability, char orderingChannel, bool shiftTimestamp, NetworkID networkID, RakNet::BitStream *replyFromTarget )
+bool RakClient::RPC( char* uniqueID, const char *data, unsigned int bitLength, PacketPriority priority, PacketReliability reliability, char orderingChannel, bool shiftTimestamp, NetworkID networkID, RakNet::BitStream *replyFromTarget )
 {
 	if ( remoteSystemList == 0 )
 		return false;
@@ -373,13 +373,23 @@ bool RakClient::RPC( int* uniqueID, const char *data, unsigned int bitLength, Pa
 	return RakPeer::RPC( uniqueID, data, bitLength, priority, reliability, orderingChannel, remoteSystemList[ 0 ].playerId, false, shiftTimestamp, networkID, replyFromTarget );
 }
 
-bool RakClient::RPC( int* uniqueID, RakNet::BitStream *parameters, PacketPriority priority, PacketReliability reliability, char orderingChannel, bool shiftTimestamp, NetworkID networkID, RakNet::BitStream *replyFromTarget )
+bool RakClient::RPC( char* uniqueID, RakNet::BitStream *parameters, PacketPriority priority, PacketReliability reliability, char orderingChannel, bool shiftTimestamp, NetworkID networkID, RakNet::BitStream *replyFromTarget )
 {
 	if ( remoteSystemList == 0 )
 		return false;
 		
 	return RakPeer::RPC( uniqueID, parameters, priority, reliability, orderingChannel, remoteSystemList[ 0 ].playerId, false, shiftTimestamp, networkID, replyFromTarget );
 }
+
+// SAMPSRV (adding this just as a tag for next RakNet upgrade)
+bool RakClient::RPC( char* uniqueID, RakNet::BitStream *parameters, PacketPriority priority, PacketReliability reliability, char orderingChannel, bool shiftTimestamp )
+{
+	if ( remoteSystemList == 0 )
+		return false;
+		
+	return RakPeer::RPC( uniqueID, parameters, priority, reliability, orderingChannel, remoteSystemList[ 0 ].playerId, false, shiftTimestamp, UNASSIGNED_NETWORK_ID, 0 );
+}
+// SAMPSRV end
 
 void RakClient::SetTrackFrequencyTable( bool b )
 {

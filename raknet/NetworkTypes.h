@@ -21,6 +21,9 @@
 #include "RakNetDefines.h"
 #include "Export.h"
 
+#pragma pack(push)
+#pragma pack(1)
+
 /// Forward declaration
 namespace RakNet
 {
@@ -213,7 +216,7 @@ const int PING_TIMES_ARRAY_SIZE = 5;
 /// \attention 12/01/05 REGISTER_AS_REMOTE_PROCEDURE_CALL renamed to REGISTER_STATIC_RPC.  Delete the old name sometime in the future
 //#pragma deprecated(REGISTER_AS_REMOTE_PROCEDURE_CALL)
 //#define REGISTER_AS_REMOTE_PROCEDURE_CALL(networkObject, functionName) REGISTER_STATIC_RPC(networkObject, functionName)
-#define REGISTER_STATIC_RPC(networkObject, functionName) (networkObject)->RegisterAsRemoteProcedureCall((#functionName),(functionName))
+#define REGISTER_STATIC_RPC(networkObject, functionName) (networkObject)->RegisterAsRemoteProcedureCall((RPC_##functionName),(functionName))
 
 /// \def CLASS_MEMBER_ID
 /// \ingroup RAKNET_RPC
@@ -245,7 +248,7 @@ const int PING_TIMES_ARRAY_SIZE = 5;
 // 12/01/05 UNREGISTER_AS_REMOTE_PROCEDURE_CALL Renamed to UNREGISTER_STATIC_RPC.  Delete the old name sometime in the future
 //#pragma deprecated(UNREGISTER_AS_REMOTE_PROCEDURE_CALL)
 //#define UNREGISTER_AS_REMOTE_PROCEDURE_CALL(networkObject,functionName) UNREGISTER_STATIC_RPC(networkObject,functionName)
-#define UNREGISTER_STATIC_RPC(networkObject,functionName) (networkObject)->UnregisterAsRemoteProcedureCall((#functionName))
+#define UNREGISTER_STATIC_RPC(networkObject,functionName) (networkObject)->UnregisterAsRemoteProcedureCall((RPC_##functionName))
 
 /// \def UNREGISTER_CLASS_INST_RPC
 /// \ingroup RAKNET_RPC
@@ -254,6 +257,8 @@ const int PING_TIMES_ARRAY_SIZE = 5;
 /// \param[in] className The className that was originally passed to REGISTER_AS_REMOTE_PROCEDURE_CALL
 /// \param[in] functionName The function name
 #define UNREGISTER_CLASS_MEMBER_RPC(networkObject, className, functionName) (networkObject)->UnregisterAsRemoteProcedureCall((#className "_" #functionName))
+
+#pragma pack(pop)
 
 #endif
 

@@ -31,13 +31,13 @@
 /// \li \em 1400. Maximum size for AOL DSL.
 /// \li \em 576. Typical value to connect to dial-up ISPs.
 #ifdef _COMPATIBILITY_1
-#define DEFAULT_MTU_SIZE 1264
+#define DEFAULT_MTU_SIZE 576
 #else
-#define DEFAULT_MTU_SIZE 1500
+#define DEFAULT_MTU_SIZE 576
 #endif
 
 /// The largest value for an UDP datagram
-/// \sa RakPeer::SetMTUSize()
+/// \sa RakPeer::SetMTUSize() //
 #define MAXIMUM_MTU_SIZE 576
 
 #endif

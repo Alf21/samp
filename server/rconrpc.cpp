@@ -1,7 +1,9 @@
 /*
-Leaked by ZYRONIX.net.
-*/
 
+SA:MP Multiplayer Modification
+Copyright 2004-2005 SA:MP Team
+
+*/
 #include "main.h"
 #ifdef RAKRCON
 
@@ -12,7 +14,7 @@ extern CRcon *pRcon;
 
 void RconConnect(RPCParameters *rpcParams)
 {
-	
+	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
@@ -21,13 +23,13 @@ void RconConnect(RPCParameters *rpcParams)
 
 void RconCommand(RPCParameters *rpcParams)
 {
-	
+	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
 	int iBitLength = rpcParams->numberOfBitsOfData;
 	PlayerID sender = rpcParams->sender;
 
 	BYTE byteLength;
 	char szCommand[256];
-	RakNet::BitStream bsData(rpcParams->input, (iBitLength/8)+1, false);
+	RakNet::BitStream bsData(Data, (iBitLength/8)+1, false);
 	bsData.Read(byteLength);
 	bsData.Read(szCommand, byteLength);
 	szCommand[byteLength] = '\0';

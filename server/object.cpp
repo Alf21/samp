@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+SA:MP Multiplayer Modification
+Copyright 2004-2005 SA:MP Team
+
+Version: $Id: vehicle.cpp,v 1.5 2006/05/07 15:35:32 kyeman Exp $
+
 */
 
 #include "main.h"
@@ -46,8 +51,8 @@ void CObject::SpawnForPlayer(BYTE byteForPlayerID)
 	
 	//printf("player: %d, id: %d, model: %d, others: %.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", byteForPlayerID, m_byteObjectID, m_iModel, m_matWorld.pos.X, m_matWorld.pos.Y, m_matWorld.pos.Z, m_matWorld.up.X, m_matWorld.up.Y, m_matWorld.up.Z);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ScrCreateObject,&bsObjectSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,
-		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(byteForPlayerID),false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrCreateObject,&bsObjectSpawn,HIGH_PRIORITY,RELIABLE_ORDERED,
+		0,pNetGame->GetRakServer()->GetPlayerIDFromIndex(byteForPlayerID),false,false);
 }
 
 int CObject::Process(float fElapsedTime)

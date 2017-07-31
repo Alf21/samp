@@ -1,7 +1,12 @@
 #pragma once
 
 /*
-Leaked by ZYRONIX.net.
+
+SA:MP Multiplayer Modification
+Copyright 2004-2005 SA:MP Team
+
+Version: $Id: textdrawpool.h,v 1.0 2007/05/18 19:26:45 Y_Less Exp $
+
 */
 
 #define MAX_TEXT_DRAW_LINE 256

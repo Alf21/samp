@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+    Version: $Id: playerpool.cpp,v 1.19 2006/05/07 15:35:32 kyeman Exp $
+
 */
 
 #include "main.h"
@@ -26,7 +31,7 @@ CPlayerPool::~CPlayerPool()
 		Delete(bytePlayerID,0);
 	}
 	m_iPlayerCount = 0;
-	m_iPlayerPoolCount = -1;
+	m_iPlayerCount = -1;
 }
 
 //----------------------------------------------------
@@ -42,13 +47,12 @@ BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName)
 	{
 		strcpy(m_szPlayerName[bytePlayerID],szPlayerName);
 		m_pPlayers[bytePlayerID]->SetID(bytePlayerID);
-		m_pPlayers[bytePlayerID]->m_bUseCJWalk = pNetGame->m_bUseCJWalk;
 		m_bPlayerSlotState[bytePlayerID] = TRUE;
 		m_iPlayerScore[bytePlayerID] = 0;
 		m_iPlayerMoney[bytePlayerID] = 0;
 		m_bIsAnAdmin[bytePlayerID] = FALSE;
 		m_byteVirtualWorld[bytePlayerID] = 0;
-		
+
 		// Notify all the other players of a newcommer with
 		// a 'ServerJoin' join RPC 
 		RakNet::BitStream bsSend;
@@ -57,8 +61,8 @@ BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName)
 		bsSend.Write(namelen);
 		bsSend.Write(szPlayerName,namelen);
 
-		pNetGame->GetRakServer()->RPC(&RPC_ServerJoin ,&bsSend,HIGH_PRIORITY,RELIABLE,0,
-			pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ServerJoin ,&bsSend,HIGH_PRIORITY,RELIABLE,0,
+			pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),true,false);
 
 		RakServerInterface* pRak = pNetGame->GetRakServer();
 		PlayerID Player = pRak->GetPlayerIDFromIndex(bytePlayerID);
@@ -83,8 +87,7 @@ BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName)
 		}
 		
 		m_iPlayerCount++;
-		
-		if (bytePlayerID > m_iPlayerPoolCount) m_iPlayerPoolCount = bytePlayerID;
+		if (bytePlayerID > m_iPlayerPoolCount) m_iPlayerCount = bytePlayerID;
 
 		return TRUE;
 	}
@@ -118,8 +121,8 @@ BOOL CPlayerPool::Delete(BYTE bytePlayerID, BYTE byteReason)
 	RakNet::BitStream bsSend;
 	bsSend.Write(bytePlayerID);
 	bsSend.Write(byteReason);
-	pNetGame->GetRakServer()->RPC(&RPC_ServerQuit ,&bsSend,HIGH_PRIORITY,RELIABLE,0,
-		pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ServerQuit ,&bsSend,HIGH_PRIORITY,RELIABLE,0,
+		pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),true,false);
 		
 	CObjectPool* pObjectPool = pNetGame->GetObjectPool();
 	for (BYTE i = 0; i < MAX_OBJECTS; i++)
@@ -128,23 +131,22 @@ BOOL CPlayerPool::Delete(BYTE bytePlayerID, BYTE byteReason)
 		pObjectPool->DeleteForPlayer(bytePlayerID, i);
 	}
 
-	if (bytePlayerID == m_iPlayerPoolCount) {
-		m_iPlayerPoolCount = -1;
-		for (int x = 0; x < MAX_PLAYERS; x++) {
-			if (GetSlotState(x) && m_iPlayerPoolCount < x) {
-				m_iPlayerPoolCount = x;
-			}
-		}
-	}
 	logprintf("[part] %s has left the server (%u:%u)",m_szPlayerName[bytePlayerID],bytePlayerID,byteReason);
 
 #ifdef RAKRCON
 	pRcon->GetRakServer()->RPC( RPC_ServerQuit, &bsSend, HIGH_PRIORITY, RELIABLE, 0,
-		UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		UNASSIGNED_PLAYER_ID, true, false);
 #endif
 
 	m_iPlayerCount--;
-
+	if (bytePlayerID == m_iPlayerPoolCount) {
+		int old_pool = m_iPlayerPoolCount;
+		m_iPlayerPoolCount = -1;
+		for (int x = 0; x < old_pool; x++) {
+			if (GetSlotState(x) && x > m_iPlayerPoolCount)
+				m_iPlayerPoolCount = x;
+		}
+	}
 	return TRUE;
 }
 
@@ -185,7 +187,7 @@ void CPlayerPool::InitPlayersForPlayer(BYTE bytePlayerID)
 			bsExistingClient.Write(namelen);
 			bsExistingClient.Write(GetPlayerName(lp),namelen);
 
-			pNetGame->GetRakServer()->RPC(&RPC_ServerJoin,&bsExistingClient,HIGH_PRIORITY,RELIABLE,0,Player,false, false, UNASSIGNED_NETWORK_ID, NULL);
+			pNetGame->GetRakServer()->RPC(RPC_ServerJoin,&bsExistingClient,HIGH_PRIORITY,RELIABLE,0,Player,false,false);
 			bsExistingClient.Reset();
 			
 			// Send all the VW data in one lump
@@ -197,7 +199,7 @@ void CPlayerPool::InitPlayersForPlayer(BYTE bytePlayerID)
 	}
 	if (send)
 	{
-//		pRak->RPC(&RPC_ScrSetPlayerVirtualWorld , &bsPlayerVW, HIGH_PRIORITY, RELIABLE, 0, Player, false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrSetPlayerVirtualWorld , &bsPlayerVW, HIGH_PRIORITY, RELIABLE, 0, Player, false, false);
 	}
 }
 
@@ -337,7 +339,7 @@ void CPlayerPool::SetPlayerVirtualWorld(BYTE bytePlayerID, BYTE byteVirtualWorld
 	bsData.Write(bytePlayerID); // player id
 	bsData.Write(byteVirtualWorld); // vw id
 	RakServerInterface *pRak = pNetGame->GetRakServer();
-//	pRak->RPC(&RPC_ScrSetPlayerVirtualWorld , &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrSetPlayerVirtualWorld , &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 }
 	
 //----------------------------------------------------

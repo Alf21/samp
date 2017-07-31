@@ -1,6 +1,13 @@
-/*
-Leaked by ZYRONIX.net.
-*/
+//----------------------------------------------------
+//
+//	HTTP/1.0 Client Procedures.
+//	(c) 2002-2005 Kye Bitossi
+//
+//  Basic web document fetcher.
+//
+//  Version: $Id: httpclient.cpp,v 1.2 2006/03/20 17:44:19 kyeman Exp $
+//
+//----------------------------------------------------
 
 #include <stdio.h>
 #include <string.h>

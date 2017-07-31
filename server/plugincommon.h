@@ -1,6 +1,9 @@
-/*
-Leaked by ZYRONIX.net.
-*/
+//----------------------------------------------------------
+//
+//   SA:MP Multiplayer Modification For GTA:SA
+//   Copyright 2004-2007 SA:MP Team
+//
+//----------------------------------------------------------
 
 #ifndef _PLUGINCOMMON_H_INCLUDED
 #define _PLUGINCOMMON_H_INCLUDED

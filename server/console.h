@@ -1,5 +1,15 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+	file:
+		console.h
+	desc:
+		Console command and variable system header file.
+
+    Version: $Id: console.h,v 1.6 2006/03/20 17:59:34 kyeman Exp $
+
 */
 
 #ifndef SAMPSRV_CONSOLE_H

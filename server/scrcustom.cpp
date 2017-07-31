@@ -1,5 +1,15 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+	file:
+		scrcore.cpp
+	desc:
+		Scripting custom functions
+
+    Version: $Id: scrcustom.cpp,v 1.60 2006/05/20 08:28:04 kyeman Exp $
+
 */
 
 #include "main.h"
@@ -9,23 +19,6 @@ Leaked by ZYRONIX.net.
 char* format_amxstring(AMX *amx, cell *params, int parm, int &len);
 int set_amxstring(AMX *amx,cell amx_addr,const char *source,int max);
 bool ContainsInvalidNickChars(PCHAR szString);
-int GetVehicleComponentType(int componentid);
-
-#define CARMODTYPE_SPOILER 0
-#define CARMODTYPE_HOOD 1
-#define CARMODTYPE_ROOF 2
-#define CARMODTYPE_SIDESKIRT 3
-#define CARMODTYPE_LAMPS 4
-#define CARMODTYPE_NITRO 5
-#define CARMODTYPE_EXHAUST 6
-#define CARMODTYPE_WHEELS 7
-#define CARMODTYPE_STEREO 8
-#define CARMODTYPE_HYDRAULICS 9 
-#define CARMODTYPE_FRONT_BUMPER 10
-#define CARMODTYPE_REAR_BUMPER 11
-#define CARMODTYPE_VENT_RIGHT 12
-#define CARMODTYPE_VENT_LEFT 13
-
 
 extern BOOL bGameModeFinished;
 extern CNetGame* pNetGame;
@@ -163,8 +156,8 @@ static cell AMX_NATIVE_CALL n_SetVehicleToRespawn(AMX *amx, cell *params)
 		pVehicle->Respawn();
 		RakNet::BitStream bsVehicle;
 		bsVehicle.Write((VEHICLEID)params[1]);
-		pNetGame->GetRakServer()->RPC(&RPC_ScrRespawnVehicle , &bsVehicle, HIGH_PRIORITY, 
-			RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrRespawnVehicle , &bsVehicle, HIGH_PRIORITY, 
+			RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 		return 1;
 	}
 	
@@ -187,8 +180,8 @@ static cell AMX_NATIVE_CALL n_LinkVehicleToInterior(AMX *amx, cell *params)
 		bsData.Write((BYTE)params[2]);
 
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrLinkVehicle , &bsData, HIGH_PRIORITY, 
-			RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrLinkVehicle , &bsData, HIGH_PRIORITY, 
+			RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 		return 1;
 	}
 	return 0;
@@ -212,8 +205,8 @@ static cell AMX_NATIVE_CALL n_AddVehicleComponent(AMX *amx, cell *params)
 	bsData.Write((DWORD)0);
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScmEvent , &bsData, HIGH_PRIORITY, 
-		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScmEvent , &bsData, HIGH_PRIORITY, 
+		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 
 	BYTE*	pDataStart	= (BYTE*)&pVehicle->m_CarModInfo.byteCarMod0;
 	for(int i = 0; i < 14; i++)
@@ -245,8 +238,8 @@ static cell AMX_NATIVE_CALL n_RemoveVehicleComponent(AMX *amx, cell *params)
 	bsData.Write((DWORD)params[2]);
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScrRemoveComponent , &bsData, HIGH_PRIORITY, 
-		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrRemoveComponent , &bsData, HIGH_PRIORITY, 
+		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 
 	BYTE*	pDataStart	= (BYTE*)&pVehicle->m_CarModInfo.byteCarMod0;
 	BYTE	byteComp = (BYTE)(params[2]-1000);
@@ -261,30 +254,6 @@ static cell AMX_NATIVE_CALL n_RemoveVehicleComponent(AMX *amx, cell *params)
 	}
 
 	return 1;
-}
-
-//----------------------------------------------------------------------------------
-// native GetVehicleComponentType(component);
-static cell AMX_NATIVE_CALL n_GetVehicleComponentType(AMX *amx, cell *params) {
-	return GetVehicleComponentType(params[1]);
-}
-
-//----------------------------------------------------------------------------------
-// native GetVehicleComponentInSlot(vehicleid, slot);
-static cell AMX_NATIVE_CALL n_GetVehicleComponentInSlot(AMX *amx, cell *params) {
-
-	CVehicle* pVehicle = pNetGame->GetVehiclePool()->GetAt((VEHICLEID)params[1]);
-	if (!pVehicle)
-		return 0;
-
-	BYTE*	pDataStart = (BYTE*)&pVehicle->m_CarModInfo.byteCarMod0;
-	BYTE	byteComp = (BYTE)(params[2] - 1000);
-	for (int i = 0; i < 14; i++)
-	{
-		DWORD data = pDataStart[i];
-		if (params[2] == GetVehicleComponentType(data + 1000)) return data + 1000;
-	}
-	return 0;
 }
 
 //----------------------------------------------------------------------------------
@@ -306,8 +275,8 @@ static cell AMX_NATIVE_CALL n_ChangeVehicleColor(AMX *amx, cell *params)
 	bsData.Write((DWORD)params[3]);
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScmEvent , &bsData, HIGH_PRIORITY, 
-		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScmEvent , &bsData, HIGH_PRIORITY, 
+		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 
 	pVehicle->m_CarModInfo.iColor0 = (int)params[2];
 	pVehicle->m_CarModInfo.iColor1 = (int)params[3];
@@ -333,9 +302,8 @@ static cell AMX_NATIVE_CALL n_ChangeVehiclePaintjob(AMX *amx, cell *params)
 	bsData.Write((DWORD)0);
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScmEvent , &bsData, HIGH_PRIORITY, 
-		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
-
+	pRak->RPC(RPC_ScmEvent , &bsData, HIGH_PRIORITY, 
+		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 
 	pVehicle->m_CarModInfo.bytePaintJob = (BYTE)params[2];
 
@@ -424,29 +392,6 @@ static cell AMX_NATIVE_CALL n_DestroyPickup(AMX *amx, cell *params)
 }
 
 //----------------------------------------------------------------------------------
-// native CreatePlayerPickup(playerid, model, type, Float:X, Float:Y, Float:Z);
-
-static cell AMX_NATIVE_CALL n_CreatePlayerPickup(AMX *amx, cell *params)
-{
-	CHECK_PARAMS(6);
-	VECTOR vecPos;
-	vecPos.X = amx_ctof(params[3]);
-	vecPos.Y = amx_ctof(params[4]);
-	vecPos.Z = amx_ctof(params[5]);
-
-	return pNetGame->GetPickupPool()->New((BYTE)params[1], params[2], params[3], vecPos.X, vecPos.Y, vecPos.Z);
-}
-
-//----------------------------------------------------------------------------------
-// native DestroyPlayerPickup(playerid, pickup);
-
-static cell AMX_NATIVE_CALL n_DestroyPlayerPickup(AMX *amx, cell *params)
-{
-	CHECK_PARAMS(2);
-	return pNetGame->GetPickupPool()->DestroyPlayerPickup(params[1], params[2]);
-}
-
-//----------------------------------------------------------------------------------
 // native SetPlayerWorldBounds(playerid,Float:x_max,Float:y_max,Float:x_min,Float:y_min);
 
 static cell AMX_NATIVE_CALL n_SetPlayerWorldBounds(AMX *amx, cell *params)
@@ -469,8 +414,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerWorldBounds(AMX *amx, cell *params)
 	bsBounds.Write(fBounds[3]);
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScrSetWorldBounds , &bsBounds, HIGH_PRIORITY, 
-		RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrSetWorldBounds , &bsBounds, HIGH_PRIORITY, 
+		RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false);
 	
 	return 1;
 }
@@ -574,7 +519,7 @@ static cell AMX_NATIVE_CALL n_SetSpawnInfo(AMX *amx, cell *params)
 		RakNet::BitStream bsData;
 		bsData.Write((PCHAR)&SpawnInfo, sizeof(PLAYER_SPAWN_INFO));
 		RakServerInterface *pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrSetSpawnInfo , &bsData, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((int)params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrSetSpawnInfo , &bsData, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((int)params[1]), false, false);
 		return 1;
 	} else {
 		return 0;
@@ -593,7 +538,7 @@ static cell AMX_NATIVE_CALL n_SpawnPlayer(AMX *amx, cell *params)
 		RakNet::BitStream bsData;
 		RakServerInterface *pRak = pNetGame->GetRakServer();
 		bsData.Write(2); // 2 - overwrite default behaviour
-		pRak->RPC(&RPC_RequestSpawn , &bsData, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((int)params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_RequestSpawn , &bsData, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((int)params[1]), false, false);
 		return 1;
 	} else {
 		return 0;
@@ -608,7 +553,7 @@ static cell AMX_NATIVE_CALL n_ForceClassSelection(AMX *amx, cell *params)
 	{
 		RakNet::BitStream bsData;
 		RakServerInterface *pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrForceSpawnSelection , &bsData, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((int)params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrForceSpawnSelection , &bsData, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((int)params[1]), false, false);
 		return 1;
 	} else {
 		return 0;
@@ -667,7 +612,7 @@ static cell AMX_NATIVE_CALL n_SetPlayerName(AMX *amx, cell *params)
 		{
 			pNetGame->GetPlayerPool()->SetPlayerName(bytePlayerID, szNewNick);
 			logprintf("[nick] %s nick changed to %s", szOldNick, szNewNick);
-			pNetGame->GetRakServer()->RPC(&RPC_ScrSetPlayerName , &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+			pNetGame->GetRakServer()->RPC(RPC_ScrSetPlayerName , &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 
 		}
 
@@ -697,7 +642,7 @@ static cell AMX_NATIVE_CALL n_SetPlayerSkin(AMX *amx, cell *params)
 			bsData.Write((int)params[1]); // player id
 			bsData.Write((int)params[2]); // skin id
 			RakServerInterface *pRak = pNetGame->GetRakServer();
-			pRak->RPC(&RPC_ScrSetPlayerSkin , &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+			pRak->RPC(RPC_ScrSetPlayerSkin , &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 		} 
 		pPlayer->m_SpawnInfo.iSkin = (int)params[2];
 		pPlayer->m_iCurrentSkin = (int)params[2];
@@ -802,7 +747,7 @@ static cell AMX_NATIVE_CALL n_TogglePlayerSpectating(AMX *amx, cell *params)
 		RakNet::BitStream bsParams;
 		bsParams.Write((BOOL)params[2]); // toggle
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrTogglePlayerSpectating , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrTogglePlayerSpectating , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false);
 		return 1;
 	}
 	return 0;
@@ -827,7 +772,7 @@ static cell AMX_NATIVE_CALL n_PlayerSpectateVehicle(AMX *amx, cell *params)
 		bsParams.Write((VEHICLEID)params[2]); // vehicleid
 		bsParams.Write((BYTE)params[3]); // mode
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrPlayerSpectateVehicle , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrPlayerSpectateVehicle , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false);
 		return 1;
 	}
 	return 0;
@@ -849,7 +794,7 @@ static cell AMX_NATIVE_CALL n_PlayerSpectatePlayer(AMX *amx, cell *params)
 		bsParams.Write((BYTE)params[2]); // playerid
 		bsParams.Write((BYTE)params[3]); // mode
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrPlayerSpectatePlayer , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrPlayerSpectatePlayer , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false);
 		return 1;
 	}
 	return 0;
@@ -872,7 +817,7 @@ static cell AMX_NATIVE_CALL n_SetPlayerTeam(AMX *amx, cell *params)
 		bsParams.Write((BYTE)params[1]); // playerid
 		bsParams.Write((BYTE)params[2]); // team id
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrSetPlayerTeam , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrSetPlayerTeam , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 		return 1;
 	} else {
 		return 0;
@@ -924,8 +869,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerPos(AMX *amx, cell *params)
 		bsParams.Write(vecPos.Z);	// Z
 
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrSetPlayerPos , &bsParams, HIGH_PRIORITY, RELIABLE, 0,
-			pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrSetPlayerPos , &bsParams, HIGH_PRIORITY, RELIABLE, 0,
+			pRak->GetPlayerIDFromIndex(params[1]), false, false);
 
 		return 1;
 	}
@@ -955,8 +900,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerPosFindZ(AMX *amx, cell *params)
 		bsParams.Write(vecPos.Z);	// Z
 
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrSetPlayerPosFindZ , &bsParams, HIGH_PRIORITY, RELIABLE, 0,
-			pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrSetPlayerPosFindZ , &bsParams, HIGH_PRIORITY, RELIABLE, 0,
+			pRak->GetPlayerIDFromIndex(params[1]), false, false);
 
 		return 1;
 	}
@@ -1002,8 +947,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerHealth(AMX *amx, cell *params)
 
 		//logprintf("Setting health of %d to %f:", params[1], fHealth);
 		
-		pNetGame->GetRakServer()->RPC(&RPC_ScrSetPlayerHealth , &bsHealth, HIGH_PRIORITY, 
-			RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrSetPlayerHealth , &bsHealth, HIGH_PRIORITY, 
+			RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 
 		return 1;
 	}
@@ -1011,29 +956,6 @@ static cell AMX_NATIVE_CALL n_SetPlayerHealth(AMX *amx, cell *params)
 	{
 		return 0;
 	}
-}
-
-//----------------------------------------------------------------------------------
-// native SetPlayerMaxHealth(playerid, Float:max_health);
-
-static cell AMX_NATIVE_CALL n_SetPlayerMaxHealth(AMX *amx, cell *params) {
-	CHECK_PARAMS(2);
-
-	if (!pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
-	pNetGame->GetPlayerPool()->GetAt(params[1])->SetMaxHealth(amx_ctof(params[2]));
-	return 1;
-}
-
-//----------------------------------------------------------------------------------
-// native GetPlayerMaxHealth(playerid, &Float:max_health);
-
-static cell AMX_NATIVE_CALL n_GetPlayerMaxHealth(AMX *amx, cell *params) {
-	CHECK_PARAMS(2);
-	if (!pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
-	cell* cptr;
-	amx_GetAddr(amx, params[2], &cptr);
-	*cptr = amx_ftoc(pNetGame->GetPlayerPool()->GetAt(params[1])->m_fMaxHealth);
-	return 1;
 }
 
 //----------------------------------------------------------------------------------
@@ -1054,8 +976,8 @@ static cell AMX_NATIVE_CALL n_PutPlayerInVehicle(AMX *amx, cell *params)
 		}
 
 		RakServerInterface *pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrPutPlayerInVehicle , &bsParams, HIGH_PRIORITY,
-			RELIABLE_ORDERED, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrPutPlayerInVehicle , &bsParams, HIGH_PRIORITY,
+			RELIABLE_ORDERED, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false);
 
 		return 1;
 	}
@@ -1076,10 +998,11 @@ static cell AMX_NATIVE_CALL n_RemovePlayerFromVehicle(AMX *amx, cell *params)
 	if (!pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
 	RakNet::BitStream bsParams;
 
-	bsParams.Write(params[1]);
 	RakServerInterface *pRak = pNetGame->GetRakServer();
-	pNetGame->GetRakServer()->RPC(&RPC_ScrRemovePlayerFromVehicle , &bsParams, HIGH_PRIORITY,
-		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	bsParams.Write(params[1]);
+
+	pNetGame->GetRakServer()->RPC(RPC_ScrRemovePlayerFromVehicle , &bsParams, HIGH_PRIORITY,
+		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false); 
 
 	return 1;
 }
@@ -1190,7 +1113,7 @@ static cell AMX_NATIVE_CALL n_DestroyVehicle(AMX *amx, cell *params)
 
 		bsParams.Write((VEHICLEID)params[1]);
 
-//		pNetGame->GetRakServer()->RPC(&RPC_VehicleDestroy , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_VehicleDestroy , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 		return 1;
 	}
 	return 0;
@@ -1240,8 +1163,8 @@ static cell AMX_NATIVE_CALL n_SetVehiclePos(AMX *amx, cell *params)
 			bsParams.Write(amx_ctof(params[3]));
 			bsParams.Write(amx_ctof(params[4]));
 			RakServerInterface* pRak = pNetGame->GetRakServer();
-			pRak->RPC(&RPC_ScrSetVehiclePos , &bsParams, HIGH_PRIORITY, 
-				RELIABLE, 0, pRak->GetPlayerIDFromIndex(pVehicle->m_byteDriverID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+			pRak->RPC(RPC_ScrSetVehiclePos , &bsParams, HIGH_PRIORITY, 
+				RELIABLE, 0, pRak->GetPlayerIDFromIndex(pVehicle->m_byteDriverID), false, false);
 		}
 
 		pVehicle->m_matWorld.pos.X = amx_ctof(params[2]);
@@ -1286,8 +1209,8 @@ static cell AMX_NATIVE_CALL n_SendPlayerMessageToPlayer(AMX *amx, cell *params)
 		bsSend.Write((BYTE)params[2]);
 		bsSend.Write(byteTextLen);
 		bsSend.Write(szMessage, byteTextLen);
-		pNetGame->GetRakServer()->RPC(&RPC_Chat, &bsSend, HIGH_PRIORITY, RELIABLE, 0,
-			pNetGame->GetRakServer()->GetPlayerIDFromIndex((BYTE)params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_Chat, &bsSend, HIGH_PRIORITY, RELIABLE, 0,
+			pNetGame->GetRakServer()->GetPlayerIDFromIndex((BYTE)params[1]), false, false);
 		return 1;
 	}
 	return 0;
@@ -1309,7 +1232,7 @@ static cell AMX_NATIVE_CALL n_SendPlayerMessageToAll(AMX *amx, cell *params)
 		bsSend.Write((BYTE)params[1]);
 		bsSend.Write(byteTextLen);
 		bsSend.Write(szMessage, byteTextLen);
-		pNetGame->GetRakServer()->RPC(&RPC_Chat, &bsSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_Chat, &bsSend, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 		return 1;
 	}
 	return 0;
@@ -1339,8 +1262,8 @@ static cell AMX_NATIVE_CALL n_SendDeathMessage(AMX *amx, cell *params)
 	bsDM.Write((BYTE)params[2]);
 	bsDM.Write((BYTE)params[3]);
 
-	pRak->RPC(&RPC_ScrDeathMessage , &bsDM, HIGH_PRIORITY, 
-		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrDeathMessage , &bsDM, HIGH_PRIORITY, 
+		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 
 	return 1;
 }
@@ -1513,8 +1436,8 @@ static cell AMX_NATIVE_CALL n_GameTextForAll(AMX *amx, cell *params)
 	bsParams.Write(iTime);
 	bsParams.Write(iLength);
 	bsParams.Write(szMessage,iLength);
-	pNetGame->GetRakServer()->RPC(&RPC_ScrDisplayGameText , &bsParams, HIGH_PRIORITY, 
-		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrDisplayGameText , &bsParams, HIGH_PRIORITY, 
+		RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	
 	return 1;
 }
@@ -1543,8 +1466,8 @@ static cell AMX_NATIVE_CALL n_GameTextForPlayer(AMX *amx, cell *params)
 	bsParams.Write(iTime);
 	bsParams.Write(iLength);
 	bsParams.Write(szMessage,iLength);
-	pNetGame->GetRakServer()->RPC(&RPC_ScrDisplayGameText , &bsParams, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrDisplayGameText , &bsParams, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -1560,8 +1483,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerInterior(AMX *amx, cell *params)
 	BYTE byteInteriorID = (BYTE)params[2];
 	bsParams.Write(byteInteriorID);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ScrSetInterior , &bsParams, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrSetInterior , &bsParams, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -1589,8 +1512,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerSpecialAction(AMX *amx, cell *params)
 	if (!pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[1])) return 0;
 	RakNet::BitStream bsParams;
 	bsParams.Write((BYTE)params[2]);
-	pNetGame->GetRakServer()->RPC(&RPC_ScrSetSpecialAction ,&bsParams, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrSetSpecialAction ,&bsParams, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 	return 1;
 }
 
@@ -1628,8 +1551,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerCameraPos(AMX *amx, cell *params)
 	bsParams.Write(vecPos.Y);
 	bsParams.Write(vecPos.Z);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ScrSetCameraPos , &bsParams, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrSetCameraPos , &bsParams, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -1652,8 +1575,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerCameraLookAt(AMX *amx, cell *params)
 	bsParams.Write(vecPos.Y);
 	bsParams.Write(vecPos.Z);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ScrSetCameraLookAt , &bsParams, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrSetCameraLookAt , &bsParams, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -1667,8 +1590,8 @@ static cell AMX_NATIVE_CALL n_SetCameraBehindPlayer(AMX *amx, cell *params)
 	if (!pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[1])) return 0;
 	RakNet::BitStream bsParams;
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScrSetCameraBehindPlayer , &bsParams, HIGH_PRIORITY, RELIABLE, 0,
-		pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrSetCameraBehindPlayer , &bsParams, HIGH_PRIORITY, RELIABLE, 0,
+		pRak->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -1684,8 +1607,8 @@ static cell AMX_NATIVE_CALL n_TogglePlayerControllable(AMX *amx, cell *params)
 	RakNet::BitStream bsParams;
 	RakServerInterface* pRak = pNetGame->GetRakServer();
 	bsParams.Write((BYTE)params[2]);
-	pRak->RPC(&RPC_ScrTogglePlayerControllable , &bsParams, HIGH_PRIORITY, RELIABLE, 0,
-		pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrTogglePlayerControllable , &bsParams, HIGH_PRIORITY, RELIABLE, 0,
+		pRak->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -1707,8 +1630,8 @@ static cell AMX_NATIVE_CALL n_SetVehicleParamsForPlayer(AMX *amx, cell *params)
 	bsParams.Write((BYTE)params[3]);
 	bsParams.Write((BYTE)params[4]);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ScrVehicleParams , &bsParams, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[2]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrVehicleParams , &bsParams, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[2]), false, false);
 
 	return 1;
 }
@@ -1756,8 +1679,8 @@ static cell AMX_NATIVE_CALL n_GivePlayerMoney(AMX *amx, cell *params)
 	if( pPool->GetSlotState((BYTE)params[1]) ) {
 		pPool->SetPlayerMoney((BYTE)params[1], pPool->GetPlayerMoney((BYTE)params[1]) + params[2]);
 
-		pNetGame->GetRakServer()->RPC(&RPC_ScrHaveSomeMoney , &bsMoney, HIGH_PRIORITY, 
-			RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrHaveSomeMoney , &bsMoney, HIGH_PRIORITY, 
+			RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 		return 1;
 	}
 
@@ -1793,8 +1716,8 @@ static cell AMX_NATIVE_CALL n_ResetPlayerMoney(AMX *amx, cell *params)
 
 	if(pPlayerPool->GetSlotState(bytePlayerID)) {
 		pPlayerPool->SetPlayerMoney(bytePlayerID,0);
-		pNetGame->GetRakServer()->RPC(&RPC_ScrResetMoney , &bsMoney, HIGH_PRIORITY, 
-			RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrResetMoney , &bsMoney, HIGH_PRIORITY, 
+			RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID), false, false);
 		return 1;
 	}
 
@@ -1832,8 +1755,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerAmmo(AMX *amx, cell *params)
 		bsAmmo.Write((BYTE)params[2]);
 		bsAmmo.Write((WORD)params[3]);
 
-		pNetGame->GetRakServer()->RPC(&RPC_ScrSetWeaponAmmo , &bsAmmo, HIGH_PRIORITY, 
-			RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrSetWeaponAmmo , &bsAmmo, HIGH_PRIORITY, 
+			RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(bytePlayerID), false, false);
 		return 1;
 	}
 	return 0;
@@ -1927,8 +1850,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerFacingAngle(AMX *amx, cell *params)
 	RakNet::BitStream bsFace;
 	float fFace = amx_ctof(params[2]);
 	bsFace.Write(fFace);
-	pNetGame->GetRakServer()->RPC(&RPC_ScrSetPlayerFacingAngle , &bsFace, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrSetPlayerFacingAngle , &bsFace, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -1964,8 +1887,8 @@ static cell AMX_NATIVE_CALL n_ResetPlayerWeapons(AMX *amx, cell *params)
 	if (!pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[1])) return 0;
 
 	RakNet::BitStream bsData;
-	pNetGame->GetRakServer()->RPC(&RPC_ScrResetPlayerWeapons , &bsData, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrResetPlayerWeapons , &bsData, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 	return 1;
 }
 
@@ -1982,8 +1905,8 @@ static cell AMX_NATIVE_CALL n_GivePlayerWeapon(AMX *amx, cell *params)
 	RakNet::BitStream bsData;
 	bsData.Write((int)params[2]); // weaponid
 	bsData.Write((int)params[3]); // ammo
-	pNetGame->GetRakServer()->RPC(&RPC_ScrGivePlayerWeapon , &bsData, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrGivePlayerWeapon , &bsData, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 	return 1;
 }
 
@@ -2258,8 +2181,8 @@ static cell AMX_NATIVE_CALL n_SetVehicleZAngle(AMX *amx, cell *params)
 			bsParams.Write(amx_ctof(params[2]));
 
 			RakServerInterface* pRak = pNetGame->GetRakServer();
-			pRak->RPC(&RPC_ScrSetVehicleZAngle , &bsParams, HIGH_PRIORITY, 
-				RELIABLE, 0, pRak->GetPlayerIDFromIndex(pVehicle->m_byteDriverID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+			pRak->RPC(RPC_ScrSetVehicleZAngle , &bsParams, HIGH_PRIORITY, 
+				RELIABLE, 0, pRak->GetPlayerIDFromIndex(pVehicle->m_byteDriverID), false, false);
 		}
 		return 1;
 	} else {
@@ -2283,8 +2206,8 @@ static cell AMX_NATIVE_CALL n_PlayerPlaySound(AMX *amx, cell *params)
 	bsParams.Write(amx_ctof(params[4]));
 	bsParams.Write(amx_ctof(params[5]));
 
-	pNetGame->GetRakServer()->RPC(&RPC_ScrPlaySound , &bsParams, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrPlaySound , &bsParams, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -2314,8 +2237,8 @@ static cell AMX_NATIVE_CALL n_ShowPlayerNameTagForPlayer(AMX *amx, cell *params)
 	bsParams.Write((BYTE)params[2]);
 	bsParams.Write((BYTE)params[3]);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ScrShowNameTag , &bsParams, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrShowNameTag , &bsParams, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 	return 1;
 }
 
@@ -2347,14 +2270,13 @@ static cell AMX_NATIVE_CALL n_UsePlayerPedAnims(AMX *amx, cell *params)
 	RakNet::BitStream bsData;
 	bsData.Write((bool)params[1]);
 	if (params[2] == -1) {
-		pNetGame->m_bUseCJWalk = TRUE;
-		
-		pNetGame->GetRakServer()->RPC(&RPC_ScrUsePlayerPedAnims, &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->m_bUseCJWalk = params[1];
+		pNetGame->GetRakServer()->RPC(RPC_ScrUsePlayerPedAnims, &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	}
 	else {
 		if (!pNetGame->GetPlayerPool() || pNetGame->GetPlayerPool()->GetSlotState(params[2])) return 0;
 		pNetGame->GetPlayerPool()->GetAt(params[2])->m_bUseCJWalk = (bool)params[1];
-		pNetGame->GetRakServer()->RPC(&RPC_ScrUsePlayerPedAnims, &bsData, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[2]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrUsePlayerPedAnims, &bsData, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[2]), false, false, UNASSIGNED_NETWORK_ID, NULL);
 	}
 	return 1;
 }
@@ -2364,8 +2286,8 @@ static cell AMX_NATIVE_CALL n_UsePlayerPedAnims(AMX *amx, cell *params)
 // native GetPlayerPedAnims(playerid);
 static cell AMX_NATIVE_CALL n_GetPlayerPedAnims(AMX *amx, cell *params) {
 	if (!pNetGame || !pNetGame->GetPlayerPool() || !pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
-
 	return pNetGame->GetPlayerPool()->GetAt(params[1])->m_bUseCJWalk;
+	
 }
 
 //----------------------------------------------------------------------------------
@@ -2406,8 +2328,8 @@ static cell AMX_NATIVE_CALL n_GetPlayerWeapon(AMX *amx, cell *params)
 	CHECK_PARAMS(1);
 	CPlayer* pPlayer = pNetGame->GetPlayerPool()->GetAt((BYTE)params[1]);
 	if(!pPlayer) return -1;	
+	BYTE byteState = pPlayer->GetState();
 	return pPlayer->GetCurrentWeapon();
-	
 }
 
 // native SetTimerEx(funcname[], interval, repeating, parameter)
@@ -2475,8 +2397,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerArmour(AMX *amx, cell *params)
 	RakNet::BitStream bsArmour;
 	bsArmour.Write(fArmour);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ScrSetPlayerArmour , &bsArmour, HIGH_PRIORITY, 
-		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrSetPlayerArmour , &bsArmour, HIGH_PRIORITY, 
+		RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -2496,8 +2418,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerMarkerForPlayer(AMX *amx, cell *params)
 		bsMarker.Write((DWORD)params[3]);
 
 		
-		pNetGame->GetRakServer()->RPC(&RPC_ScrSetPlayerColor , &bsMarker, HIGH_PRIORITY, 
-			RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrSetPlayerColor , &bsMarker, HIGH_PRIORITY, 
+			RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 
 		return 1;
 	}
@@ -2534,8 +2456,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerMapIcon(AMX *amx, cell *params)
 	bsIcon.Write((BYTE)params[7]);
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScrSetMapIcon , &bsIcon, HIGH_PRIORITY, 
-		RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrSetMapIcon , &bsIcon, HIGH_PRIORITY, 
+		RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -2554,8 +2476,8 @@ static cell AMX_NATIVE_CALL n_RemovePlayerMapIcon(AMX *amx, cell *params)
 	bsIcon.Write((BYTE)params[2]);
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScrDisableMapIcon , &bsIcon, HIGH_PRIORITY, 
-		RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrDisableMapIcon , &bsIcon, HIGH_PRIORITY, 
+		RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -2652,8 +2574,8 @@ static cell AMX_NATIVE_CALL n_SetPlayerWeather(AMX *amx, cell *params)
 	RakNet::BitStream bsWeather;
 	bsWeather.Write((BYTE)params[2]);
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_Weather , &bsWeather, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
-	//pRak->RPC(&RPC_ScrDisableMapIcon", &bsIcon, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_Weather , &bsWeather, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false);
+	//pRak->RPC(RPC_ScrDisableMapIcon", &bsIcon, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false);
 
 	return 1;
 }
@@ -2785,7 +2707,7 @@ static cell AMX_NATIVE_CALL n_ApplyAnimation(AMX *amx, cell *params)
 	bsSend.Write(opt4);
 	bsSend.Write(opt5);
 
-	pNetGame->BroadcastDistanceRPC(&RPC_ScrApplyAnimation,&bsSend,UNRELIABLE,(BYTE)params[1],200.0f);
+	pNetGame->BroadcastDistanceRPC(RPC_ScrApplyAnimation,&bsSend,UNRELIABLE,(BYTE)params[1],200.0f);
 	
 	return 1;
 }
@@ -2801,7 +2723,7 @@ static cell AMX_NATIVE_CALL n_ClearAnimations(AMX *amx, cell *params)
 	if(!pPlayerPool || !pPlayerPool->GetSlotState(params[1])) return 1;
 
 	bsSend.Write((BYTE)params[1]);
-	pNetGame->BroadcastDistanceRPC(&RPC_ScrClearAnimations,&bsSend,UNRELIABLE,(BYTE)params[1],200.0f);
+	pNetGame->BroadcastDistanceRPC(RPC_ScrClearAnimations,&bsSend,UNRELIABLE,(BYTE)params[1],200.0f);
 	
 	return 1;
 }
@@ -2858,7 +2780,7 @@ static cell AMX_NATIVE_CALL n_AttachTrailerToVehicle(AMX *amx, cell *params)
 		RakNet::BitStream bsParams;
 		bsParams.Write((VEHICLEID)params[1]);
 		bsParams.Write((VEHICLEID)params[2]);
-		pNetGame->GetRakServer()->RPC(&RPC_ScrAttachTrailerToVehicle , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrAttachTrailerToVehicle , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	}
 	return 1;
 }
@@ -2874,7 +2796,7 @@ static cell AMX_NATIVE_CALL n_DetachTrailerFromVehicle(AMX *amx, cell *params)
 	{
 		RakNet::BitStream bsParams;
 		bsParams.Write((VEHICLEID)params[1]);
-		pNetGame->GetRakServer()->RPC(&RPC_ScrDetachTrailerFromVehicle , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrDetachTrailerFromVehicle , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	}
 	return 1;
 }
@@ -3171,7 +3093,7 @@ static cell AMX_NATIVE_CALL n_SetObjectPos(AMX *amx, cell *params)
 	bsParams.Write(vecPos.Z);	// Z
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScrSetObjectPos , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrSetObjectPos , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	CObjectPool *pObjectPool = pNetGame->GetObjectPool();
 	CObject*	pObject = pObjectPool->GetAt((BYTE)params[1]);
 	pObject->m_matWorld.pos.X = vecPos.X;
@@ -3218,7 +3140,7 @@ static cell AMX_NATIVE_CALL n_SetObjectRot(AMX *amx, cell *params)
 	bsParams.Write(vecRot.Z);	// Z
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScrSetObjectRotation , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrSetObjectRotation , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 
 	CObjectPool *pObjectPool = pNetGame->GetObjectPool();
 	CObject*	pObject = pObjectPool->GetAt((BYTE)params[1]);
@@ -3274,7 +3196,7 @@ static cell AMX_NATIVE_CALL n_DestroyObject(AMX *amx, cell *params)
 
 		bsParams.Write((BYTE)params[1]);
 
-		pNetGame->GetRakServer()->RPC(&RPC_ScrDestroyObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrDestroyObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	}
 
 	return 1;
@@ -3306,7 +3228,7 @@ static cell AMX_NATIVE_CALL n_MoveObject(AMX *amx, cell *params)
 		bsParams.Write(z);
 		bsParams.Write(s);
 
-		pNetGame->GetRakServer()->RPC(&RPC_ScrMoveObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrMoveObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 		//return *amx_ftoc(pObject->MoveTo(x, y, z, s));
 		ret = pObject->MoveTo(x, y, z, s);
 	}
@@ -3332,7 +3254,7 @@ static cell AMX_NATIVE_CALL n_StopObject(AMX *amx, cell *params)
 		bsParams.Write(pObject->m_matWorld.pos.Z);
 		// Make sure it stops for the player where the server thinks it is
 
-		pNetGame->GetRakServer()->RPC(&RPC_ScrStopObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC(RPC_ScrStopObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 		//return *amx_ftoc(pObject->MoveTo(x, y, z, s));
 		return 1;
 	}
@@ -3385,7 +3307,7 @@ static cell AMX_NATIVE_CALL n_SetPlayerObjectPos(AMX *amx, cell *params)
 	bsParams.Write(vecPos.Z);	// Z
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScrSetObjectPos , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrSetObjectPos , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false);
 	
 	CObject*	pObject = pNetGame->GetObjectPool()->GetAtIndividual((BYTE)params[1], (BYTE)params[2]);
 	pObject->m_matWorld.pos.X = vecPos.X;
@@ -3435,7 +3357,7 @@ static cell AMX_NATIVE_CALL n_SetPlayerObjectRot(AMX *amx, cell *params)
 	bsParams.Write(vecRot.Z);	// Z
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScrSetObjectRotation , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrSetObjectRotation , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), true, false);
 	//printf("rotation sent");
 
 	CObject*	pObject = pNetGame->GetObjectPool()->GetAtIndividual((BYTE)params[1], (BYTE)params[2]);
@@ -3493,7 +3415,7 @@ static cell AMX_NATIVE_CALL n_DestroyPlayerObject(AMX *amx, cell *params)
 		bsParams.Write((BYTE)params[2]);
 
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrDestroyObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrDestroyObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(params[1]), false, false);
 	}
 
 	return 1;
@@ -3528,7 +3450,7 @@ static cell AMX_NATIVE_CALL n_MovePlayerObject(AMX *amx, cell *params)
 		bsParams.Write(s);
 
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrMoveObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrMoveObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false);
 		//return *amx_ftoc(pObject->MoveTo(x, y, z, s));
 		ret = pObject->MoveTo(x, y, z, s);
 	}
@@ -3556,7 +3478,7 @@ static cell AMX_NATIVE_CALL n_StopPlayerObject(AMX *amx, cell *params)
 		// Make sure it stops for the player where the server thinks it is
 
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrStopObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrStopObject , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false);
 		//return *amx_ftoc(pObject->MoveTo(x, y, z, s));
 		return 1;
 	}
@@ -3583,7 +3505,7 @@ static cell AMX_NATIVE_CALL n_DestroyMenu(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(1);
 	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
-	if (!pMenuPool) return 0;
+	if (!pMenuPool || pMenuPool->GetSlotState(params[1])) return 0;
 	if (pMenuPool->Delete(params[1])) return 1;
 	return 0;
 }
@@ -3593,7 +3515,7 @@ static cell AMX_NATIVE_CALL n_AddMenuItem(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(3);
 	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
-	if (!pMenuPool) return 0;
+	if (!pMenuPool || pMenuPool->GetSlotState(params[1])) return 0;
 	char* szItemText;
 	amx_StrParam(amx, params[3], szItemText);
 	BYTE ret = pMenuPool->GetAt((BYTE)params[1])->AddMenuItem(params[2], szItemText);
@@ -3606,7 +3528,7 @@ static cell AMX_NATIVE_CALL n_SetMenuColumnHeader(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(3);
 	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
-	if (!pMenuPool || !pMenuPool->GetSlotState((BYTE)params[1])) return 0;
+	if (!pMenuPool || pMenuPool->GetSlotState(params[1])) return 0;
 	char* szItemText;
 	amx_StrParam(amx, params[3], szItemText);
 	pMenuPool->GetAt((BYTE)params[1])->SetColumnTitle(params[2], szItemText);
@@ -3619,7 +3541,7 @@ static cell AMX_NATIVE_CALL n_ShowMenuForPlayer(AMX *amx, cell *params)
 	CHECK_PARAMS(2);
 	if (!pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[2])) return 0;
 	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
-	if (!pMenuPool || !pMenuPool->GetSlotState((BYTE)params[1])) return 0;
+	if (!pMenuPool || pMenuPool->GetSlotState(params[1])) return 0;
 	pMenuPool->GetAt((BYTE)params[1])->ShowForPlayer((BYTE)params[2]);
 	pMenuPool->SetPlayerMenu((BYTE)params[2], (BYTE)params[1]);
 	return 1;
@@ -3630,8 +3552,8 @@ static cell AMX_NATIVE_CALL n_HideMenuForPlayer(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(2);
 	if (!pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[2])) return 0;
-	CMenuPool* pMenuPool = pNetGame->GetMenuPool(); 
-	if (!pMenuPool || !pMenuPool->GetSlotState((BYTE)params[1])) return 0;
+	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
+	if (!pMenuPool || pMenuPool->GetSlotState(params[1])) return 0;
 	pMenuPool->GetAt((BYTE)params[1])->HideForPlayer((BYTE)params[2]);
 	pMenuPool->SetPlayerMenu((BYTE)params[2], 255);
 	return 1;
@@ -3651,7 +3573,7 @@ static cell AMX_NATIVE_CALL n_DisableMenu(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(1);
 	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
-	if (!pMenuPool || !pMenuPool->GetSlotState((BYTE)params[1])) return 0;
+	if (!pMenuPool || pMenuPool->GetSlotState(params[1])) return 0;
 	pMenuPool->GetAt((BYTE)params[1])->DisableInteraction();
 	return 1;
 }
@@ -3661,7 +3583,7 @@ static cell AMX_NATIVE_CALL n_DisableMenuRow(AMX *amx, cell *params)
 {
 	CHECK_PARAMS(2);
 	CMenuPool* pMenuPool = pNetGame->GetMenuPool();
-	if (!pMenuPool || !pMenuPool->GetSlotState((BYTE)params[1])) return 0;
+	if (!pMenuPool || pMenuPool->GetSlotState(params[1])) return 0;
 	pMenuPool->GetAt((BYTE)params[1])->DisableRow((BYTE)params[2]);
 	return 1;
 }
@@ -3687,7 +3609,7 @@ static cell AMX_NATIVE_CALL n_CreateExplosion(AMX *amx, cell *params)
 	bsParams.Write(params[4]);
 	bsParams.Write(params[5]);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ScrCreateExplosion , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrCreateExplosion , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 
 	return 1;
 }
@@ -3747,7 +3669,7 @@ static cell AMX_NATIVE_CALL n_AttachObjectToPlayer( AMX *amx, cell *params )
 		bsParams.Write(vecRotations.Y);
 		bsParams.Write(vecRotations.Z);
 
-		pNetGame->GetRakServer()->RPC(&RPC_ScrAttachObjectToPlayer, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+		pNetGame->GetRakServer()->RPC( RPC_ScrAttachObjectToPlayer, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	}
 
 	return 0;
@@ -3787,7 +3709,7 @@ static cell AMX_NATIVE_CALL n_AttachPlayerObjectToPlayer(AMX *amx, cell *params)
 		bsParams.Write(vecRotations.Z);
 
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrAttachObjectToPlayer, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrAttachObjectToPlayer, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false);
 	}
 
 	return 0;
@@ -3805,7 +3727,7 @@ static cell AMX_NATIVE_CALL n_SetPlayerWantedLevel(AMX *amx, cell *params)
 		RakNet::BitStream bsParams;
 		bsParams.Write((BYTE)params[2]);
 		RakServerInterface* pRak = pNetGame->GetRakServer();
-		pRak->RPC(&RPC_ScrSetPlayerWantedLevel, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+		pRak->RPC(RPC_ScrSetPlayerWantedLevel, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false);
 		return 1;
 	}
 	return 0;
@@ -4176,7 +4098,7 @@ static cell AMX_NATIVE_CALL n_EnableStuntBonusForAll(AMX *amx, cell *params)
 	RakNet::BitStream bsParams;
 	bsParams.Write((bool)params[1]);
 
-	pNetGame->GetRakServer()->RPC(&RPC_ScrEnableStuntBonus , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrEnableStuntBonus , &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	return 1;
 }
 
@@ -4191,25 +4113,17 @@ static cell AMX_NATIVE_CALL n_EnableStuntBonusForPlayer(AMX *amx, cell *params)
 	bsParams.Write((bool)params[2]);
 
 	RakServerInterface* pRak = pNetGame->GetRakServer();
-	pRak->RPC(&RPC_ScrEnableStuntBonus , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrEnableStuntBonus , &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[1]), false, false);
 	return 1;
 }
 
 //----------------------------------------------------------------------------------
 
-// native DisableInteriorEnterExits(bool:disable = true, playerid = -1)
+// native DisableInteriorEnterExits()
 static cell AMX_NATIVE_CALL n_DisableInteriorEnterExits(AMX *amx, cell *params)
 {
-	RakServerInterface* pRak = pNetGame->GetRakServer();
-	RakNet::BitStream bsData;
-	bsData.Write((bool)params[1]);
-	if (params[2] == -1) {
-		pNetGame->m_bDisableEnterExits = params[1];
-		pRak->RPC(&RPC_ScrDisableInteriorEnterExits, &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
-	} 
-	else if(pNetGame->GetPlayerPool() && pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[2])) {
-		pRak->RPC(&RPC_ScrDisableInteriorEnterExits, &bsData, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex((BYTE)params[2]), false, false, UNASSIGNED_NETWORK_ID, NULL);
-	}
+	pNetGame->m_bDisableEnterExits = true;
+
 	return 1;
 }
 
@@ -4217,6 +4131,48 @@ static cell AMX_NATIVE_CALL n_DisableInteriorEnterExits(AMX *amx, cell *params)
 static cell AMX_NATIVE_CALL n_SetNameTagDrawDistance(AMX *amx, cell *params)
 {
 	pNetGame->m_fNameTagDrawDistance = amx_ctof(params[1]);
+
+	return 1;
+}
+
+//----------------------------------------------------------------------------------
+
+// native CreatePlayerPickup(pickupid,playerid,model,type,Float:PosX,Float:PosY,Float:PosZ)
+static cell AMX_NATIVE_CALL n_CreatePlayerPickup(AMX *amx, cell *params)
+{
+	int iPickupId = params[1];
+	if(!pNetGame->GetPlayerPool()) return 0;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(params[2])) return 0;
+
+	PICKUP Pickup;
+    Pickup.iModel = params[3];
+	Pickup.iType = params[4];
+	Pickup.fX = amx_ctof(params[5]);
+	Pickup.fY = amx_ctof(params[6]);
+	Pickup.fZ = amx_ctof(params[7]);
+
+	RakNet::BitStream bsPickup;
+	bsPickup.Write(iPickupId);
+	bsPickup.Write((PCHAR)&Pickup,sizeof(PICKUP));
+	pNetGame->GetRakServer()->RPC(RPC_Pickup, &bsPickup, HIGH_PRIORITY, RELIABLE, 0,
+		pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[2]), false, false);
+
+	return 1;
+}
+
+//----------------------------------------------------------------------------------
+
+// native DestroyPlayerPickup(pickupid,playerid)
+static cell AMX_NATIVE_CALL n_DestroyPlayerPickup(AMX *amx, cell *params)
+{
+	int iPickupId = params[1];
+	if(!pNetGame->GetPlayerPool()) return 0;
+	if(!pNetGame->GetPlayerPool()->GetSlotState(params[2])) return 0;
+
+	RakNet::BitStream bsPickup;
+	bsPickup.Write(iPickupId);
+	pNetGame->GetRakServer()->RPC(RPC_DestroyPickup, &bsPickup, HIGH_PRIORITY, RELIABLE, 0,
+		pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[2]), false, false);
 
 	return 1;
 }
@@ -4255,51 +4211,13 @@ static cell AMX_NATIVE_CALL n_IsPlayerInRangeOfPoint(AMX *amx, cell *params)
 }
 
 //----------------------------------------------------------------------------------
-
 // native GetPlayerPoolSize();
 static cell AMX_NATIVE_CALL n_GetPlayerPoolSize(AMX *amx, cell *params) {
-
-	if (!pNetGame || !pNetGame->GetPlayerPool()) return -1;
-
+	if (!pNetGame) return -1;
 	return pNetGame->GetPlayerPool()->GetPlayerPoolCount();
 }
 
 //----------------------------------------------------------------------------------
-
-// native SetPlayerWaypoint(playerid, Float:fX, Float:fY);
-static cell AMX_NATIVE_CALL n_SetPlayerWaypoint(AMX *amx, cell *params) {
-	if (!pNetGame || !pNetGame->GetPlayerPool() || !pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
-
-	RakNet::BitStream bsData;
-	bsData.Write((float)params[2]);
-	bsData.Write((float)params[3]);
-
-	pNetGame->GetRakServer()->RPC(&RPC_ScrSetPlayerWaypoint, &bsData, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false, UNASSIGNED_NETWORK_ID, NULL);
-	pNetGame->GetPlayerPool()->GetAt(params[1])->m_vecWaypointPos.X = (float)params[2];
-	pNetGame->GetPlayerPool()->GetAt(params[1])->m_vecWaypointPos.Y = (float)params[3];
-	return 1;
-}
-
-//----------------------------------------------------------------------------------
-
-// native GetPlayerWaypoint(playerid, &Float:fX, &Float:fY);
-static cell AMX_NATIVE_CALL n_GetPlayerWaypoint(AMX *amx, cell *params) {
-	CPlayer* pPlayer = pNetGame->GetPlayerPool()->GetAt((BYTE)params[1]);
-
-	if (pPlayer)
-	{
-		cell* cptr;
-		amx_GetAddr(amx, params[2], &cptr);
-		*cptr = amx_ftoc(pPlayer->m_vecWaypointPos.X);
-		amx_GetAddr(amx, params[3], &cptr);
-		*cptr = amx_ftoc(pPlayer->m_vecWaypointPos.Y);
-		return 1;
-	}
-	return 0;
-}
-
-//----------------------------------------------------------------------------------
-
 AMX_NATIVE_INFO custom_Natives[] =
 {
 	// Util
@@ -4333,8 +4251,6 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "AddStaticPickup",		n_AddStaticPickup },
 	{ "CreatePickup",			n_CreatePickup },
 	{ "DestroyPickup",			n_DestroyPickup },
-	{ "CreatePlayerPickup",		n_CreatePlayerPickup },
-	{ "DestroyPlayerPickup",	n_DestroyPlayerPickup },
 	{ "SetPlayerWorldBounds",	n_SetPlayerWorldBounds },
 	{ "ShowNameTags",			n_ShowNameTags },
 	{ "ShowPlayerMarkers",		n_ShowPlayerMarkers },
@@ -4349,6 +4265,7 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "CreateExplosion",        n_CreateExplosion },
 	{ "SetDisabledWeapons",		n_SetDisabledWeapons },
 	{ "UsePlayerPedAnims",		n_UsePlayerPedAnims },
+	{ "GetPlayerPedAnims",		n_GetPlayerPedAnims },
 	{ "DisableInteriorEnterExits", n_DisableInteriorEnterExits },
 	{ "SetNameTagDrawDistance", n_SetNameTagDrawDistance },
 	
@@ -4389,8 +4306,6 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "SetPlayerPosFindZ",		n_SetPlayerPosFindZ },
 	{ "GetPlayerHealth",		n_GetPlayerHealth },
 	{ "SetPlayerHealth",		n_SetPlayerHealth },
-	{ "SetPlayerMaxHealth",		n_SetPlayerMaxHealth },
-	{ "GetPlayerMaxHealth",		n_GetPlayerMaxHealth },
 	{ "SetPlayerColor",			n_SetPlayerColor },
 	{ "GetPlayerColor",			n_GetPlayerColor },
 	{ "GetPlayerVehicleID",		n_GetPlayerVehicleID },
@@ -4457,11 +4372,11 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "ClearAnimations",		n_ClearAnimations },
 	{ "SetPlayerSpecialAction", n_SetPlayerSpecialAction },
 	{ "GetPlayerSpecialAction", n_GetPlayerSpecialAction },
+
+	{ "CreatePlayerPickup",		n_CreatePlayerPickup },
+	{ "DestroyPlayerPickup",	n_DestroyPlayerPickup },
 	{ "IsPlayerInRangeOfPoint", n_IsPlayerInRangeOfPoint },
 
-	{ "SetPlayerWaypoint",		n_SetPlayerWaypoint },
-	{ "GetPlayerWaypoint",		n_GetPlayerWaypoint },
-	
 	// Vehicle
 	{ "CreateVehicle",			n_CreateVehicle },
 	{ "DestroyVehicle",			n_DestroyVehicle },
@@ -4473,8 +4388,6 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "SetVehicleToRespawn",	n_SetVehicleToRespawn },
 	{ "AddVehicleComponent",	n_AddVehicleComponent },
 	{ "RemoveVehicleComponent",	n_RemoveVehicleComponent },
-	{ "GetVehicleComponentType", n_GetVehicleComponentType },
-	{ "GetVehicleComponentInSlot", n_GetVehicleComponentInSlot },
 	{ "ChangeVehicleColor",		n_ChangeVehicleColor },
 	{ "ChangeVehiclePaintjob",	n_ChangeVehiclePaintjob },
 	{ "LinkVehicleToInterior",	n_LinkVehicleToInterior },
@@ -4569,236 +4482,3 @@ int amx_CustomInit(AMX *amx)
 }
 
 //----------------------------------------------------------------------------------
-
-// I know, I could code this better.
-int GetVehicleComponentType(int componentid) {
-	switch (componentid) {
-		// SPOILER
-		case 1000:
-		case 1001:
-		case 1002:
-		case 1003:
-		case 1014:
-		case 1015:
-		case 1016:
-		case 1023:
-		case 1049:
-		case 1050:
-		case 1058:
-		case 1060:
-		case 1138:
-		case 1139:
-		case 1146:
-		case 1147:
-		case 1158:
-		case 1162:
-		case 1163:
-		case 1164:
-			return CARMODTYPE_SPOILER;
-
-			// HOOD
-		case 1004:
-		case 1005:
-		case 1011:
-		case 1012:
-			return CARMODTYPE_HOOD;
-
-			// ROOF
-		case 1006:
-		case 1032:
-		case 1033:
-		case 1035:
-		case 1038:
-		case 1053:
-		case 1054:
-		case 1055:
-		case 1061:
-		case 1067:
-		case 1068:
-		case 1088:
-		case 1091:
-		case 1103:
-		case 1128:
-		case 1130:
-		case 1131:
-			return CARMODTYPE_ROOF;
-
-			// SIDESKIRT
-		case 1007:
-		case 1017:
-		case 1026:
-		case 1027:
-		case 1030:
-		case 1031:
-		case 1036:
-		case 1039:
-		case 1040:
-		case 1041:
-		case 1042:
-		case 1047:
-		case 1048:
-		case 1051:
-		case 1052:
-		case 1056:
-		case 1057:
-		case 1062:
-		case 1063:
-		case 1069:
-		case 1070:
-		case 1071:
-		case 1072:
-		case 1090:
-		case 1093:
-		case 1094:
-		case 1095:
-		case 1099:
-		case 1101:
-		case 1102:
-		case 1106:
-		case 1107:
-		case 1108:
-		case 1118:
-		case 1119:
-		case 1120:
-		case 1121:
-		case 1122:
-		case 1124:
-		case 1133:
-		case 1134:
-		case 1137:
-			return CARMODTYPE_SIDESKIRT;
-
-			// CARMODTYPE_LAMPS
-		case 1013:
-		case 1024:
-			return CARMODTYPE_LAMPS;
-
-			// CARMODTYPE_NITRO
-		case 1008:
-		case 1009:
-		case 1010:
-			return CARMODTYPE_NITRO;
-
-			// CARMODTYPE_EXHAUST
-		case 1018:
-		case 1019:
-		case 1020:
-		case 1021:
-		case 1022:
-		case 1028:
-		case 1029:
-		case 1034:
-		case 1037:
-		case 1043:
-		case 1044:
-		case 1045:
-		case 1046:
-		case 1059:
-		case 1064:
-		case 1065:
-		case 1066:
-		case 1089:
-		case 1092:
-		case 1104:
-		case 1105:
-		case 1113:
-		case 1114:
-		case 1126:
-		case 1127:
-		case 1129:
-		case 1132:
-		case 1135:
-		case 1136:
-			return CARMODTYPE_EXHAUST;
-
-			// CARMODTYPE_WHEELS
-		case 1025:
-		case 1073:
-		case 1074:
-		case 1075:
-		case 1076:
-		case 1077:
-		case 1078:
-		case 1079:
-		case 1080:
-		case 1081:
-		case 1082:
-		case 1083:
-		case 1084:
-		case 1085:
-		case 1096:
-		case 1097:
-		case 1098:
-			return CARMODTYPE_WHEELS;
-
-			// CARMODTYPE_STEREO
-		case 1086:
-			return CARMODTYPE_STEREO;
-
-			// CARMODTYPE_HYDRAULICS
-		case 1087:
-			return CARMODTYPE_HYDRAULICS;
-
-			// CARMODTYPE_FRONT_BUMPER
-		case 1117:
-		case 1152:
-		case 1153:
-		case 1155:
-		case 1157:
-		case 1160:
-		case 1165:
-		case 1166:
-		case 1169:
-		case 1170:
-		case 1171:
-		case 1172:
-		case 1173:
-		case 1174:
-		case 1175:
-		case 1179:
-		case 1181:
-		case 1182:
-		case 1185:
-		case 1188:
-		case 1189:
-		case 1190:
-		case 1191:
-			return CARMODTYPE_FRONT_BUMPER;
-
-			// CARMODTYPE_REAR_BUMPER
-		case 1140:
-		case 1141:
-		case 1148:
-		case 1149:
-		case 1150:
-		case 1151:
-		case 1154:
-		case 1156:
-		case 1159:
-		case 1161:
-		case 1167:
-		case 1168:
-		case 1176:
-		case 1177:
-		case 1178:
-		case 1180:
-		case 1183:
-		case 1184:
-		case 1186:
-		case 1187:
-		case 1192:
-		case 1193:
-			return CARMODTYPE_REAR_BUMPER;
-
-			// CARMODTYPE_VENT_RIGHT
-		case 1143:
-		case 1145:
-			return CARMODTYPE_VENT_RIGHT;
-
-			// CARMODTYPE_VENT_LEFT
-		case 1142:
-		case 1144:
-			return CARMODTYPE_VENT_LEFT;
-	}
-	return -1;
-}

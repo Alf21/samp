@@ -1,0 +1,9 @@
+diff a/server/player.cpp b/server/player.cpp	(rejected hunks)
+@@ -855,6 +855,7 @@
+ 	m_ofSync.vecPos.X = vecPos->X;
+ 	m_ofSync.vecPos.Y = vecPos->Y;
+ 	m_ofSync.vecPos.Z = vecPos->Z;
++	m_iCurrentSkin = iSkin;
+ }
+ 
+ //----------------------------------------------------

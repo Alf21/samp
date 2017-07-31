@@ -23,6 +23,17 @@
 class RakClientInterface;
 class RakServerInterface;
 class RakPeerInterface;
+class ConsoleServer;
+class ReplicaManager;
+class LogCommandParser;
+class PacketLogger;
+class RakNetCommandParser;
+class RakNetTransport;
+class TelnetTransport;
+class PacketConsoleLogger;
+class PacketFileLogger;
+class Router;
+class ConnectionGraph;
 
 class RAK_DLL_EXPORT RakNetworkFactory
 {
@@ -34,12 +45,33 @@ public:
 	static RakClientInterface* GetRakClientInterface( void );
 	static RakServerInterface* GetRakServerInterface( void );
 	static RakPeerInterface* GetRakPeerInterface( void );
-
+	static ConsoleServer* GetConsoleServer( void );
+	static ReplicaManager* GetReplicaManager( void );
+	static LogCommandParser* GetLogCommandParser( void );
+	static PacketLogger* GetPacketLogger( void );
+	static RakNetCommandParser* GetRakNetCommandParser( void );
+	static RakNetTransport* GetRakNetTransport( void );
+	static TelnetTransport* GetTelnetTransport( void );
+	static PacketConsoleLogger* GetPacketConsoleLogger( void );
+	static PacketFileLogger* GetPacketFileLogger( void );
+	static Router* GetRouter( void );
+	static ConnectionGraph* GetConnectionGraph( void );
 
 	// To delete the object returned by the Get functions above.
 	static void DestroyRakClientInterface( RakClientInterface* i );
 	static void DestroyRakServerInterface( RakServerInterface* i );
 	static void DestroyRakPeerInterface( RakPeerInterface* i );
+	static void DestroyConsoleServer( ConsoleServer* i);
+	static void DestroyReplicaManager( ReplicaManager* i);
+	static void DestroyLogCommandParser( LogCommandParser* i);
+	static void DestroyPacketLogger( PacketLogger* i);
+	static void DestroyRakNetCommandParser(  RakNetCommandParser* i );
+	static void DestroyRakNetTransport(  RakNetTransport* i );
+	static void DestroyTelnetTransport(  TelnetTransport* i );
+	static void DestroyPacketConsoleLogger(  PacketConsoleLogger* i );
+	static void DestroyPacketFileLogger(  PacketFileLogger* i );
+	static void DestroyRouter(  Router* i );
+	static void DestroyConnectionGraph(  ConnectionGraph* i );
 };
 
 #endif

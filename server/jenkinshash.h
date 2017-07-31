@@ -1,6 +1,9 @@
-/*
-Leaked by ZYRONIX.net.
-*/
+//----------------------------------------------------------
+//
+//   SA:MP Multiplayer Modification For GTA:SA
+//   Copyright 2004-2006 SA:MP team
+//
+//----------------------------------------------------------
 
 #ifndef _JENKINSHASH_H
 #define _JENKINSHASH_H

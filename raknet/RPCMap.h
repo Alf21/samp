@@ -35,11 +35,11 @@ public:
 	~RPCMap();
 	void Clear(void);
     RPCNode *GetNodeFromIndex(RPCIndex index);
-	RPCNode *GetNodeFromFunctionName(int *uniqueIdentifier);
-	RPCIndex GetIndexFromFunctionName(int *uniqueIdentifier);
-	void AddIdentifierWithFunction(int *uniqueIdentifier, void *functionPointer, bool isPointerToMember);
-	void AddIdentifierAtIndex(RPCIndex insertionIndex);
-	void RemoveNode(int *uniqueIdentifier);
+	RPCNode *GetNodeFromFunctionName(char *uniqueIdentifier);
+	RPCIndex GetIndexFromFunctionName(char *uniqueIdentifier);
+	void AddIdentifierWithFunction(char *uniqueIdentifier, void *functionPointer, bool isPointerToMember);
+	void AddIdentifierAtIndex(char *uniqueIdentifier, RPCIndex insertionIndex);
+	void RemoveNode(char *uniqueIdentifier);
 protected:
 	DataStructures::List<RPCNode *> rpcSet;
 };

@@ -1,6 +1,11 @@
-/*
-Leaked by ZYRONIX.net.
-*/
+//----------------------------------------------------
+//
+// SA:MP Multiplayer Modification For GTA:SA
+// Copyright 2004-2005 SA:MP team
+//
+// Version: $Id: exceptions.cpp,v 1.11 2006/05/08 17:35:55 kyeman Exp $
+//
+//----------------------------------------------------
 
 #ifdef WIN32
 

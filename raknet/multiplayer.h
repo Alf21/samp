@@ -116,7 +116,7 @@ void Multiplayer<InterfaceType>::ProcessPackets( InterfaceType *interfaceType )
 		// Check if this is a native packet
 		switch ( packetIdentifier )
 		{
-			
+		
 			case ID_REMOTE_DISCONNECTION_NOTIFICATION:
 			ReceiveRemoteDisconnectionNotification( p, interfaceType );
 			break;

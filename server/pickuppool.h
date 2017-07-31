@@ -1,5 +1,21 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+	file:
+		pickuppool.h
+	desc:
+		Umm, Pickups?
+
+*/
+/*
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+    Version: $Id: pickuppool.h,v 1.2 2006/03/20 17:59:34 kyeman Exp $
+
 */
 
 #ifndef SAMPSRV_PICKUPPOOL_H
@@ -27,9 +43,6 @@ private:
 	int		m_iPickupCount;
 	BYTE	m_bActive[MAX_PICKUPS];
 
-	BOOL	m_bPlayerPickups[MAX_PICKUPS];
-	PICKUP  m_pPlayerPickups[MAX_PLAYERS][MAX_PICKUPS];
-
 public:
 	
 	CPickupPool() {
@@ -43,10 +56,7 @@ public:
 	~CPickupPool() {};
 
 	int New(int iModel, int iType, float fX, float fY, float fZ, BYTE staticp = 0);
-	int New(BYTE bytePlayerID, int iModel, int iType, float fX, float fY, float fZ, BYTE staticp = 0);
-
 	int Destroy(int iPickup);
-	int DestroyPlayerPickup(BYTE bytePlayerID, int iPickup);
 	void InitForPlayer(BYTE bytePlayerID);
 };
 

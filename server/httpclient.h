@@ -1,6 +1,11 @@
-/*
-Leaked by ZYRONIX.net.
-*/
+//----------------------------------------------------
+//
+//	HTTP/1.0 Client Procedures Header.
+//	(c) 2002-2005 Kye Bitossi
+//
+//  Version: $Id: httpclient.h,v 1.3 2006/03/20 17:44:19 kyeman Exp $
+//
+//----------------------------------------------------
 
 #define HTTP_GET			1
 #define HTTP_POST			2

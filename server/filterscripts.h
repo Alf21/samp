@@ -1,5 +1,12 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2006 SA:MP Team
+
+	file:
+		filterscripts.h
+	desc:
+		FilterScript functions and management header file. 
 */
 
 #ifndef SAMPSRV_FILTERSCRIPTS_H

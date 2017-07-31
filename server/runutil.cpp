@@ -1,6 +1,11 @@
-/*
-Leaked by ZYRONIX.net.
-*/
+//----------------------------------------------------
+//
+//	Utility runtime procedures
+//	(c) 2005 Kye Bitossi
+//
+//  Version: $Id: runutil.cpp,v 1.4 2006/03/20 17:59:34 kyeman Exp $
+// 
+//----------------------------------------------------
 
 #include <stdio.h>
 #include <string.h>
@@ -252,8 +257,7 @@ bool ContainsInvalidNickChars(char * szString)
 			(*szString >= 'A' && *szString <= 'Z') ||
 			(*szString >= 'a' && *szString <= 'z')  ||
 			*szString == ']' || *szString == '[' ||
-			*szString == '_' || *szString == '{' ||
-			*szString == '}' /* || *szString == '\'' ||
+			*szString == '_'  /* || *szString == '\'' ||
 			*szString == '$' || *szString == ':' ||
 			*szString == '=' || *szString == '(' ||
 			*szString == ')' || *szString == '@' || 

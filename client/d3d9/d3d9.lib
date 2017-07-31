@@ -1,38 +1,0 @@
-!<arch>
-/               1093305249              0       1116      `
-     	B  b  ñ  ˛  ˛  V  V  ñ  ñ  .  .  ä  ä  Ù  Ù        ê  ê  ‚  ‚  ¿  ¿  l  l  P  P  ˛  ˛  ‰  ‰__IMPORT_DESCRIPTOR_d3d9 __NULL_IMPORT_DESCRIPTOR d3d9_NULL_THUNK_DATA _Direct3DCreate9@4 __imp__Direct3DCreate9@4 ?Direct3DShaderValidatorCreate9@@YGPAUIDirect3DShaderValidator9@@XZ __imp_?Direct3DShaderValidatorCreate9@@YGPAUIDirect3DShaderValidator9@@XZ _DebugSetMute __imp__DebugSetMute _DebugSetLevel __imp__DebugSetLevel ?PSGPSampleTexture@@YGXPAVD3DFE_PROCESSVERTICES@@IQAY03MI1@Z __imp_?PSGPSampleTexture@@YGXPAVD3DFE_PROCESSVERTICES@@IQAY03MI1@Z ?PSGPError@@YGXPAVD3DFE_PROCESSVERTICES@@W4PSGPERRORID@@I@Z __imp_?PSGPError@@YGXPAVD3DFE_PROCESSVERTICES@@W4PSGPERRORID@@I@Z _D3DPERF_BeginEvent@8 __imp__D3DPERF_BeginEvent@8 _D3DPERF_EndEvent@0 __imp__D3DPERF_EndEvent@0 _D3DPERF_SetMarker@8 __imp__D3DPERF_SetMarker@8 _D3DPERF_SetRegion@8 __imp__D3DPERF_SetRegion@8 _D3DPERF_QueryRepeatFrame@0 __imp__D3DPERF_QueryRepeatFrame@0 _D3DPERF_SetOptions@4 __imp__D3DPERF_SetOptions@4 _D3DPERF_GetStatus@0 __imp__D3DPERF_GetStatus@0 ?CheckFullscreen@@YGHXZ __imp_?CheckFullscreen@@YGHXZ /               1093305249              0       1126      `
-   B	  b  ñ  ˛  V  ñ  .  ä  Ù     ê  ‚  ¿  l  P  ˛  ‰       	  
-              	  
-           ?CheckFullscreen@@YGHXZ ?Direct3DShaderValidatorCreate9@@YGPAUIDirect3DShaderValidator9@@XZ ?PSGPError@@YGXPAVD3DFE_PROCESSVERTICES@@W4PSGPERRORID@@I@Z ?PSGPSampleTexture@@YGXPAVD3DFE_PROCESSVERTICES@@IQAY03MI1@Z _D3DPERF_BeginEvent@8 _D3DPERF_EndEvent@0 _D3DPERF_GetStatus@0 _D3DPERF_QueryRepeatFrame@0 _D3DPERF_SetMarker@8 _D3DPERF_SetOptions@4 _D3DPERF_SetRegion@8 _DebugSetLevel _DebugSetMute _Direct3DCreate9@4 __IMPORT_DESCRIPTOR_d3d9 __NULL_IMPORT_DESCRIPTOR __imp_?CheckFullscreen@@YGHXZ __imp_?Direct3DShaderValidatorCreate9@@YGPAUIDirect3DShaderValidator9@@XZ __imp_?PSGPError@@YGXPAVD3DFE_PROCESSVERTICES@@W4PSGPERRORID@@I@Z __imp_?PSGPSampleTexture@@YGXPAVD3DFE_PROCESSVERTICES@@IQAY03MI1@Z __imp__D3DPERF_BeginEvent@8 __imp__D3DPERF_EndEvent@0 __imp__D3DPERF_GetStatus@0 __imp__D3DPERF_QueryRepeatFrame@0 __imp__D3DPERF_SetMarker@8 __imp__D3DPERF_SetOptions@4 __imp__D3DPERF_SetRegion@8 __imp__DebugSetLevel __imp__DebugSetMute __imp__Direct3DCreate9@4 d3d9_NULL_THUNK_DATA d3d9.dll/       1093305249              0       483       `
-L °É*A        .debug$S        ?   å               @ B.idata$2           À   ﬂ          @ 0¿.idata$6        
-   ˝   ﬂ           @  ¿    	     d3d9.dll(            
- √Microsoft (R) LINK                                           d3d9.dll  @comp.id√] ˇˇ                  .idata$2@  ¿   h .idata$6        .idata$4@  ¿    h .idata$5@  ¿    h                     6            L   __IMPORT_DESCRIPTOR_d3d9 __NULL_IMPORT_DESCRIPTOR d3d9_NULL_THUNK_DATA 
-d3d9.dll/       1093305249              0       248       `
-L °É*A∑         .debug$S        ?   d               @ B.idata$3           £               @ 0¿    	     d3d9.dll(            
- √Microsoft (R) LINK                     @comp.id√] ˇˇ                     __NULL_IMPORT_DESCRIPTOR d3d9.dll/       1093305249              0       273       `
-L °É*A”         .debug$S        ?   å               @ B.idata$5           À               @ 0¿.idata$4           œ               @ 0¿    	     d3d9.dll(            
- √Microsoft (R) LINK         @comp.id√] ˇˇ                     d3d9_NULL_THUNK_DATA 
-d3d9.dll/       1093305249              0       53        `
-  ˇˇ  L°É*A!      ?CheckFullscreen@@YGHXZ d3d9.dll 
-d3d9.dll/       1093305249              0       97        `
-  ˇˇ  L°É*AM     ?Direct3DShaderValidatorCreate9@@YGPAUIDirect3DShaderValidator9@@XZ d3d9.dll 
-d3d9.dll/       1093305249              0       89        `
-  ˇˇ  L°É*AE     ?PSGPError@@YGXPAVD3DFE_PROCESSVERTICES@@W4PSGPERRORID@@I@Z d3d9.dll 
-d3d9.dll/       1093305249              0       90        `
-  ˇˇ  L°É*AF     ?PSGPSampleTexture@@YGXPAVD3DFE_PROCESSVERTICES@@IQAY03MI1@Z d3d9.dll d3d9.dll/       1093305249              0       51        `
-  ˇˇ  L°É*A     _D3DPERF_BeginEvent@8 d3d9.dll 
-d3d9.dll/       1093305249              0       49        `
-  ˇˇ  L°É*A     _D3DPERF_EndEvent@0 d3d9.dll 
-d3d9.dll/       1093305249              0       50        `
-  ˇˇ  L°É*A     _D3DPERF_GetStatus@0 d3d9.dll d3d9.dll/       1093305249              0       57        `
-  ˇˇ  L°É*A%     _D3DPERF_QueryRepeatFrame@0 d3d9.dll 
-d3d9.dll/       1093305249              0       50        `
-  ˇˇ  L°É*A     _D3DPERF_SetMarker@8 d3d9.dll d3d9.dll/       1093305249              0       51        `
-  ˇˇ  L°É*A     _D3DPERF_SetOptions@4 d3d9.dll 
-d3d9.dll/       1093305249              0       50        `
-  ˇˇ  L°É*A     _D3DPERF_SetRegion@8 d3d9.dll d3d9.dll/       1093305249              0       44        `
-  ˇˇ  L°É*A     _DebugSetLevel d3d9.dll d3d9.dll/       1093305249              0       43        `
-  ˇˇ  L°É*A   	  _DebugSetMute d3d9.dll 
-d3d9.dll/       1093305249              0       48        `
-  ˇˇ  L°É*A   
-  _Direct3DCreate9@4 d3d9.dll 

@@ -1,5 +1,14 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+	file:
+		main.h
+	desc:
+		Main header file for the whole project.
+		Should be included by all *.cpp files.
+
 */
 
 #ifndef SAMPSRV_MAIN_H
@@ -43,16 +52,14 @@ Leaked by ZYRONIX.net.
 #define ARRAY_SIZE(a)	( sizeof((a)) / sizeof(*(a)) )
 #define SAFE_DELETE(p)	{ if (p) { delete (p); (p) = NULL; } }
 #define SAFE_RELEASE(p)	{ if (p) { (p)->Release(); (p) = NULL; } }
-#define HAVE_STDINT_H
 
 // ------------
 // VERSION INFO
 // ------------
 
-#define SAMP_VERSION "0.2.5"
+#define SAMP_VERSION "0.2X"
+#define NETGAME_VERSION 8866
 
-#define NETCODE_CONNCOOKIELULZ 0x6969
-#define NETGAME_VERSION 4057
 // ------------
 // OS SPECIFICS
 // ------------
@@ -61,7 +68,6 @@ Leaked by ZYRONIX.net.
 	#define WIN32_LEAN_AND_MEAN
 	#define SLEEP(x) { Sleep(x); }
 
-	#include <Winsock2.h>
 	#include <windows.h>
 	#include <tchar.h>
 	#include <mmsystem.h>
@@ -113,17 +119,11 @@ typedef struct _SERVER_SETTINGS {
 #include <vector>
 
 // Raknet
-#include "raknet/PacketEnumerations.h"
-#include "raknet/RakNetworkFactory.h"
-#include "raknet/RakServerInterface.h"
-#include "raknet/NetworkTypes.h"
-#include "raknet/BitStream.h"
-#include "raknet/StringCompressor.h"
-#include "raknet/SocketLayer.h"
-#include "samp_netencr.h"
-#include "samp_auth.h"
-#include "SAMPRPC.h"
-#include "SAMP_VER.h"
+#include "../raknet/RakServer.h"
+#include "../raknet/RakNetworkFactory.h"
+#include "../raknet/BitStream.h"
+#include "../raknet/PacketEnumerations.h"
+#include "../raknet/SAMPRPC.h"
 
 // amx
 #include "amx/amx.h"

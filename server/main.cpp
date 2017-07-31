@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+    Version: $Id: main.cpp,v 1.26 2006/05/08 17:35:55 kyeman Exp $
+
 */
 
 #include "main.h"
@@ -247,7 +252,8 @@ int main (int argc, char** argv)
 	logprintf("");
 	logprintf("SA-MP Dedicated Server");
 	logprintf("----------------------");
-	logprintf("v" SAMP_VERSION ", (C)2005-2009 SA-MP Team\n");
+//	logprintf("v" SAMP_VERSION ", (C)2005-2009 SA-MP Team\n");
+	logprintf("v" SAMP_VERSION ", (C)2005-2015 SA-MP Team\n");
 
 #ifdef _DEBUG
 	logprintf("Debug Build Info:\n   NET_VERSION=%d\n   BUILD_DATE=%s\n   BUILD_TIME=%s\n",
@@ -256,7 +262,7 @@ int main (int argc, char** argv)
 
 	// Create a challenge number for the clients to be able to connect
 	srand(time(NULL));
-	_uiRndSrvChallenge = (unsigned int)rand() ^ NETGAME_VERSION;
+	_uiRndSrvChallenge = (unsigned int)rand();
     
 	// Create the Console
 	pConsole = new CConsole();

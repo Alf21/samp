@@ -1,5 +1,15 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+	file:
+		gamemodes.cpp
+	desc:
+		GameMode Event Executive.
+
+    Version: $Id: gamemodes.cpp,v 1.27 2006/04/19 11:57:59 spookie Exp $
+
 */
 
 #include "main.h"
@@ -850,6 +860,7 @@ int CGameMode::OnPlayerClickMap(cell playerid, float x, float y, float z) {
 	}
 	return (int)ret;
 }
+
 
 //----------------------------------------------------------------------------------
 // forward OnPlayerUpdate(playerid)

@@ -22,8 +22,6 @@
 #include "Rand.h"
 #include "PacketEnumerations.h"
 
-#include "main.h"
-
 // alloca
 #ifdef _COMPATIBILITY_1
 #elif defined(_WIN32)
@@ -85,7 +83,7 @@ ReliabilityLayer::ReliabilityLayer() : updateBitStream( DEFAULT_MTU_SIZE )   // 
 	freeThreadedMemoryOnNextUpdate = false;
 #ifdef _DEBUG
 	// Wait longer to disconnect in debug so I don't get disconnected while tracing
-	timeoutTime=30000;
+	timeoutTime=20000;
 #else
 	timeoutTime=10000;
 #endif
@@ -333,8 +331,6 @@ void ReliabilityLayer::FreeThreadSafeMemory( void )
 //-------------------------------------------------------------------------------------------------------
 bool ReliabilityLayer::HandleSocketReceiveFromConnectedPlayer( const char *buffer, int length, PlayerID playerId, DataStructures::List<PluginInterface*> &messageHandlerList, int MTUSize )
 {
-	RakNetTime start = RakNet::GetTime();
-
 #ifdef _DEBUG
 	assert( !( length <= 0 || buffer == 0 ) );
 #endif
@@ -381,7 +377,6 @@ bool ReliabilityLayer::HandleSocketReceiveFromConnectedPlayer( const char *buffe
 		MessageNumberType messageNumber;
 		if (incomingAcks.Deserialize(&socketData)==false)
 			return false;
-
 		for (i=0; i<incomingAcks.ranges.Size();i++)
 		{
 			if (incomingAcks.ranges[i].minIndex>incomingAcks.ranges[i].maxIndex)
@@ -402,7 +397,7 @@ bool ReliabilityLayer::HandleSocketReceiveFromConnectedPlayer( const char *buffe
 				{
 					char temp[256];
 					sprintf(temp, "%p: Got ack for %i. Resend queue size=%i\n", this, messageNumber, resendQueue.Size());
-					Log(temp);
+					OutputDebugStr(temp);
 				}
 #endif
 
@@ -440,14 +435,8 @@ bool ReliabilityLayer::HandleSocketReceiveFromConnectedPlayer( const char *buffe
 #ifdef _DEBUG_LOGGER
 			{
 				char temp[256];
-				sprintf(temp, "%p: Got packet %i data: %i bitlen: %i reliability: %d histogram: %X",
-					this,
-					internalPacket->messageNumber,
-					(unsigned char) internalPacket->data[0],
-					internalPacket->dataBitLength,
-					internalPacket->reliability,
-					internalPacket->histogramMarker);
-				Log(temp);
+				sprintf(temp, "%p: Got packet %i data: %i bitlen: %i\n", this, internalPacket->messageNumber, (unsigned char) internalPacket->data[0], internalPacket->dataBitLength);
+				OutputDebugStr(temp);
 			}
 #endif
 
@@ -844,7 +833,7 @@ bool ReliabilityLayer::Send( char *data, int numberOfBitsToSend, PacketPriority 
 		return false;
 
 #endif
-	
+
 	// Fix any bad parameters
 	if ( reliability > RELIABLE_SEQUENCED || reliability < 0 )
 		reliability = RELIABLE;
@@ -885,7 +874,7 @@ bool ReliabilityLayer::Send( char *data, int numberOfBitsToSend, PacketPriority 
 		internalPacket->data = ( unsigned char* ) data;
 //		printf("Using Pre-Allocated %i\n", internalPacket->data);
 	}
-	
+
 	internalPacket->dataBitLength = numberOfBitsToSend;
 	internalPacket->nextActionTime = 0;
 
@@ -897,11 +886,15 @@ bool ReliabilityLayer::Send( char *data, int numberOfBitsToSend, PacketPriority 
 
 	// Calculate if I need to split the packet
 	int headerLength = BITS_TO_BYTES( GetBitStreamHeaderLength( internalPacket ) );
-	
+
 	int maxDataSize = MTUSize - UDP_HEADER_SIZE - headerLength;
 
 	if ( encryptor.IsKeySet() )
+#ifdef TEA_ENCRYPTOR
+		maxDataSize -= 8; // Extra data for the encryptor
+#else
 		maxDataSize -= 16; // Extra data for the encryptor
+#endif
 
 	bool splitPacket = numberOfBytesToSend > maxDataSize;
 
@@ -1206,9 +1199,13 @@ void ReliabilityLayer::SendBitStream( SOCKET s, PlayerID playerId, RakNet::BitSt
 		oldLength = length;
 
 		encryptor.Encrypt( ( unsigned char* ) bitStream->GetData(), length, ( unsigned char* ) bitStream->GetData(), &length );
-		statistics.encryptionBitsSent = ( length - oldLength ) * 8;
+		statistics.encryptionBitsSent += ( length - oldLength ) * 8;
 
+#ifdef TEA_ENCRYPTOR
+		assert( ( length % 8 ) == 0 );
+#else
 		assert( ( length % 16 ) == 0 );
+#endif
 	}
 	else
 	{
@@ -1232,7 +1229,6 @@ void ReliabilityLayer::SendBitStream( SOCKET s, PlayerID playerId, RakNet::BitSt
 	//printf("total bits=%i length=%i\n", BITS_TO_BYTES(statistics.totalBitsSent), length);
 
 	SocketLayer::Instance()->SendTo( s, ( char* ) bitStream->GetData(), length, playerId.binaryAddress, playerId.port );
-
 #endif // __USE_IO_COMPLETION_PORTS
 
 	// lastPacketSendTime=time;
@@ -1256,7 +1252,11 @@ unsigned ReliabilityLayer::GenerateDatagram( RakNet::BitStream *output, int MTUS
 	maxDataBitSize = MTUSize - UDP_HEADER_SIZE;
 
 	if ( encryptor.IsKeySet() )
+#ifdef TEA_ENCRYPTOR
+		maxDataBitSize -= 8; // Extra data for the encryptor
+#else
 		maxDataBitSize -= 16; // Extra data for the encryptor
+#endif
 
 	maxDataBitSize <<= 3;
 
@@ -1622,7 +1622,7 @@ int ReliabilityLayer::GetBitStreamHeaderLength( const InternalPacket *const inte
 
 	// Write the PacketReliability.  This is encoded in 3 bits
 	//bitStream->WriteBits((unsigned char*)&(internalPacket->reliability), 3, true);
-	bitLength += 4;
+	bitLength += 3;
 
 	// If the reliability requires an ordering channel and ordering index, we Write those.
 	if ( internalPacket->reliability == UNRELIABLE_SEQUENCED || internalPacket->reliability == RELIABLE_SEQUENCED || internalPacket->reliability == RELIABLE_ORDERED )
@@ -1696,7 +1696,7 @@ int ReliabilityLayer::WriteToBitStreamFromInternalPacket( RakNet::BitStream *bit
 #endif
 
 	// Write the PacketReliability.  This is encoded in 3 bits
-	bitStream->WriteBits( (const unsigned char *)&c, 4, true );
+	bitStream->WriteBits( (const unsigned char *)&c, 3, true );
 
 	// If the reliability requires an ordering channel and ordering index, we Write those.
 	if ( internalPacket->reliability == UNRELIABLE_SEQUENCED || internalPacket->reliability == RELIABLE_SEQUENCED || internalPacket->reliability == RELIABLE_ORDERED )
@@ -1788,7 +1788,7 @@ InternalPacket* ReliabilityLayer::CreateInternalPacketFromBitStream( RakNet::Bit
 	// Read the PacketReliability. This is encoded in 3 bits
 	unsigned char reliability;
 
-	bitStreamSucceeded = bitStream->ReadBits( ( unsigned char* ) ( &( reliability ) ), 4 );
+	bitStreamSucceeded = bitStream->ReadBits( ( unsigned char* ) ( &( reliability ) ), 3 );
 
 	internalPacket->reliability = ( const PacketReliability ) reliability;
 
@@ -2083,7 +2083,11 @@ void ReliabilityLayer::SplitPacket( InternalPacket *internalPacket, int MTUSize 
 	maxDataSize = MTUSize - UDP_HEADER_SIZE;
 
 	if ( encryptor.IsKeySet() )
+#ifdef TEA_ENCRYPTOR
+		maxDataSize -= 8; // Extra data for the encryptor
+#else
 		maxDataSize -= 16; // Extra data for the encryptor
+#endif
 
 #ifdef _DEBUG
 	// Make sure we need to split the packet to begin with
@@ -2224,7 +2228,7 @@ void ReliabilityLayer::InsertIntoSplitPacketList( InternalPacket * internalPacke
 		unsigned int length = sizeof(MessageID) + sizeof(unsigned int)*2 + sizeof(unsigned int) + BITS_TO_BYTES(splitPacketChannelList[index]->splitPacketList[0]->dataBitLength);
 		progressIndicator->data = new unsigned char [length];
 		progressIndicator->dataBitLength=BYTES_TO_BITS(length);
-//		progressIndicator->data[0]=(MessageID)ID_DOWNLOAD_PROGRESS;
+		progressIndicator->data[0]=(MessageID)ID_DOWNLOAD_PROGRESS;
 		unsigned int temp;
 		temp=splitPacketChannelList[index]->splitPacketList.Size();
 		memcpy(progressIndicator->data+sizeof(MessageID), &temp, sizeof(unsigned int));

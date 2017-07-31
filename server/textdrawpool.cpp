@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+SA:MP Multiplayer Modification
+Copyright 2004-2005 SA:MP Team
+
+Version: $Id: textdrawpool.cpp,v 1.0 2007/05/18 19:26:45 Y_Less Exp $
+
 */
 
 #include "main.h"
@@ -106,7 +111,7 @@ void CTextDrawPool::ShowForPlayer(BYTE bytePlayer, WORD wText)
 	bsParams.Write(wText);
 	bsParams.Write((PCHAR)m_TextDraw[wText], sizeof (TEXT_DRAW_TRANSMIT));
 	bsParams.Write(m_szFontText[wText], MAX_TEXT_DRAW_LINE);
-	pRak->RPC(&RPC_ScrShowTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrShowTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false);
 	m_bHasText[wText][bytePlayer] = true;
 }
 
@@ -116,7 +121,7 @@ void CTextDrawPool::ShowForAll(WORD wText)
 	bsParams.Write(wText);
 	bsParams.Write((PCHAR)m_TextDraw[wText], sizeof (TEXT_DRAW_TRANSMIT));
 	bsParams.Write(m_szFontText[wText], MAX_TEXT_DRAW_LINE);
-	pNetGame->GetRakServer()->RPC(&RPC_ScrShowTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false, UNASSIGNED_NETWORK_ID, NULL);
+	pNetGame->GetRakServer()->RPC(RPC_ScrShowTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
 	for (int i = 0; i < MAX_PLAYERS; i++)
 	{
 		m_bHasText[wText][i] = true;
@@ -128,7 +133,7 @@ void CTextDrawPool::HideForPlayer(BYTE bytePlayer, WORD wText)
 	RakServerInterface* pRak = pNetGame->GetRakServer();
 	RakNet::BitStream bsParams;
 	bsParams.Write(wText);
-	if (m_bHasText[wText][bytePlayer]) pRak->RPC(&RPC_ScrHideTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	if (m_bHasText[wText][bytePlayer]) pRak->RPC(RPC_ScrHideTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayer), false, false);
 	m_bHasText[wText][bytePlayer] = false;
 }
 
@@ -141,7 +146,7 @@ void CTextDrawPool::HideForAll(WORD wText)
 	{
 		if (m_bHasText[wText][i])
 		{
-			pRak->RPC(&RPC_ScrHideTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(i), false, false, UNASSIGNED_NETWORK_ID, NULL);
+			pRak->RPC(RPC_ScrHideTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(i), false, false);
 			m_bHasText[wText][i] = false;
 		}
 	}
@@ -151,14 +156,12 @@ void CTextDrawPool::SetLetterSize(WORD wText, float fXSize, float fYSize)
 {
 	m_TextDraw[wText]->fLetterWidth = fXSize;
 	m_TextDraw[wText]->fLetterHeight = fYSize;
-	SetTextString(wText, m_szFontText[wText]);
 }
 
 void CTextDrawPool::SetTextSize(WORD wText, float fXSize, float fYSize)
 {
 	m_TextDraw[wText]->fLineWidth = fXSize;
 	m_TextDraw[wText]->fLineHeight = fYSize;
-	SetTextString(wText, m_szFontText[wText]);
 }
 
 void CTextDrawPool::SetTextString(WORD wText, char* szText)
@@ -174,7 +177,7 @@ void CTextDrawPool::SetTextString(WORD wText, char* szText)
 		{
 			if (m_bHasText[wText][i])
 			{
-				pRak->RPC(&RPC_ScrEditTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(i), false, false, UNASSIGNED_NETWORK_ID, NULL);
+				pRak->RPC(RPC_ScrEditTextDraw, &bsParams, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(i), false, false);
 			}
 		}
 	}
@@ -189,24 +192,20 @@ void CTextDrawPool::SetAlignment(WORD wText, BYTE byteAlign)
 	if (byteAlign == 1) m_TextDraw[wText]->byteLeft = 1;
 	else if (byteAlign == 2) m_TextDraw[wText]->byteCenter = 1;
 	else if (byteAlign == 3) m_TextDraw[wText]->byteRight = 1;
-	SetTextString(wText, m_szFontText[wText]);
 }
 
 void CTextDrawPool::SetColor(WORD wText, DWORD dwColor)
 {
 	// Needs converting from RGBA to ABGR
 	m_TextDraw[wText]->dwLetterColor = RGBA_ABGR(dwColor);
-	SetTextString(wText, m_szFontText[wText]);
 }
 
 void CTextDrawPool::SetBoxColor(WORD wText, DWORD dwColor)
 {
 	m_TextDraw[wText]->dwBoxColor = RGBA_ABGR(dwColor);
-	SetTextString(wText, m_szFontText[wText]);
 }
 
 void CTextDrawPool::SetBackgroundColor(WORD wText, DWORD dwColor)
 {
 	m_TextDraw[wText]->dwBackgroundColor = RGBA_ABGR(dwColor);
-	SetTextString(wText, m_szFontText[wText]);
 }

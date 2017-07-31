@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+    Version: $Id: player.h,v 1.30 2006/05/07 15:35:32 kyeman Exp $
+
 */
 
 #ifndef SAMPSRV_PLAYER_H
@@ -107,9 +112,6 @@ typedef struct _INCAR_SYNC_DATA
 	BYTE byteSirenOn;
 	BYTE byteLandingGearState;
 	BYTE byteTires[4];
-	DWORD dwPanelDamage;
-	DWORD dwDoorDamage;
-	BYTE byteLightDamage;
 	VEHICLEID TrailerID;
 	DWORD dwHydraThrustAngle;
 	FLOAT fTrainSpeed;
@@ -192,7 +194,7 @@ public:
 	BOOL					m_bRaceCheckpointEnabled;
 	int						m_iInteriorId;
 	int						m_iCurrentSkin;
-	float					m_fMaxHealth;
+	bool					m_bUseCJWalk;
 
 	// Weapon data
 	DWORD					m_dwSlotAmmo[13];
@@ -203,11 +205,7 @@ public:
 
 	BYTE					m_byteSpectateType;
 	DWORD					m_SpectateID; // Vehicle or player id
-
-	bool					m_bUseCJWalk;
-
-	VECTOR 					m_vecWaypointPos;
-
+	
 	ONFOOT_SYNC_DATA* GetOnFootSyncData() { return &m_ofSync; }
 	INCAR_SYNC_DATA* GetInCarSyncData() { return &m_icSync; }
 	PASSENGER_SYNC_DATA* GetPassengerSyncData() { return &m_psSync; }
@@ -240,7 +238,6 @@ public:
 		m_fGameTime = 720.0f; // 12 o'clock in minutes	
 		m_fHealth = 0.0f;
 		m_fArmour = 0.0f;
-		m_bUseCJWalk = false;
 	};
 
 	void UpdatePosition(float x, float y, float z);
@@ -282,7 +279,7 @@ public:
 	BOOL IsInCheckpoint() { return m_bInCheckpoint; };
 	BOOL IsInRaceCheckpoint() { return m_bInRaceCheckpoint; };
 	BYTE GetTeam() { return m_SpawnInfo.byteTeam; };
-	BYTE GetCurrentWeapon() { 
+	BYTE GetCurrentWeapon() {
 		if (GetState() == PLAYER_STATE_DRIVER)
 			return m_icSync.byteCurrentWeapon;
 		else if (GetState() == PLAYER_STATE_PASSENGER)
@@ -304,9 +301,6 @@ public:
 
 	BYTE CheckWeapon(BYTE weapon);
 	void CheckKeyUpdatesForScript(WORD wKeys);
-
-	void SetMaxHealth(float max_health);
-	float GetMaxHealth() { return m_fMaxHealth; };
 
 	BYTE GetSpecialAction() {
 		if(GetState() == PLAYER_STATE_ONFOOT) return m_ofSync.byteSpecialAction;

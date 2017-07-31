@@ -1,6 +1,11 @@
-/*
-Leaked by ZYRONIX.net.
-*/
+//----------------------------------------------------
+//
+//	Utility and runtime procedures header
+//	(c) 2005 Kye Bitossi
+//
+//  Version: $Id: runutil.h,v 1.2 2006/03/20 17:59:34 kyeman Exp $
+//
+//----------------------------------------------------
 
 
 void Util_UrlUnencode(char *enc);

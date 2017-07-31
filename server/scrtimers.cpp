@@ -1,5 +1,15 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2006 SA:MP Team
+
+	file:
+		scrtimers.cpp
+	desc:
+		Gamemode script timers.
+
+    Version: $Id: scrtimers.cpp,v 1.7 2006/03/25 09:12:48 kyeman Exp $
+
 */
 
 //----------------------------------------------------------------------------------

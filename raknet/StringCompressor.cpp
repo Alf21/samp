@@ -363,7 +363,7 @@ void StringCompressor::EncodeString( const char *input, int maxCharsToWrite, Rak
 	if ( input == 0 )
 	{
 		output->WriteCompressed( (unsigned short) 0 );
-		return;
+		return ;
 	}
 
 	RakNet::BitStream encodedBitStream;

@@ -1,5 +1,8 @@
 /*
-Leaked by ZYRONIX.net.
+
+SA:MP Multiplayer Modification
+Copyright 2004-2005 SA:MP Team
+
 */
 
 #ifndef _RCONRPC_H_INCLUDED

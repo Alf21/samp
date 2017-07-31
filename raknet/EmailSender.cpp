@@ -7,6 +7,7 @@
 #include "TCPInterface.h"
 #include "GetTime.h"
 #include "Rand.h"
+#include "FileList.h"
 #include <stdio.h>
 
 #if defined(_COMPATIBILITY_1)

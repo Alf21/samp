@@ -1,5 +1,15 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+	file:
+		scrcore.cpp
+	desc:
+		Scripting core functions
+
+    Version: $Id: scrcore.cpp,v 1.7 2006/03/30 07:52:25 kyeman Exp $
+
 */
 
 

@@ -1,5 +1,15 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2005 SA:MP Team
+
+	file:
+		playerpool.h
+	desc:
+		Player pool handling header file.
+
+    Version: $Id: playerpool.h,v 1.12 2006/04/09 09:54:46 kyeman Exp $
+
 */
 
 #ifndef SAMPSRV_PLAYERPOOL_H
@@ -29,8 +39,9 @@ private:
 	BYTE	m_byteVirtualWorld[MAX_PLAYERS];
 	int		m_iPlayerCount;
 	int		m_iPlayerPoolCount;
+
 public:
-	
+
 	CPlayerPool();
 	~CPlayerPool();
 
@@ -115,7 +126,6 @@ public:
 	BOOL  IsNickInUse(PCHAR szNick, BYTE bytePlayerID = -1);
 
 	int GetPlayerCount() { return m_iPlayerCount; };
-
 	int GetPlayerPoolCount() { return m_iPlayerPoolCount; };
 
 	void DeactivateAll();

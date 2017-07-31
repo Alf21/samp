@@ -1,5 +1,15 @@
 /*
-Leaked by ZYRONIX.net.
+
+	SA:MP Multiplayer Modification
+	Copyright 2004-2006 SA:MP Team
+
+	file:
+		scrtimers.h
+	desc:
+		Gamemode script timers header file.
+
+    Version: $Id: scrtimers.h,v 1.3 2006/03/25 01:47:13 spookie Exp $
+
 */
 
 #ifndef SAMPSRV_TIMERS_H

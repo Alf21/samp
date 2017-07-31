@@ -1,5 +1,10 @@
 /*
-Leaked by ZYRONIX.net.
+
+SA:MP Multiplayer Modification
+Copyright 2004-2005 SA:MP Team
+
+Version: $Id: menu.cpp,v 1.0 2007/02/13 15:35:32 Y_Less Exp $
+
 */
 
 #include "main.h"
@@ -107,8 +112,8 @@ void CMenu::InitForPlayer(BYTE bytePlayerID)
 		}
 	}
 
-	pRak->RPC(&RPC_ScrInitMenu, &bsMenu, HIGH_PRIORITY, 
-		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrInitMenu, &bsMenu, HIGH_PRIORITY, 
+		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false);
 }
 
 void CMenu::ShowForPlayer(BYTE bytePlayerID)
@@ -121,8 +126,8 @@ void CMenu::ShowForPlayer(BYTE bytePlayerID)
 	RakServerInterface* pRak = pNetGame->GetRakServer();
 	RakNet::BitStream bsMenu;
 	bsMenu.Write(m_byteMenuID);
-	pRak->RPC(&RPC_ScrShowMenu, &bsMenu, HIGH_PRIORITY, 
-		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrShowMenu, &bsMenu, HIGH_PRIORITY, 
+		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false);
 }
 
 void CMenu::HideForPlayer(BYTE bytePlayerID)
@@ -131,6 +136,6 @@ void CMenu::HideForPlayer(BYTE bytePlayerID)
 	RakServerInterface* pRak = pNetGame->GetRakServer();
 	RakNet::BitStream bsMenu;
 	bsMenu.Write(m_byteMenuID);
-	pRak->RPC(&RPC_ScrHideMenu, &bsMenu, HIGH_PRIORITY, 
-		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+	pRak->RPC(RPC_ScrHideMenu, &bsMenu, HIGH_PRIORITY, 
+		RELIABLE, 0, pRak->GetPlayerIDFromIndex(bytePlayerID), false, false);
 }
