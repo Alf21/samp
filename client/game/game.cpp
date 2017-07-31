@@ -128,7 +128,7 @@ void CGame::ProcessInputDisabling()
 	if(bInputsDisabled) {
 		UnFuck(0x541DF5,5);
 		memset((PVOID)0x541DF5,0x90,5);	// disable call	
-		//GameResetInternalKeys(); // set keys to 0
+		GameResetInternalKeys(); // set keys to 0
 	} else {
 		if(!iInputDisableWaitFrames) {
 			UnFuck(0x541DF5,5);
@@ -215,14 +215,8 @@ BOOL CGame::IsGameLoaded()
 
 void CGame::RequestModel(int iModelID, int iLoadingStream)
 {
-	_asm push iLoadingStream
-	_asm push iModelID
-	_asm mov edx, 0x4087E0
-	_asm call edx
-	_asm pop edx
-	_asm pop edx
-
-	//ScriptCommand(&request_model,iModelID);
+	
+	ScriptCommand(&request_model,iModelID);
 }
 
 //-----------------------------------------------------------

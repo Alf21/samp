@@ -97,7 +97,7 @@ public:
 	bool		m_bDisableEnterExits; // Interior enter/exits disabled?
 	DWORD		m_dwMapIcon[32];
 	
-	char m_szHostName[255];
+	char *m_szHostName;
 	char m_szHostOrIp[128];
 	int m_iPort;
 

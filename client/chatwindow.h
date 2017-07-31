@@ -21,6 +21,7 @@ typedef struct _CHAT_WINDOW_ENTRY
 	CHAR szNick[MAX_PLAYER_NAME+1];
 	DWORD dwTextColor;
 	DWORD dwNickColor;
+	SYSTEMTIME pTime;
 } CHAT_WINDOW_ENTRY;
 
 #define CHAT_WINDOW_MODE_OFF	0
@@ -81,12 +82,14 @@ public:
 	~CChatWindow();
 
 	LONG GetChatWindowBottom() { return m_lChatWindowBottom; };
+	LONG GetWidth(const char *szString);
 	void ScrollBarPosFromCurrentPage();
 
 	LONG				m_lFontSizeY;
 	ID3DXFont		    *m_pD3DFont;
 	ID3DXSprite			*m_pChatTextSprite;
 	IDirect3DDevice9	*m_pD3DDevice;
+	bool				m_bTimestamp;
 };
 
 //----------------------------------------------------

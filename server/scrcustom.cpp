@@ -1014,6 +1014,29 @@ static cell AMX_NATIVE_CALL n_SetPlayerHealth(AMX *amx, cell *params)
 }
 
 //----------------------------------------------------------------------------------
+// native SetPlayerMaxHealth(playerid, Float:max_health);
+
+static cell AMX_NATIVE_CALL n_SetPlayerMaxHealth(AMX *amx, cell *params) {
+	CHECK_PARAMS(2);
+
+	if (!pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
+	pNetGame->GetPlayerPool()->GetAt(params[1])->SetMaxHealth(amx_ctof(params[2]));
+	return 1;
+}
+
+//----------------------------------------------------------------------------------
+// native GetPlayerMaxHealth(playerid, &Float:max_health);
+
+static cell AMX_NATIVE_CALL n_GetPlayerMaxHealth(AMX *amx, cell *params) {
+	CHECK_PARAMS(2);
+	if (!pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
+	cell* cptr;
+	amx_GetAddr(amx, params[2], &cptr);
+	*cptr = amx_ftoc(pNetGame->GetPlayerPool()->GetAt(params[1])->m_fMaxHealth);
+	return 1;
+}
+
+//----------------------------------------------------------------------------------
 
 // native PutPlayerInVehicle(playerid, vehicleid, seatid)
 static cell AMX_NATIVE_CALL n_PutPlayerInVehicle(AMX *amx, cell *params)
@@ -4366,6 +4389,8 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "SetPlayerPosFindZ",		n_SetPlayerPosFindZ },
 	{ "GetPlayerHealth",		n_GetPlayerHealth },
 	{ "SetPlayerHealth",		n_SetPlayerHealth },
+	{ "SetPlayerMaxHealth",		n_SetPlayerMaxHealth },
+	{ "GetPlayerMaxHealth",		n_GetPlayerMaxHealth },
 	{ "SetPlayerColor",			n_SetPlayerColor },
 	{ "GetPlayerColor",			n_GetPlayerColor },
 	{ "GetPlayerVehicleID",		n_GetPlayerVehicleID },

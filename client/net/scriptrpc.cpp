@@ -1901,6 +1901,8 @@ void ScrSetPlayerDrunkVisuals(RPCParameters* rpcParams)
 	}
 }
 
+//----------------------------------------------------
+
 void ScrSetPlayerDrunkHandling(RPCParameters* rpcParams)
 {
 	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
@@ -1916,6 +1918,8 @@ void ScrSetPlayerDrunkHandling(RPCParameters* rpcParams)
 	}
 }
 
+//----------------------------------------------------
+
 void ScrDisableInteriorEnterExits(RPCParameters *rpcParams) {
 	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
 	int iBitLength = rpcParams->numberOfBitsOfData;
@@ -1928,6 +1932,8 @@ void ScrDisableInteriorEnterExits(RPCParameters *rpcParams) {
 	pGame->ToggleEnterExits(disable);
 }
 
+//----------------------------------------------------
+
 void ScrUsePlayerPedAnims(RPCParameters *rpcParams) {
 	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
 	int iBitLength = rpcParams->numberOfBitsOfData;
@@ -1935,6 +1941,8 @@ void ScrUsePlayerPedAnims(RPCParameters *rpcParams) {
 
 	bsData.Read((bool)pNetGame->m_bUseCJWalk);
 }
+
+//----------------------------------------------------
 
 void ScrSetPlayerWaypoint(RPCParameters *rpcParams) {
 	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
@@ -1946,6 +1954,19 @@ void ScrSetPlayerWaypoint(RPCParameters *rpcParams) {
 
 	pNetGame->GetPlayerPool()->GetLocalPlayer()->SetWaypoint(x, y);
 }
+
+//----------------------------------------------------
+
+void ScrSetPlayerMaxHealth(RPCParameters *rpcParams) {
+	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	int iBitLength = rpcParams->numberOfBitsOfData;
+	RakNet::BitStream bsData((unsigned char*)Data, (iBitLength / 8) + 1, false);
+	float max_health;
+	bsData.Read(max_health);
+	pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->SetMaxHealth(max_health);
+}
+
+//----------------------------------------------------
 
 void RegisterScriptRPCs(RakClientInterface* pRakClient)
 {
@@ -2034,6 +2055,7 @@ void RegisterScriptRPCs(RakClientInterface* pRakClient)
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrDisableInteriorEnterExits, ScrDisableInteriorEnterExits);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrUsePlayerPedAnims, ScrUsePlayerPedAnims);
 	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetPlayerWaypoint, ScrSetPlayerWaypoint);
+	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetPlayerMaxHealth, ScrSetPlayerMaxHealth);
 	//pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetPlayerDrunkVisuals,ScrSetPlayerDrunkVisuals );
 //	pRakClient->RegisterAsRemoteProcedureCall(&RPC_ScrSetPlayerDrunkHandling,ScrSetPlayerDrunkHandling );
 }
@@ -2126,7 +2148,7 @@ void UnRegisterScriptRPCs(RakClientInterface* pRakClient)
 	pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrDisableInteriorEnterExits);
 	pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrUsePlayerPedAnims);
 	pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrSetPlayerWaypoint);
-
+	pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrSetPlayerMaxHealth);
 	//pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrSetPlayerDrunkVisuals );
 	//pRakClient->UnregisterAsRemoteProcedureCall(&RPC_ScrSetPlayerDrunkHandling );
 }

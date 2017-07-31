@@ -130,7 +130,7 @@ void CEntity::SetModelIndex(UINT uiModel)
 	if(!pGame->IsModelLoaded(uiModel)) {
 		pGame->RequestModel(uiModel);
 		pGame->LoadRequestedModels();
-		while(!pGame->IsModelLoaded(uiModel) && i != 10) i++; // if i == 10, non existant model. 
+		while(!pGame->IsModelLoaded(uiModel) && i < 10) i++; // if i == 10, non existant model. 
 	}
 
 	DWORD dwThisEntity = (DWORD)m_pEntity;

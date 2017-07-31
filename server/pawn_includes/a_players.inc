@@ -35,6 +35,8 @@ native SetPlayerInterior(playerid,interiorid);
 native GetPlayerInterior(playerid);
 native SetPlayerHealth(playerid, Float:health);
 native GetPlayerHealth(playerid, &Float:health);
+native SetPlayerMaxHealth(playerid, Float:max_health);
+native GetPlayerMaxHealth(playerid, &Float:max_health);
 native SetPlayerArmour(playerid, Float:armour);
 native GetPlayerArmour(playerid, &Float:armour);
 native SetPlayerAmmo(playerid, weaponslot, ammo);

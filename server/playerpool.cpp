@@ -48,7 +48,7 @@ BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName)
 		m_iPlayerMoney[bytePlayerID] = 0;
 		m_bIsAnAdmin[bytePlayerID] = FALSE;
 		m_byteVirtualWorld[bytePlayerID] = 0;
-
+		
 		// Notify all the other players of a newcommer with
 		// a 'ServerJoin' join RPC 
 		RakNet::BitStream bsSend;

@@ -168,6 +168,12 @@ void cmdRcon(PCHAR szCmd)
 
 //----------------------------------------------------
 
+void cmdTimestamp(PCHAR szCMD) {
+	pChatWindow->m_bTimestamp = !pChatWindow->m_bTimestamp;
+}
+
+//----------------------------------------------------
+
 void cmdCmpStat(PCHAR szCmd)
 {
 }
@@ -1384,6 +1390,7 @@ void SetupCommands()
 	pCmdWindow->AddCmdProc("rs",cmdRawSavePos);
 	pCmdWindow->AddCmdProc("rcon",cmdRcon);
 	pCmdWindow->AddCmdProc("mem",cmdMem);
+	pCmdWindow->AddCmdProc("timestamp", cmdTimestamp);
 
 #ifndef _DEBUG
 	if (tSettings.bDebug)

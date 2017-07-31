@@ -572,6 +572,20 @@ void CPlayerPed::SetArmour(float fArmour)
 
 //-----------------------------------------------------------
 
+void CPlayerPed::SetMaxHealth(float fMaxHealth) {
+	if (!m_pPed) return;
+	m_pPed->fMaxHealth = fMaxHealth;
+}
+
+//-----------------------------------------------------------
+
+float CPlayerPed::GetMaxHealth() {
+	if (!m_pPed) return 0.0f;
+	return m_pPed->fMaxHealth;
+}
+
+//-----------------------------------------------------------
+
 DWORD CPlayerPed::GetStateFlags()
 {	
 	if(!m_pPed) return 0;

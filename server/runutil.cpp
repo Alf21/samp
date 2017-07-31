@@ -252,7 +252,8 @@ bool ContainsInvalidNickChars(char * szString)
 			(*szString >= 'A' && *szString <= 'Z') ||
 			(*szString >= 'a' && *szString <= 'z')  ||
 			*szString == ']' || *szString == '[' ||
-			*szString == '_'  /* || *szString == '\'' ||
+			*szString == '_' || *szString == '{' ||
+			*szString == '}' /* || *szString == '\'' ||
 			*szString == '$' || *szString == ':' ||
 			*szString == '=' || *szString == '(' ||
 			*szString == ')' || *szString == '@' || 

@@ -1,4 +1,5 @@
 #include "main.h"
+#include <string>
 
 extern CGame *pGame;
 
@@ -12,7 +13,7 @@ CChatWindow::CChatWindow(IDirect3DDevice9 *pD3DDevice, ID3DXFont *pFont)
 	m_pD3DFont			= pFont;
 	m_iEnabled			= CHAT_WINDOW_MODE_FULL;
 	m_iCurrentPage		= 1;
-
+	m_bTimestamp		= false;
 	// Create a sprite to use when drawing text
 	D3DXCreateSprite(pD3DDevice,&m_pChatTextSprite);
 
@@ -135,12 +136,20 @@ void CChatWindow::Draw()
 
 				case CHAT_TYPE_CHAT:
 
+					
 					i = strlen(m_ChatWindowEntries[iMessageAt].szNick);
 
+					if (m_bTimestamp) {
+						char tmp_timestamp[30];
+						sprintf(tmp_timestamp, "[%02d:%02d:%02d]", m_ChatWindowEntries[iMessageAt].pTime.wHour, m_ChatWindowEntries[iMessageAt].pTime.wMinute, m_ChatWindowEntries[iMessageAt].pTime.wSecond);
+						m_pD3DFont->DrawText(0, tmp_timestamp, -1, &rectSize, DT_CALCRECT | DT_LEFT, 0xFF000000);	
+						RenderText(tmp_timestamp, rect, m_ChatWindowEntries[iMessageAt].dwNickColor);
+						rect.left = 35 + (rectSize.right - rectSize.left);
+					}
 					if(i) {
 						m_pD3DFont->DrawText(0,m_ChatWindowEntries[iMessageAt].szNick,-1,&rectSize,DT_CALCRECT|DT_LEFT,0xFF000000);
 						RenderText(m_ChatWindowEntries[iMessageAt].szNick,rect,m_ChatWindowEntries[iMessageAt].dwNickColor);
-						rect.left = 35 + (rectSize.right - rectSize.left);
+						rect.left = m_bTimestamp ? rect.left + 35 + (rectSize.right - rectSize.left) : 35 + (rectSize.right - rectSize.left);
 					}					
 
 					RenderText(m_ChatWindowEntries[iMessageAt].szMessage,rect,m_ChatWindowEntries[iMessageAt].dwTextColor);
@@ -149,7 +158,13 @@ void CChatWindow::Draw()
 
 				case CHAT_TYPE_INFO:
 				case CHAT_TYPE_DEBUG:
-
+					if (m_bTimestamp) {
+						char tmp_timestamp[30];
+						sprintf(tmp_timestamp, "[%02d:%02d:%02d]", m_ChatWindowEntries[iMessageAt].pTime.wHour, m_ChatWindowEntries[iMessageAt].pTime.wMinute, m_ChatWindowEntries[iMessageAt].pTime.wSecond);
+						m_pD3DFont->DrawText(0, tmp_timestamp, -1, &rectSize, DT_CALCRECT | DT_LEFT, 0xFF000000);
+						RenderText(tmp_timestamp, rect, m_ChatWindowEntries[iMessageAt].dwTextColor);
+						rect.left = 35 + (rectSize.right - rectSize.left);
+					}
 					RenderText(m_ChatWindowEntries[iMessageAt].szMessage,rect,m_ChatWindowEntries[iMessageAt].dwTextColor);
 					break;
 			}		
@@ -245,7 +260,8 @@ void CChatWindow::AddToChatWindowBuffer(eChatMessageType eType,
 	m_ChatWindowEntries[0].eType = eType;
 	m_ChatWindowEntries[0].dwTextColor = dwTextColor;
 	m_ChatWindowEntries[0].dwNickColor = dwChatColor;
-	
+	GetSystemTime(&m_ChatWindowEntries[0].pTime);
+
 	if(szNick) {
 		strcpy(m_ChatWindowEntries[0].szNick,szNick);
 		strcat(m_ChatWindowEntries[0].szNick,":");
@@ -271,6 +287,7 @@ void CChatWindow::AddToChatWindowBuffer(eChatMessageType eType,
 			m_ChatWindowEntries[0].dwTextColor = dwTextColor;
 			m_ChatWindowEntries[0].dwNickColor = dwChatColor;
 			m_ChatWindowEntries[0].szNick[0] = '\0';
+			
 
 			strcpy(m_ChatWindowEntries[0].szMessage,szString+MAX_LINE_LENGTH);
 		}
@@ -307,34 +324,198 @@ void CChatWindow::PushBack()
 	}
 }
 
+// From (https://github.com/IgnatBantserov/sacm/blob/master/client/chatwindow.cpp)
+// With minor edits.
 //----------------------------------------------------
+typedef struct _COLOR_TAG {
+	DWORD _color;
+	bool _alpha;
+	bool _valid;
+} COLOR_TAG;
 
-void CChatWindow::RenderText(CHAR *sz,RECT rect,DWORD dwColor)
+typedef struct _PARTS_OF_MESSAGE {
+	DWORD dwColor;
+	int iStartPos;
+	int iEndPos;
+} PARTS_OF_MESSAGE;
+
+//----------------------------------------------------
+static signed char HexToDec(signed char ch) {
+	if (ch >= '0' && ch <= '9')
+		return ch - '0';
+	if (ch >= 'A' && ch <= 'F')
+		return ch - 'A' + 10;
+	if (ch >= 'a' && ch <= 'f')
+		return ch - 'A' + 10;
+
+	return -1;
+}
+
+//----------------------------------------------------
+bool IsValidHex(const std::string& hex) {
+	if (hex.empty())
+		return false;
+
+	for (size_t i = 0, len = hex.length(); i < len; i++)
+	{
+		if (HexToDec(hex[i]) == -1)
+			return false;
+	}
+	return true;
+}
+
+//----------------------------------------------------
+COLOR_TAG GetColorTag(const char *text, size_t maxLen) {
+	COLOR_TAG color = { 0, false, false };
+	const int minLen = 8;
+
+	if (text == nullptr || *text != '{' || maxLen < minLen)
+		return color;
+
+	if (text[7] == '}') {
+		color._alpha = false;
+		color._valid = true;
+	}
+	else if (minLen + 2 <= maxLen && text[9] == '}') {
+		color._alpha = true;
+		color._valid = true;
+	}
+	if (color._valid) {
+		if (IsValidHex(std::string(text).substr(1, color._alpha ? 8 : 6)))
+			color._color = strtol(&text[1], nullptr, 16);
+		else
+			color._valid = false;
+	}
+	return color;
+}
+
+//----------------------------------------------------
+LONG CChatWindow::GetWidth(const char *szString) {
+	RECT rect = { 0, 0, 0, 0 };
+	if (m_pD3DFont) 
+		m_pD3DFont->DrawText(NULL, szString, strlen(szString), &rect, DT_CALCRECT, D3DCOLOR_XRGB(0, 0, 0));
+	
+	return rect.right - rect.left;
+}
+
+//----------------------------------------------------
+void CChatWindow::RenderText(CHAR *sz, RECT rect, DWORD dwColor)
 {
-	if(m_iEnabled == CHAT_WINDOW_MODE_FULL) {
-		// above
-		rect.top -= 1;
-		m_pD3DFont->DrawText(m_pChatTextSprite,sz,-1,&rect,DT_NOCLIP|DT_SINGLELINE|DT_LEFT,0xFF000000);
-		rect.top += 1;
+	PARTS_OF_MESSAGE partOfMessage[32];
+	int iCounter = 1, iLen = strlen(sz);
 
-		// below
-		rect.top += 1;
-		m_pD3DFont->DrawText(m_pChatTextSprite,sz,-1,&rect,DT_NOCLIP|DT_SINGLELINE|DT_LEFT,0xFF000000);
-		rect.top -= 1;
+	for (int i = 0; i < 32; i++) {
+		partOfMessage[i].dwColor = dwColor;
+		partOfMessage[i].iStartPos = 0;
+		partOfMessage[i].iEndPos = 0;
 
-		// left
-		rect.left -= 1;
-		m_pD3DFont->DrawText(m_pChatTextSprite,sz,-1,&rect,DT_NOCLIP|DT_SINGLELINE|DT_LEFT,0xFF000000);
-		rect.left += 1;
-
-		// right
-		rect.left += 1;
-		m_pD3DFont->DrawText(m_pChatTextSprite,sz,-1,&rect,DT_NOCLIP|DT_SINGLELINE|DT_LEFT,0xFF000000);
-		rect.left -= 1;
 	}
 
-	m_pD3DFont->DrawText(m_pChatTextSprite,sz,-1,&rect,DT_NOCLIP|DT_SINGLELINE|DT_LEFT,dwColor);
+	for (size_t i = 0; i < iLen; i++)
+	{
+		if (sz[i] == '{')
+		{
+			COLOR_TAG tag = GetColorTag(&sz[i], iLen - i);
+			if (tag._valid)
+			{
+				partOfMessage[iCounter].dwColor = tag._color;
+				if (!tag._alpha)
+					partOfMessage[iCounter].dwColor |= 0xFF000000;
+				i += tag._alpha ? 9 : 7;
+				partOfMessage[iCounter].iStartPos = i + 1;
+				for (size_t j = i; j < iLen; j++) {
+					if (sz[j] == '{') {
+						partOfMessage[iCounter].iEndPos = j;
+					}
+				}
+				iCounter++;
+				continue;
+			}
+		}
+	}
+	for (int i = 0; i < iCounter; i++) {
+		std::string tmpTxt = &sz[partOfMessage[i].iStartPos];
+		if (partOfMessage[i].iStartPos > 0 && partOfMessage[i].iStartPos < iLen) {
+			
+			size_t pos = tmpTxt.find('{');
+
+			if (pos > 0 && pos < iLen) {
+				tmpTxt.resize(pos);
+			}
+
+			if (m_iEnabled == CHAT_WINDOW_MODE_FULL) {
+				rect.top -= 1;
+				m_pD3DFont->DrawTextA(m_pChatTextSprite, tmpTxt.c_str(), -1, &rect, DT_NOCLIP | DT_SINGLELINE | DT_LEFT, 0xFF000000);
+				rect.top += 1;
+
+				// below
+				rect.top += 1;
+				m_pD3DFont->DrawTextA(m_pChatTextSprite, tmpTxt.c_str(), -1, &rect, DT_NOCLIP | DT_SINGLELINE | DT_LEFT, 0xFF000000);
+				rect.top -= 1;
+
+				// left
+				rect.left -= 1;
+				m_pD3DFont->DrawTextA(m_pChatTextSprite, tmpTxt.c_str(), -1, &rect, DT_NOCLIP | DT_SINGLELINE | DT_LEFT, 0xFF000000);
+				rect.left += 1;
+
+				// right
+				rect.left += 1;
+				m_pD3DFont->DrawTextA(m_pChatTextSprite, tmpTxt.c_str(), -1, &rect, DT_NOCLIP | DT_SINGLELINE | DT_LEFT, 0xFF000000);
+				rect.left -= 1;
+			}
+
+			m_pD3DFont->DrawTextA(m_pChatTextSprite, tmpTxt.c_str(), -1, &rect, DT_NOCLIP | DT_SINGLELINE | DT_LEFT, partOfMessage[i].dwColor);
+
+			if (tmpTxt.c_str()[tmpTxt.length() - 1] == ' ') {
+				rect.left += GetWidth(tmpTxt.c_str()) + GetWidth("{ }") - GetWidth("{}");
+			}
+			else {
+				rect.left += GetWidth(tmpTxt.c_str());
+			}
+		}
+		else if (sz[0] != '{') {
+			std::string tmpTxt = sz;
+			size_t pos = tmpTxt.find('{');
+
+			if (pos > 0 && pos < iLen) {
+				tmpTxt.resize(pos);
+			}
+
+			if (m_iEnabled == CHAT_WINDOW_MODE_FULL) {
+				rect.top -= 1;
+				m_pD3DFont->DrawTextA(m_pChatTextSprite, tmpTxt.c_str(), -1, &rect, DT_NOCLIP | DT_SINGLELINE | DT_LEFT, 0xFF000000);
+				rect.top += 1;
+
+				// below
+				rect.top += 1;
+				m_pD3DFont->DrawTextA(m_pChatTextSprite, tmpTxt.c_str(), -1, &rect, DT_NOCLIP | DT_SINGLELINE | DT_LEFT, 0xFF000000);
+				rect.top -= 1;
+
+				// left
+				rect.left -= 1;
+				m_pD3DFont->DrawTextA(m_pChatTextSprite, tmpTxt.c_str(), -1, &rect, DT_NOCLIP | DT_SINGLELINE | DT_LEFT, 0xFF000000);
+				rect.left += 1;
+
+				// right
+				rect.left += 1;
+				m_pD3DFont->DrawTextA(m_pChatTextSprite, tmpTxt.c_str(), -1, &rect, DT_NOCLIP | DT_SINGLELINE | DT_LEFT, 0xFF000000);
+				rect.left -= 1;
+			}
+
+			m_pD3DFont->DrawTextA(m_pChatTextSprite, tmpTxt.c_str(), -1, &rect, DT_NOCLIP | DT_SINGLELINE | DT_LEFT, partOfMessage[i].dwColor);
+
+			if (tmpTxt.c_str()[tmpTxt.length() - 1] == ' ') {
+				rect.left += GetWidth((char*)tmpTxt.c_str()) + GetWidth("{ }") - GetWidth("{}");
+			}
+			else {
+				rect.left += GetWidth((char*)tmpTxt.c_str());
+			}
+			continue;
+		}
+	}
+
 }
+
 
 //----------------------------------------------------
 // EOF

@@ -1213,12 +1213,13 @@ void CNetGame::InitGameForPlayer(BYTE bytePlayerID)
 	bsInitGame.Write(m_bDisableEnterExits);
 	
 	char* szHostName = pConsole->GetStringVariable("hostname");
-	if(szHostName) {
-		BYTE byteStrLen = strlen(szHostName);
-		bsInitGame.Write(byteStrLen);
-		bsInitGame.Write(szHostName, byteStrLen);
+	DWORD dwStrLen = strlen(szHostName);
+	bsInitGame.Write(dwStrLen);
+
+	if(szHostName) {	
+		bsInitGame.Write(szHostName, dwStrLen);
 	} else {
-		bsInitGame.Write((BYTE)0);
+		bsInitGame.Write("");
 	}
 
 	GetRakServer()->RPC(&RPC_InitGame,&bsInitGame,HIGH_PRIORITY,RELIABLE,0,GetRakServer()->GetPlayerIDFromIndex(bytePlayerID),false,false, UNASSIGNED_NETWORK_ID, NULL);

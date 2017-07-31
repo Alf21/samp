@@ -52,6 +52,9 @@ public:
 	void  SetHealth(float fHealth);
 	float GetArmour();
 	void  SetArmour(float fArmour);
+	float GetMaxHealth();
+	void SetMaxHealth(float fMaxHealth);
+
 	DWORD GetStateFlags();
 	void  SetStateFlags(DWORD dwStateFlags);
 	BOOL  IsDead();

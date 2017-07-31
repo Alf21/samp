@@ -137,3 +137,4 @@ int RPC_ScrCreate3DTextLabel = 36;
 int RPC_ScrDisableInteriorEnterExits = 200;
 int RPC_ScrUsePlayerPedAnims = 201;
 int RPC_ScrSetPlayerWaypoint = 203;
+int RPC_ScrSetPlayerMaxHealth = 204;

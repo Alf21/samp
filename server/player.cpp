@@ -78,7 +78,7 @@ CPlayer::CPlayer()
 	m_SpectateID = 0xFFFFFFFF;
 	m_iCurrentSkin = 0;
 	m_bUseCJWalk = false;
-	
+	m_fMaxHealth = 100.0f;
 
 	BYTE i;
 	for (i = 0; i < 13; i++)
@@ -1107,4 +1107,12 @@ void CPlayer::CheckKeyUpdatesForScript(WORD wKeys)
 }
 
 //----------------------------------------------------
+
+void CPlayer::SetMaxHealth(float max_health) {
+	m_fMaxHealth = max_health;
+	RakNet::BitStream bsData;
+	bsData.Write(max_health);
+	pNetGame->GetRakServer()->RPC(&RPC_ScrSetPlayerMaxHealth, &bsData, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(m_bytePlayerID), false, false, UNASSIGNED_NETWORK_ID, NULL);
+}
+
 // EOF

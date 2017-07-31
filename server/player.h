@@ -192,6 +192,7 @@ public:
 	BOOL					m_bRaceCheckpointEnabled;
 	int						m_iInteriorId;
 	int						m_iCurrentSkin;
+	float					m_fMaxHealth;
 
 	// Weapon data
 	DWORD					m_dwSlotAmmo[13];
@@ -303,6 +304,9 @@ public:
 
 	BYTE CheckWeapon(BYTE weapon);
 	void CheckKeyUpdatesForScript(WORD wKeys);
+
+	void SetMaxHealth(float max_health);
+	float GetMaxHealth() { return m_fMaxHealth; };
 
 	BYTE GetSpecialAction() {
 		if(GetState() == PLAYER_STATE_ONFOOT) return m_ofSync.byteSpecialAction;

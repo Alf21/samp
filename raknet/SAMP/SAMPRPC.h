@@ -134,3 +134,4 @@ extern int RPC_ScrCreate3DTextLabel;
 extern int RPC_ScrDisableInteriorEnterExits;
 extern int RPC_ScrUsePlayerPedAnims;
 extern int RPC_ScrSetPlayerWaypoint;
+extern int RPC_ScrSetPlayerMaxHealth;
