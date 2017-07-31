@@ -77,7 +77,7 @@ native SetDeathDropAmount(amount);
 native CreateExplosion(Float:X, Float:Y, Float:Z, type, Float:Radius);
 native SetDisabledWeapons(...);
 native EnableZoneNames(enable);
-native UsePlayerPedAnims();		// Will cause the players to use CJ running/walking animations
+native UsePlayerPedAnims(bool:enable = true, playerid = -1);		// Will cause the players to use CJ running/walking animations
 native DisableInteriorEnterExits();  // will disable all interior enter/exits in the game.
 native SetNameTagDrawDistance(Float:distance); // Distance at which nametags will start rendering on the client.
 
