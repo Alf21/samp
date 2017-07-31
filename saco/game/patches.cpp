@@ -212,15 +212,14 @@ void ApplyInGamePatches()
 
 	// APPLY THE DAMN NOP PATCH AND QUIT ASCIING QUESTIONS!
 
-	/* Frame limiter default ~40 fps
+	/* Frame limiter default ~40 fps */
 	UnFuck(0xC1704C,1);
-	*(PDWORD)0xC1704C = 55UL; // yes that means 40..*/
+	*(PDWORD)0xC1704C = 55UL; // yes that means 40..
 
 	// Increase the vehicle pool limit (see top of proc for patch)
 	UnFuckAndCheck(0x551024,sizeof(pbyteVehiclePoolAllocPatch),0x68);
 	memcpy((PVOID)0x551024,pbyteVehiclePoolAllocPatch,sizeof(pbyteVehiclePoolAllocPatch));
 
-	/* ----THIS IS GTAU STUFF
 	// Increase Buildings
 	UnFuck(0x55105F,4);
 	*(DWORD *)0x55105F = 160000;
@@ -245,16 +244,15 @@ void ApplyInGamePatches()
 	SetIPLs(200,iGtaVersion);
 
 	// Increase Timed Objects
-	SetTimedObjects(1000);*/
-	// ----END GTAU
+	SetTimedObjects(1000);
 	
-	// Increase the ped pool limit (210)
-	UnFuck(0x550FF2,1);
-	*(PBYTE)0x550FF2 = 0xD2;
+	// Increase the ped pool limit (1000)
+	UnFuck(0x550FF2,4);
+	*(DWORD*)0x550FF2 = 1000;
 
 	// And we need 210 ped intelligence too plz
-	UnFuck(0x551283,1);
-	*(PBYTE)0x551283 = 0xD2; // thx
+	UnFuck(0x551283,4);
+	*(DWORD*)0x551283 = 1000; // thx
 	
 	// And a larger task pool
 	UnFuck(0x551140,1);

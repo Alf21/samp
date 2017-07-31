@@ -5,14 +5,13 @@ files\default.ide
 files\gta.dat
 files\handling.cfg
 files\LOADSCS.txd
-files\LOADSCV.txd
 files\vehicle.txd
-..\scm\main.scm
+files\main.scm
 files\melee.dat
 files\object.dat
 files\ped.dat
 files\peds.ide
-..\scm\script.img
+files\script.img
 files\shopping.dat
 files\stream.ini
 files\timecyc.dat

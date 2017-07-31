@@ -16,6 +16,7 @@
 extern CNetGame* pNetGame;
 extern CGame* pGame;
 extern CChatWindow *pChatWindow;
+extern CFileSystem *pFileSystem;
 
 extern DWORD dwGraphicsLoop; // Used for the external dll game loop.
 extern DWORD dwGameLoop; // Used for the external dll game loop.
@@ -1230,6 +1231,17 @@ void InstallCallHook(DWORD dwInstallAddress, DWORD dwHookFunction, BYTE byteJump
 	*(PBYTE)(dwInstallAddress) = byteJumpCode;
 	*(PDWORD)(dwInstallAddress+1) = (DWORD)disp;
 	VirtualProtect((LPVOID)dwInstallAddress,5,oldProt,&oldProt2);
+}
+
+//-----------------------------------------------------------
+
+void InstallJmpHook(DWORD dwInstallAddress, DWORD dwHookFunction)
+{
+	DWORD oldProt, oldProt2;
+	VirtualProtect((LPVOID)dwInstallAddress, 5, PAGE_EXECUTE_READWRITE, &oldProt);
+	*(BYTE *)dwInstallAddress = 0xE9;
+	*(DWORD *)(dwInstallAddress + 1) = (dwHookFunction - (dwInstallAddress + 5));
+	VirtualProtect((LPVOID)dwInstallAddress, 5, oldProt, &oldProt2);
 }
 
 //-----------------------------------------------------------

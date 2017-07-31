@@ -10,6 +10,7 @@
 #include "../main.h"
 #include "../game/util.h"
 #include "../mod.h"
+#include "../buildinfo.h"
 
 extern CGame		 *pGame;
 extern CChatWindow   *pChatWindow;
@@ -99,7 +100,7 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_bInstagib = FALSE;
 	m_iCheckLoadedStuff = 0;
 
-	if(pChatWindow) pChatWindow->AddDebugMessage("SA:MP 0.2X Initialized");
+	if (pChatWindow) pChatWindow->AddDebugMessage("{FFFFFF}SA-MP {B9C9BF}"SAMP_VERSION" {FFFFFF}Started");
 
 }
 
