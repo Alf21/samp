@@ -249,6 +249,7 @@ LRESULT APIENTRY NewWndProc( HWND hwnd,UINT uMsg,
 							 WPARAM wParam,LPARAM lParam ) 
 { 	
 	if(pCmdWindow) {
+		pDialogResourceManager->MsgProc(hwnd, uMsg, wParam, lParam);
 		pCmdWindow->MsgProc(uMsg,wParam,lParam);		
 	}
 

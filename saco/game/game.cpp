@@ -859,3 +859,12 @@ void CGame::DisableEnterExits()
 }
 
 //-----------------------------------------------------------
+
+void CGame::RemoveBuildingForPlayer(int iModelID, VECTOR vecPos, float fRadius) {
+	// iModelID Is not used YET!  - Need to work out CPool<CObjects> - Currently not working.
+	DWORD dwFunc = 0x5A1980;
+	pChatWindow->AddDebugMessage("CGame::RemoveBuildingForPlayer(%i)", iModelID);
+	((void(__cdecl *)(float x, float y, float z, float fRadius))dwFunc)(vecPos.X, vecPos.Y, vecPos.Z, fRadius);
+}
+
+//-----------------------------------------------------------

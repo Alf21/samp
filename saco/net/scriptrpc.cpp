@@ -1622,6 +1622,27 @@ void ScrUsePlayerPedAnims(RPCParameters *rpcParams) {
 
 //----------------------------------------------------
 
+void ScrRemoveBuildingForPlayer(RPCParameters *rpcParams) {
+	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	int iBitLength = rpcParams->numberOfBitsOfData;
+	RakNet::BitStream bsData((unsigned char*)Data, (iBitLength / 8) + 1, false);
+	
+	int i = 0;
+	VECTOR vPos;
+	int iModelID;
+	float fRadius;
+	bsData.Read(iModelID); // Can be -1
+	bsData.Read(vPos.X);
+	bsData.Read(vPos.Y);
+	bsData.Read(vPos.Z);
+	bsData.Read(fRadius);
+	
+	pGame->RemoveBuildingForPlayer(iModelID, vPos, fRadius);
+}
+
+//----------------------------------------------------
+
+
 void RegisterScriptRPCs(RakClientInterface* pRakClient)
 {
 	REGISTER_STATIC_RPC(pRakClient, ScrSetSpawnInfo);

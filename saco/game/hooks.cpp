@@ -87,6 +87,12 @@ DWORD dwParam1;
 DWORD dwParam2;
 DWORD dwParamThis;
 
+// Player Ped Fall map
+float mX, mY, mZ;
+int iResult = 0;
+DWORD CPaths = 0x96F050;
+DWORD *CPaths__Nodes = (DWORD*)0x96F854;
+
 //-----------------------------------------------------------
 // x86 codes to perform our unconditional jmp for detour entries. 
 
@@ -1190,6 +1196,39 @@ NUDE PickUpPickup_Hook()
 
 //-----------------------------------------------------------
 
+MATRIX4X4 matpos;
+NUDE CGame__RemoveFallenPeds() {
+	_asm pushad;
+	if (pNetGame->GetPlayerPool()) pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->GetMatrix(&matpos);
+
+	((int(__thiscall *)(void *pathfind, int *pResult, float X, float Y, float Z, int pathType, float radius, char unk2, char unk3, char unk4, char unk5, int unk6))0x44F460)((void*)CPaths, &iResult, matpos.pos.X, matpos.pos.Y, matpos.pos.Z, 1, 999999.88, 0, 0, 0, 0, 0);
+
+	// Access violation, looking into it.
+	mX = (CPaths__Nodes[(unsigned __int16)iResult] + 0x1C * HIWORD(iResult)) + 8;
+	mY = (CPaths__Nodes[(unsigned __int16)iResult] + 0x1C * HIWORD(iResult)) + 0xA;
+	mZ = (CPaths__Nodes[(unsigned __int16)iResult] + 0x1C * HIWORD(iResult)) + 0xC;
+
+	mX = mX * 0.125;
+	mY = mY * 0.125;
+	mZ = mZ * 0.125 + 2.0;
+
+	if (pNetGame && pNetGame->GetPlayerPool()) {
+		pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->TeleportTo(mX, mY, mZ);
+		pChatWindow->AddDebugMessage("CPlayerPed::TeleportTo(%f, %f, %f) : CGame_RemoveFallenPeds", mX, mY, mZ);
+		// unknown - appears to be setting some bool param
+		/*
+		DWORD unk1 = *(DWORD*)(pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pEntity + 0x44);
+		*(DWORD*)unk1 = 0;
+		*(DWORD*)(unk1 + 4) = 0;
+		*(DWORD*)(unk1 + 8) = 0;
+		*/
+	}
+	_asm popad;
+	_asm ret;
+}
+
+//-----------------------------------------------------------
+
 void InstallMethodHook(	DWORD dwInstallAddress,
 						DWORD dwHookFunction )
 {
@@ -1295,6 +1334,9 @@ void GameInstallHooks()
 	InstallMethodHook(0x871800,(DWORD)AllVehicles_ProcessControl_Hook); // truck
 	InstallMethodHook(0x871B10,(DWORD)AllVehicles_ProcessControl_Hook); // quad
 	InstallMethodHook(0x872398,(DWORD)AllVehicles_ProcessControl_Hook); // train
+
+	// Install JMP Hook
+	//InstallJmpHook(0x565E3D, (DWORD)CGame__RemoveFallenPeds); // For under world map teleportation. - not working atm, crashing!
 
 	// Radar and map hooks for gang zones
 	InstallCallHook(0x5869BF,(DWORD)ZoneOverlay_Hook);

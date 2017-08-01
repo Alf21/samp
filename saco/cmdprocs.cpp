@@ -206,6 +206,14 @@ void cmdRcon(PCHAR szCmd)
 
 //----------------------------------------------------
 
+void cmdTimestamp(PCHAR szCmd)
+{
+	if (pChatWindow) pChatWindow->m_bTimestamp = !pChatWindow->m_bTimestamp;
+}
+
+
+//----------------------------------------------------
+
 void cmdCmpStat(PCHAR szCmd)
 {
 	float upRatio = (float)_sendtoCompressedTotal / _sendtoUncompressedTotal;
@@ -1216,7 +1224,6 @@ void cmdAttractAddr(PCHAR szCmd)
 void cmdPlayerVtbl(PCHAR szCmd)
 {
 	//GamePool_FindPlayerPed()->entity.vtable = 0x86C0A8;
-	MATRIX4X4 mat;
 	CPlayerPed *pPed = pGame->FindPlayerPed();
 	BYTE *b = (BYTE *)pPed->m_pPed+1156;
 	BYTE sv = *b;
@@ -1403,6 +1410,24 @@ void cmdShowPlayerVirtualWorld(PCHAR szCmd)
 
 //------------------------------------------------------
 
+void cmdRemoveBuilding(PCHAR szCmd) {
+	CLocalPlayer *pPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+	MATRIX4X4 mat;
+	pPlayer->GetPlayerPed()->GetMatrix(&mat);
+	VECTOR pos = mat.pos;
+	pGame->RemoveBuildingForPlayer(-1, pos, 100.0f);
+}
+
+//----------------------------------------------------
+
+void cmdUnderMap(PCHAR szCmd) {
+	CLocalPlayer *pPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+	MATRIX4X4 mat;
+	pPlayer->GetPlayerPed()->GetMatrix(&mat);
+	pPlayer->GetPlayerPed()->TeleportTo(mat.pos.X, mat.pos.Y, mat.pos.Z - 10.0f);
+}
+
+//----------------------------------------------------
 #endif
 
 //----------------------------------------------------
@@ -1418,6 +1443,7 @@ void SetupCommands()
 	pCmdWindow->AddCmdProc("rcon",cmdRcon);
 
 	pCmdWindow->AddCmdProc("dl", cmdDebugLabels);
+	pCmdWindow->AddCmdProc("timestamp", cmdTimestamp);
 
 #ifndef _DEBUG
 	if (tSettings.bDebug)
@@ -1518,6 +1544,8 @@ void SetupCommands()
 
 	pCmdWindow->AddCmdProc("showmyvw",cmdShowMyVirtualWorld);
 	pCmdWindow->AddCmdProc("showplayervw",cmdShowPlayerVirtualWorld);
+	pCmdWindow->AddCmdProc("removebuilding", cmdRemoveBuilding);
+	pCmdWindow->AddCmdProc("undermap", cmdUnderMap);
 
 #endif
 	

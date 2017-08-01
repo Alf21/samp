@@ -247,12 +247,12 @@ void ApplyInGamePatches()
 	SetTimedObjects(1000);
 	
 	// Increase the ped pool limit (1000)
-	UnFuck(0x550FF2,4);
-	*(DWORD*)0x550FF2 = 1000;
+	UnFuck(0x550FF2,1);
+	*(DWORD*)0x550FF2 = 0xD2;
 
 	// And we need 210 ped intelligence too plz
-	UnFuck(0x551283,4);
-	*(DWORD*)0x551283 = 1000; // thx
+	UnFuck(0x551283,1);
+	*(DWORD*)0x551283 = 0xD2; // thx
 	
 	// And a larger task pool
 	UnFuck(0x551140,1);

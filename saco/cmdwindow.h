@@ -27,7 +27,7 @@ private:
 
 	IDirect3DDevice9 *m_pD3DDevice;
 	CDXUTDialog		*m_pGameUI;
-	CDXUTEditBox	*m_pEditControl;
+	CDXUTIMEEditBox	*m_pEditControl;
 
 public:
 

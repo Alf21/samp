@@ -157,6 +157,7 @@ public:
 
 	DWORD GetWeaponInfo(int iWeapon, int iUnk);
 	void DisableEnterExits();
+	void RemoveBuildingForPlayer(int iModelID, VECTOR vecPos, float fRadius);
 
 	CGame();
 	~CGame() {};
