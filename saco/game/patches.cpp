@@ -428,6 +428,25 @@ void ApplyInGamePatches()
 	*(BYTE*)0x613BAA = 0x90;
 	*(BYTE*)0x613BAB = 0x90;
 
+	// Fuck the call to CPedGroups::Process()
+	UnFuck(0x568AA1, 5);
+	*(BYTE*)0x568AA1 = 0x90;
+	*(BYTE*)0x568AA2 = 0x90;
+	*(BYTE*)0x568AA3 = 0x90;
+	*(BYTE*)0x568AA4 = 0x90;
+	*(BYTE*)0x568AA5 = 0x90;
+
+	UnFuck(0x824588, 3);
+	*(BYTE*)0x824588 = 0x90;
+	*(BYTE*)0x824589 = 0x90;
+	*(BYTE*)0x82458A = 0x90;
+
+	// Fuck the call to CPopulation::removePed() from CGame::RemoveFallenPeds() 
+	UnFuck(0x565D28, 3);
+	*(BYTE*)0x565D28 = 0x90;
+	*(BYTE*)0x565D29 = 0x90;
+	*(BYTE*)0x565D2A = 0x90;
+
 	// Don't go back to player anims, use the peds IDE
 	UnFuck(0x609A4E,6);
 	memset((PVOID)0x609A4E, 0x90, 6);

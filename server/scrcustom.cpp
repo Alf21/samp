@@ -2258,7 +2258,7 @@ static cell AMX_NATIVE_CALL n_PlayerPlaySound(AMX *amx, cell *params)
 static cell AMX_NATIVE_CALL n_ShowNameTags(AMX *amx, cell *params)
 {	
 	CHECK_PARAMS(1);
-	pNetGame->m_bShowNameTags = (bool)params[1];
+	pNetGame->m_bShowNameTags = params[1];
 	return 1;
 }
 
@@ -2327,7 +2327,6 @@ static cell AMX_NATIVE_CALL n_UsePlayerPedAnims(AMX *amx, cell *params)
 static cell AMX_NATIVE_CALL n_GetPlayerPedAnims(AMX *amx, cell *params) {
 	if (!pNetGame || !pNetGame->GetPlayerPool() || !pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
 	return pNetGame->GetPlayerPool()->GetAt(params[1])->m_bUseCJWalk;
-	
 }
 
 //----------------------------------------------------------------------------------

@@ -128,7 +128,7 @@
 	#define RPC_PickedUpPickup				"do"
 	#define RPC_MenuSelect					"dx"
 	#define RPC_MenuQuit					"dy"
-	
+	#define RPC_UnderMapTeleport			"a2"
 	// rcon
 	#define RPC_RconConnect					"dp"
 	#define RPC_RconCommand					"dq"

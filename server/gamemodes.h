@@ -76,6 +76,7 @@ public:
 	int OnPlayerInteriorChange(cell playerid, cell newid, cell oldid);
 	int OnPlayerKeyStateChange(cell playerid, cell newkeys, cell oldkeys);
 	int OnPlayerClickMap(cell playerid, float x, float y, float z);
+	int OnPlayerFallUnderMap(cell playerid, float x, float y, float z);
 	int OnPlayerUpdate(cell playerid);
 };
 

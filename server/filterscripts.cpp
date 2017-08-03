@@ -1120,6 +1120,25 @@ int CFilterScripts::OnPlayerClickMap(cell playerid, float x, float y, float z) {
 }
 
 //----------------------------------------------------------------------------------
+// forward OnPlayerFallUnderMap(playerid, Float:fX, Float:fY, Float:fZ)
+int CFilterScripts::OnPlayerFallUnderMap(cell playerid, float x, float y, float z) {
+	int idx;
+	cell ret = 1;
+	for (int i = 0; i < MAX_FILTER_SCRIPTS; i++) {
+		if (m_pFilterScripts[i]) {
+			if (!amx_FindPublic(m_pFilterScripts[i], "OnPlayerFallUnderMap", &idx)) {
+				amx_Push(m_pFilterScripts[i], amx_ftoc(z));
+				amx_Push(m_pFilterScripts[i], amx_ftoc(y));
+				amx_Push(m_pFilterScripts[i], amx_ftoc(x));
+				amx_Push(m_pFilterScripts[i], playerid);
+				amx_Exec(m_pFilterScripts[i], &ret, idx);
+			}
+		}
+	}
+	return (int)ret;
+}
+
+//----------------------------------------------------------------------------------
 // forward OnPlayerUpdate(playerid)
 
 int CFilterScripts::OnPlayerUpdate(cell playerid)

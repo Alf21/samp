@@ -181,7 +181,10 @@ typedef struct _VEHICLE_TYPE
 	ENTITY_TYPE entity; // 0-184
 
 	// CVEHICLE STUFF
-	PADDING(_pad200,318); // 184-502
+	PADDING(_pad200,117); // 184-434
+	BYTE primaryColour;	// 434 - 435
+	BYTE secondaryColour; // 435 - 436
+	PADDING(_pad2003, 67); // 436 - 502
     BYTE byteHorn;		  // 502-503
 	PADDING(_pad2001,185); // 503-688
 	int iHornLevel;			// 688-692

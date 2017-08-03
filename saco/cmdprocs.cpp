@@ -1428,6 +1428,18 @@ void cmdUnderMap(PCHAR szCmd) {
 }
 
 //----------------------------------------------------
+
+void cmdColour(PCHAR szCmd) {
+	CLocalPlayer *pPlayer = pNetGame->GetPlayerPool()->GetLocalPlayer();
+	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt(pPlayer->GetPlayerPed()->GetCurrentVehicleID());
+	if (pVehicle) {
+		pChatWindow->AddDebugMessage("Colour1: %i | Colour2: %i", pVehicle->m_pVehicle->byteColor1, pVehicle->m_pVehicle->byteColor2);
+		pChatWindow->AddDebugMessage("Vehicle: 0x%X | Colour1_mem: 0x%X | Coour2 mem: 0x%X", &pVehicle, &pVehicle->m_pVehicle->byteColor1, &pVehicle->m_pVehicle->byteColor2);
+	}
+}
+
+//----------------------------------------------------
+
 #endif
 
 //----------------------------------------------------
@@ -1546,7 +1558,7 @@ void SetupCommands()
 	pCmdWindow->AddCmdProc("showplayervw",cmdShowPlayerVirtualWorld);
 	pCmdWindow->AddCmdProc("removebuilding", cmdRemoveBuilding);
 	pCmdWindow->AddCmdProc("undermap", cmdUnderMap);
-
+	pCmdWindow->AddCmdProc("getvehiclecolour", cmdColour);
 #endif
 	
 }

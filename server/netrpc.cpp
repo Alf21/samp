@@ -875,6 +875,24 @@ void MenuQuit(RPCParameters *rpcParams)
 	if(pFilters) pFilters->OnPlayerExitedMenu(bytePlayerID);
 }
 
+void UnderMapTeleport(RPCParameters *rpcParams) {
+	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	int iBitLength = rpcParams->numberOfBitsOfData;
+	BYTE bytePlayerID = pRak->GetIndexFromPlayerID(rpcParams->sender);
+	RakNet::BitStream bsData(Data, (iBitLength / 8) + 1, false);
+
+	CGameMode *pGameMode = pNetGame->GetGameMode();
+	CFilterScripts *pFilters = pNetGame->GetFilterScripts();
+
+	float x, y, z;
+	bsData.Read(x);
+	bsData.Read(y);
+	bsData.Read(z);
+
+	if (pGameMode) pGameMode->OnPlayerFallUnderMap(bytePlayerID, x, y, z);
+	if (pFilters) pFilters->OnPlayerFallUnderMap(bytePlayerID,  x, y, z);
+}
+
 //----------------------------------------------------
 
 void RegisterRPCs(RakServerInterface * pRakServer)
@@ -902,6 +920,7 @@ void RegisterRPCs(RakServerInterface * pRakServer)
 	REGISTER_STATIC_RPC(pRakServer, PickedUpPickup);
 	REGISTER_STATIC_RPC(pRakServer, MenuSelect);
 	REGISTER_STATIC_RPC(pRakServer, MenuQuit);
+	REGISTER_STATIC_RPC(pRakServer, UnderMapTeleport);
 }
 
 //----------------------------------------------------
@@ -931,6 +950,7 @@ void UnRegisterRPCs(RakServerInterface * pRakServer)
 	UNREGISTER_STATIC_RPC(pRakServer, PickedUpPickup);
 	UNREGISTER_STATIC_RPC(pRakServer, MenuSelect);
 	UNREGISTER_STATIC_RPC(pRakServer, MenuQuit);
+	UNREGISTER_STATIC_RPC(pRakServer, UnderMapTeleport);
 }
 
 //----------------------------------------------------

@@ -1197,34 +1197,82 @@ NUDE PickUpPickup_Hook()
 //-----------------------------------------------------------
 
 MATRIX4X4 matpos;
+DWORD CGame__RemoveFallenPeds_JMP = 0x565D86;
+
+void Fallen_Teleport(float x, float y, float z) {
+	RakNet::BitStream bsData;
+	bsData.Write(mX);
+	bsData.Write(mY);
+	bsData.Write(mZ);
+	pNetGame->GetRakClient()->RPC(RPC_UnderMapTeleport, &bsData, HIGH_PRIORITY, RELIABLE, 0, false);
+}
+
 NUDE CGame__RemoveFallenPeds() {
+
+	_asm push edx
+
+	_asm mov edx, [eax]
+	_asm mov mX, edx
+	_asm mov edx, [eax+4]
+	_asm mov mY, edx
+	_asm mov edx, [eax+8]
+	_asm mov mZ, edx
+
+	_asm push eax
+
 	_asm pushad;
-	if (pNetGame->GetPlayerPool()) pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->GetMatrix(&matpos);
-
-	((int(__thiscall *)(void *pathfind, int *pResult, float X, float Y, float Z, int pathType, float radius, char unk2, char unk3, char unk4, char unk5, int unk6))0x44F460)((void*)CPaths, &iResult, matpos.pos.X, matpos.pos.Y, matpos.pos.Z, 1, 999999.88, 0, 0, 0, 0, 0);
-
-	// Access violation, looking into it.
-	mX = (CPaths__Nodes[(unsigned __int16)iResult] + 0x1C * HIWORD(iResult)) + 8;
-	mY = (CPaths__Nodes[(unsigned __int16)iResult] + 0x1C * HIWORD(iResult)) + 0xA;
-	mZ = (CPaths__Nodes[(unsigned __int16)iResult] + 0x1C * HIWORD(iResult)) + 0xC;
 
 	mX = mX * 0.125;
 	mY = mY * 0.125;
 	mZ = mZ * 0.125 + 2.0;
-
+	
 	if (pNetGame && pNetGame->GetPlayerPool()) {
+		Fallen_Teleport(mX, mY, mZ);
 		pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->TeleportTo(mX, mY, mZ);
 		pChatWindow->AddDebugMessage("CPlayerPed::TeleportTo(%f, %f, %f) : CGame_RemoveFallenPeds", mX, mY, mZ);
-		// unknown - appears to be setting some bool param
-		/*
-		DWORD unk1 = *(DWORD*)(pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->m_pEntity + 0x44);
-		*(DWORD*)unk1 = 0;
-		*(DWORD*)(unk1 + 4) = 0;
-		*(DWORD*)(unk1 + 8) = 0;
-		*/
 	}
+
 	_asm popad;
-	_asm ret;
+	_asm pop edx
+	_asm mov [esp + 3Ch + 12], 0
+	_asm mov edx, [esp + 3Ch + 12]
+	_asm add esi, 44h; Add
+	_asm mov [esp + 3Ch + 8], 0
+	_asm mov eax, [esp + 3Ch + 12]
+	_asm mov [esi], edx
+	_asm mov [esp + 3Ch + 4], 0
+	_asm mov ecx, [esp + 3Ch + 4]
+	_asm mov [esi + 4], eax
+	_asm mov [esi + 8], ecx
+	_asm pop eax
+	// should jmp here
+	_asm ret
+}
+
+//-----------------------------------------------------------
+BYTE primaryColour;
+BYTE secondaryColour;
+VEHICLEID iVehicleID;
+DWORD CVehicle__OnPayNSpray__JMP = 0x44B229;
+extern void SendScmEvent(int iEventType, DWORD dwParam1, DWORD dwParam2, DWORD dwParam3);
+
+NUDE CVehicle__OnPayNSpray() {
+	
+	_asm mov primaryColour, al
+	_asm mov secondaryColour, dl
+	_asm push eax
+	
+	_asm pushad
+
+	iVehicleID = pVehiclePool->FindIDFromGtaPtr(pLocalPlayer->GetPlayerPed()->GetGtaVehicle());
+	if (iVehicleID != INVALID_VEHICLE_ID) {
+		SendScmEvent(1, iVehicleID, primaryColour, secondaryColour);
+		pChatWindow->AddDebugMessage("CVehicle::OnPayNSpray(%i, %i, %i)", pLocalPlayer->GetPlayerPed()->GetCurrentVehicleID(), primaryColour, secondaryColour);
+	}
+	_asm popad
+	_asm pop eax
+	_asm fstp[esp + 1F8h + 1ACh]
+	_asm ret
 }
 
 //-----------------------------------------------------------
@@ -1335,8 +1383,8 @@ void GameInstallHooks()
 	InstallMethodHook(0x871B10,(DWORD)AllVehicles_ProcessControl_Hook); // quad
 	InstallMethodHook(0x872398,(DWORD)AllVehicles_ProcessControl_Hook); // train
 
-	// Install JMP Hook
-	//InstallJmpHook(0x565E3D, (DWORD)CGame__RemoveFallenPeds); // For under world map teleportation. - not working atm, crashing!
+	//InstallCallHook(0x565E3D, (DWORD)CGame__RemoveFallenPeds); // For under world map teleportation. - Crashes on unknown address
+	//InstallCallHook(0x44B224, (DWORD)CVehicle__OnPayNSpray); // For pay n spray colour change detection ^
 
 	// Radar and map hooks for gang zones
 	InstallCallHook(0x5869BF,(DWORD)ZoneOverlay_Hook);

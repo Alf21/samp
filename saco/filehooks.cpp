@@ -415,9 +415,9 @@ void InstallFileSystemHooks()
 			(PBYTE)DetourFindFunction(szKernel32Dec, K_DecodeString(szGetFileTypeEnc)),
 			(PBYTE)Arch_GetFileType);
 
-		Real_GetModuleHandleA = (def_GetModuleHandleA)DetourFunction(
+		/*Real_GetModuleHandleA = (def_GetModuleHandleA)DetourFunction(
 			(PBYTE)DetourFindFunction(szKernel32Dec, K_DecodeString(szGetModuleHandleAEnc)),
-			(PBYTE)Arch_GetModuleHandleA);
+			(PBYTE)Arch_GetModuleHandleA);*/
 
 		/*
 		Real_GetAsyncKeyState = (def_GetAsyncKeyState)DetourFunction(
@@ -439,7 +439,7 @@ void UninstallFileSystemHooks()
 		DetourRemove((PBYTE)Real_SetFilePointer,(PBYTE)Arch_SetFilePointer);
 		DetourRemove((PBYTE)Real_CloseHandle,(PBYTE)Arch_CloseHandle);
 		DetourRemove((PBYTE)Real_GetFileType,(PBYTE)Arch_GetFileType);
-		DetourRemove((PBYTE)Real_GetModuleHandleA,(PBYTE)Arch_GetModuleHandleA);
+		//DetourRemove((PBYTE)Real_GetModuleHandleA,(PBYTE)Arch_GetModuleHandleA);
 		//DetourRemove((PBYTE)Real_GetAsyncKeyState,(PBYTE)Arch_GetAsyncKeyState);
 		bFileHooksInstalled = FALSE;
 	}
