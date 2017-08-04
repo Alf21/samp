@@ -464,6 +464,12 @@ HRESULT __stdcall IDirect3DDevice9Hook::Reset(D3DPRESENT_PARAMETERS* pPresentati
 	if (SUCCEEDED(hr))
 	{			
 		d3d9RestoreDeviceObjects();
+		if (pNetGame) {
+			RakNet::BitStream bsData;
+			bsData.Write(pGame->GetScreenWidth());
+			bsData.Write(pGame->GetScreenHeight());
+			pNetGame->GetRakClient()->RPC(RPC_ResolutionChanged, &bsData, HIGH_PRIORITY, RELIABLE, 0, false);
+		}
 	}
 
 	return hr;

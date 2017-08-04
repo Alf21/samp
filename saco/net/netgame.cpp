@@ -755,6 +755,8 @@ void CNetGame::Packet_ConnectionSucceeded(Packet *p)
 	bsSend.Write(byteNameLen);
 	bsSend.Write(m_pPlayerPool->GetLocalPlayerName(),byteNameLen);
 	bsSend.Write(uiChallenge);    
+	bsSend.Write(pGame->GetScreenWidth());
+	bsSend.Write(pGame->GetScreenHeight());
 
 	m_pRakClient->RPC(RPC_ClientJoin,&bsSend,HIGH_PRIORITY,RELIABLE,0,FALSE);
 }

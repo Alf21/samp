@@ -4257,6 +4257,20 @@ static cell AMX_NATIVE_CALL n_GetPlayerPoolSize(AMX *amx, cell *params) {
 }
 
 //----------------------------------------------------------------------------------
+// native GetPlayerResolution(playerid, &iWidth, &iHeight);
+static cell AMX_NATIVE_CALL n_GetPlayerResolution(AMX *amx, cell *params) {
+	if (!pNetGame || !pNetGame->GetPlayerPool() || !pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
+	CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt(params[1]);
+	if (!pPlayer) return 0;
+	cell* cptr;
+	amx_GetAddr(amx, params[2], &cptr);
+	*cptr = pPlayer->m_iResolution[0];
+	amx_GetAddr(amx, params[3], &cptr);
+	*cptr = pPlayer->m_iResolution[1];
+	return 1;
+}
+
+//----------------------------------------------------------------------------------
 AMX_NATIVE_INFO custom_Natives[] =
 {
 	// Util
@@ -4512,6 +4526,7 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "TogglePlayerClock",		n_TogglePlayerClock },
 	{ "GetPlayerTime",			n_GetPlayerTime },
 	{ "GetPlayerPoolSize",		n_GetPlayerPoolSize },
+	{ "GetPlayerResolution",	n_GetPlayerResolution },
 	{ NULL, NULL }
 };
 

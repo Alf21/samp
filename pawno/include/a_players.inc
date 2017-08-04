@@ -123,4 +123,5 @@ native PlayerSpectateVehicle(playerid, targetvehicleid, mode = SPECTATE_MODE_NOR
 native CreatePlayerPickup(pickupid,playerid,model,type,Float:PosX,Float:PosY,Float:PosZ);
 native DestroyPlayerPickup(pickupid,playerid);
 native IsPlayerInRangeOfPoint(playerid,Float:fRange,Float:PosX,Float:PosY,Float:PosZ);
+native GetPlayerResolution(playerid, &width, &height);
 native GetPlayerPoolSize();

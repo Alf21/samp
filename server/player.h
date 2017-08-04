@@ -224,6 +224,8 @@ public:
 	float	m_fRotation;
 	BOOL	m_bCanTeleport;
 
+	int		m_iResolution[2];
+
 	BOOL IsActive() { 
 		if( m_byteState != PLAYER_STATE_NONE && m_byteState != PLAYER_STATE_SPECTATING ) { return TRUE; }
 		return FALSE;
@@ -257,6 +259,7 @@ public:
 	void StoreAimSyncData(AIM_SYNC_DATA *paimSync);
 	void StoreTrailerFullSyncData(TRAILER_SYNC_DATA* trSync);
 	void SetSpawnInfo(PLAYER_SPAWN_INFO *pSpawn);
+	void StoreResolution(int iWidth, int iHeight);
 
 	PLAYER_SPAWN_INFO * GetSpawnInfo() { return &m_SpawnInfo; };
 

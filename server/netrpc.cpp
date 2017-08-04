@@ -52,6 +52,7 @@ void ClientJoin(RPCParameters *rpcParams)
 	BYTE byteNickLen;
 	BYTE byteRejectReason;
 	unsigned int uiChallengeResponse=0;
+	UINT uResolution[2];
 
 	bytePlayerID = pRak->GetIndexFromPlayerID(sender);
 	PlayerID MyPlayerID = pRak->GetPlayerIDFromIndex(bytePlayerID);
@@ -65,6 +66,8 @@ void ClientJoin(RPCParameters *rpcParams)
 	bsData.Read(szPlayerName,byteNickLen);
 	szPlayerName[byteNickLen] = '\0';
 	bsData.Read(uiChallengeResponse);
+	bsData.Read(uResolution[0]);
+	bsData.Read(uResolution[1]);
 
 	if(UNASSIGNED_PLAYER_ID == MyPlayerID) {
 		in.s_addr = sender.binaryAddress;
@@ -108,7 +111,7 @@ void ClientJoin(RPCParameters *rpcParams)
 	}
 
 	// Add this client to the player pool.
-	if(!pPlayerPool->New(bytePlayerID, szPlayerName)) {
+	if (!pPlayerPool->New(bytePlayerID, szPlayerName, uResolution)) {
 		pRak->Kick(sender);
 		return;
 	}
@@ -893,6 +896,24 @@ void UnderMapTeleport(RPCParameters *rpcParams) {
 	if (pFilters) pFilters->OnPlayerFallUnderMap(bytePlayerID,  x, y, z);
 }
 
+void ResolutionChanged(RPCParameters *rpcParams) {
+	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	int iBitLength = rpcParams->numberOfBitsOfData;
+	BYTE bytePlayerID = pRak->GetIndexFromPlayerID(rpcParams->sender);
+	RakNet::BitStream bsData(Data, (iBitLength / 8) + 1, false);
+
+	CGameMode *pGameMode = pNetGame->GetGameMode();
+	CFilterScripts *pFilters = pNetGame->GetFilterScripts();
+
+	int iWidth, iHeight;
+	bsData.Read(iWidth);
+	bsData.Read(iHeight);
+
+	pNetGame->GetPlayerPool()->GetAt(bytePlayerID)->StoreResolution(iWidth, iHeight);
+
+	if (pGameMode) pGameMode->OnPlayerResolutionChanged(bytePlayerID, iWidth, iHeight);
+	if (pFilters) pFilters->OnPlayerResolutionChanged(bytePlayerID, iWidth, iHeight);
+}
 //----------------------------------------------------
 
 void RegisterRPCs(RakServerInterface * pRakServer)
@@ -921,6 +942,7 @@ void RegisterRPCs(RakServerInterface * pRakServer)
 	REGISTER_STATIC_RPC(pRakServer, MenuSelect);
 	REGISTER_STATIC_RPC(pRakServer, MenuQuit);
 	REGISTER_STATIC_RPC(pRakServer, UnderMapTeleport);
+	REGISTER_STATIC_RPC(pRakServer, ResolutionChanged);
 }
 
 //----------------------------------------------------
@@ -951,6 +973,7 @@ void UnRegisterRPCs(RakServerInterface * pRakServer)
 	UNREGISTER_STATIC_RPC(pRakServer, MenuSelect);
 	UNREGISTER_STATIC_RPC(pRakServer, MenuQuit);
 	UNREGISTER_STATIC_RPC(pRakServer, UnderMapTeleport);
+	UNREGISTER_STATIC_RPC(pRakServer, ResolutionChanged);
 }
 
 //----------------------------------------------------

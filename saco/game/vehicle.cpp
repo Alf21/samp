@@ -725,9 +725,11 @@ BOOL CVehicle::HasADriver()
 {	
 	if(!m_pVehicle) return FALSE;
 	if(!GamePool_Vehicle_GetAt(m_dwGTAId)) return FALSE;
-
-	if(m_pVehicle->pDriver && IN_VEHICLE(m_pVehicle->pDriver)) {
-		return TRUE;
+	if (!GamePool_Ped_GetAt(GamePool_Ped_GetIndex(m_pVehicle->pDriver))) return FALSE;
+	if(m_pVehicle->pDriver) {
+			if (IN_VEHICLE(m_pVehicle->pDriver))
+				return TRUE;
+		
 	}
 
 	return FALSE;

@@ -123,6 +123,15 @@ void UnFuck(DWORD addr, int size)
 
 //----------------------------------------------------------
 
+void FuckCall(DWORD addr) {
+	UnFuck(addr, 3);
+	*(BYTE*)addr = 0x90;
+	*(BYTE*)(addr + 1) = 0x90;
+	*(BYTE*)(addr + 2) = 0x90;
+}
+
+//----------------------------------------------------------
+
 void ApplyDebugLevelPatches()
 {
 	// Don't go back to player anims, use the peds IDE
@@ -446,6 +455,8 @@ void ApplyInGamePatches()
 	*(BYTE*)0x565D28 = 0x90;
 	*(BYTE*)0x565D29 = 0x90;
 	*(BYTE*)0x565D2A = 0x90;
+
+	FuckCall(0x83533D);
 
 	// Don't go back to player anims, use the peds IDE
 	UnFuck(0x609A4E,6);

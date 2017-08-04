@@ -1139,6 +1139,24 @@ int CFilterScripts::OnPlayerFallUnderMap(cell playerid, float x, float y, float 
 }
 
 //----------------------------------------------------------------------------------
+// forward OnPlayerResolutionChanged(playerid, width, height);
+int CFilterScripts::OnPlayerResolutionChanged(cell playerid, cell width, cell height) {
+	int idx;
+	cell ret = 1;
+	for (int i = 0; i < MAX_FILTER_SCRIPTS; i++) {
+		if (m_pFilterScripts[i]) {
+			if (!amx_FindPublic(m_pFilterScripts[i], "OnPlayerResolutionChanged", &idx)) {
+				amx_Push(m_pFilterScripts[i], height);
+				amx_Push(m_pFilterScripts[i], width);
+				amx_Push(m_pFilterScripts[i], playerid);
+				amx_Exec(m_pFilterScripts[i], &ret, idx);
+			}
+		}
+	}
+	return (int)ret;
+}
+
+//----------------------------------------------------------------------------------
 // forward OnPlayerUpdate(playerid)
 
 int CFilterScripts::OnPlayerUpdate(cell playerid)

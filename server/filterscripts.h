@@ -73,6 +73,7 @@ public:
 	int OnPlayerKeyStateChange(cell playerid, cell newkeys, cell oldkeys);
 	int OnPlayerClickMap(cell playerid, float x, float y, float z);
 	int OnPlayerFallUnderMap(cell playerid, float x, float y, float z);
+	int OnPlayerResolutionChanged(cell playerid, cell width, cell height);
 	int OnPlayerUpdate(cell playerid);
 };
 

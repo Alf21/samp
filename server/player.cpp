@@ -80,6 +80,8 @@ CPlayer::CPlayer()
 	m_SpectateID = 0xFFFFFFFF;
 	m_iCurrentSkin = 0;
 	m_bUseCJWalk = false;
+
+	*m_iResolution = 0;
 	
 	BYTE i;
 	for (i = 0; i < 13; i++)
@@ -674,6 +676,13 @@ void CPlayer::StoreSpectatorFullSyncData(SPECTATOR_SYNC_DATA *pspSync)
 		pRak->RPC(RPC_ScrSetPlayerSpectating, &bsSend, HIGH_PRIORITY, RELIABLE, 0, pRak->GetPlayerIDFromIndex(m_bytePlayerID), true, false);
 	}
 	SetState(PLAYER_STATE_SPECTATING);
+}
+
+//----------------------------------------------------
+
+void CPlayer::StoreResolution(int iWidth, int iHeight) {
+	m_iResolution[0] = iWidth;
+	m_iResolution[1] = iHeight;
 }
 
 //----------------------------------------------------

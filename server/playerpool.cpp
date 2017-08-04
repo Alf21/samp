@@ -36,7 +36,7 @@ CPlayerPool::~CPlayerPool()
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName)
+BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName, UINT uResolution[2])
 {
 	if(bytePlayerID > MAX_PLAYERS) return FALSE;
 	if(strlen(szPlayerName) > MAX_PLAYER_NAME) return FALSE;
@@ -44,7 +44,7 @@ BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName)
 	m_pPlayers[bytePlayerID] = new CPlayer();
 
 	if(m_pPlayers[bytePlayerID])
-	{
+	{	
 		strcpy(m_szPlayerName[bytePlayerID],szPlayerName);
 		m_pPlayers[bytePlayerID]->SetID(bytePlayerID);
 		m_bPlayerSlotState[bytePlayerID] = TRUE;
@@ -52,6 +52,7 @@ BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName)
 		m_iPlayerMoney[bytePlayerID] = 0;
 		m_bIsAnAdmin[bytePlayerID] = FALSE;
 		m_byteVirtualWorld[bytePlayerID] = 0;
+		m_pPlayers[bytePlayerID]->StoreResolution(uResolution[0], uResolution[1]);
 
 		// Notify all the other players of a newcommer with
 		// a 'ServerJoin' join RPC 

@@ -878,6 +878,22 @@ int CGameMode::OnPlayerFallUnderMap(cell playerid, float x, float y, float z) {
 }
 
 //----------------------------------------------------------------------------------
+// forward OnPlayerResolutionChanged(playerid, width, height)
+int CGameMode::OnPlayerResolutionChanged(cell playerid, cell width, cell height) {
+	CHECK_INIT();
+	int idx;
+	cell ret = 1;
+	if (!amx_FindPublic(&m_amx, "OnPlayerResolutionChanged", &idx)) {
+		amx_Push(&m_amx, height);
+		amx_Push(&m_amx, width);
+		amx_Push(&m_amx, playerid);
+		amx_Exec(&m_amx, &ret, idx);
+	}
+	return (int)ret;
+}
+
+
+//----------------------------------------------------------------------------------
 // forward OnPlayerUpdate(playerid)
 
 int CGameMode::OnPlayerUpdate(cell playerid)

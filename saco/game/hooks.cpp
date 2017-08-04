@@ -1197,7 +1197,7 @@ NUDE PickUpPickup_Hook()
 //-----------------------------------------------------------
 
 MATRIX4X4 matpos;
-DWORD CGame__RemoveFallenPeds_JMP = 0x565D86;
+DWORD CGame__RemoveFallenPeds_JMP = 0x565E77;
 
 void Fallen_Teleport(float x, float y, float z) {
 	RakNet::BitStream bsData;
@@ -1209,44 +1209,27 @@ void Fallen_Teleport(float x, float y, float z) {
 
 NUDE CGame__RemoveFallenPeds() {
 
-	_asm push edx
-
 	_asm mov edx, [eax]
-	_asm mov mX, edx
+	_asm mov mX, edx // Get X coord from node.
 	_asm mov edx, [eax+4]
-	_asm mov mY, edx
+	_asm mov mY, edx // Get Y coord from node.
 	_asm mov edx, [eax+8]
-	_asm mov mZ, edx
-
-	_asm push eax
+	_asm mov mZ, edx // Get Z coord from node.
 
 	_asm pushad;
 
-	mX = mX * 0.125;
-	mY = mY * 0.125;
-	mZ = mZ * 0.125 + 2.0;
+	mX *= 0.125;
+	mY *= 0.125;
+	mZ *= 0.125;
+	mZ += 2.0;
 	
 	if (pNetGame && pNetGame->GetPlayerPool()) {
 		Fallen_Teleport(mX, mY, mZ);
 		pNetGame->GetPlayerPool()->GetLocalPlayer()->GetPlayerPed()->TeleportTo(mX, mY, mZ);
 		pChatWindow->AddDebugMessage("CPlayerPed::TeleportTo(%f, %f, %f) : CGame_RemoveFallenPeds", mX, mY, mZ);
 	}
-
 	_asm popad;
-	_asm pop edx
-	_asm mov [esp + 3Ch + 12], 0
-	_asm mov edx, [esp + 3Ch + 12]
-	_asm add esi, 44h; Add
-	_asm mov [esp + 3Ch + 8], 0
-	_asm mov eax, [esp + 3Ch + 12]
-	_asm mov [esi], edx
-	_asm mov [esp + 3Ch + 4], 0
-	_asm mov ecx, [esp + 3Ch + 4]
-	_asm mov [esi + 4], eax
-	_asm mov [esi + 8], ecx
-	_asm pop eax
-	// should jmp here
-	_asm ret
+	_asm jmp CGame__RemoveFallenPeds_JMP
 }
 
 //-----------------------------------------------------------
@@ -1383,8 +1366,8 @@ void GameInstallHooks()
 	InstallMethodHook(0x871B10,(DWORD)AllVehicles_ProcessControl_Hook); // quad
 	InstallMethodHook(0x872398,(DWORD)AllVehicles_ProcessControl_Hook); // train
 
-	//InstallCallHook(0x565E3D, (DWORD)CGame__RemoveFallenPeds); // For under world map teleportation. - Crashes on unknown address
-	//InstallCallHook(0x44B224, (DWORD)CVehicle__OnPayNSpray); // For pay n spray colour change detection ^
+	InstallCallHook(0x565E3D, (DWORD)CGame__RemoveFallenPeds); // For under world map teleportation. - Crashes on unknown address
+	InstallCallHook(0x44B224, (DWORD)CVehicle__OnPayNSpray); // For pay n spray colour change detection ^
 
 	// Radar and map hooks for gang zones
 	InstallCallHook(0x5869BF,(DWORD)ZoneOverlay_Hook);
