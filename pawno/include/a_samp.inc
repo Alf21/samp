@@ -33,8 +33,8 @@
 native print(const string[]);
 native printf(const format[], {Float,_}:...);
 native format(output[], len, const format[], {Float,_}:...);
-native SendClientMessage(playerid, color, const message[]);
-native SendClientMessageToAll(color, const message[]);
+native SendClientMessage(playerid, color, const message[], {Float,_}:...);
+native SendClientMessageToAll(color, const message[], {Float,_}:...);
 native SendPlayerMessageToPlayer(playerid, senderid, const message[]);
 native SendPlayerMessageToAll(senderid, const message[]);
 native SendDeathMessage(killer,killee,weapon);

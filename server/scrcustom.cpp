@@ -1225,10 +1225,9 @@ static cell AMX_NATIVE_CALL n_SendClientMessage(AMX *amx, cell *params)
 	CHECK_PARAMS(3);
 	if (!pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
 	PlayerID pidPlayer = pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]);
-	char* szMessage;
-	amx_StrParam(amx, params[3], szMessage);
+	int len;
+	char* szMessage = format_amxstring(amx, params, 3, len);
 	pNetGame->SendClientMessage(pidPlayer,params[2],szMessage);
-
 	return 1;
 }
 
@@ -1241,8 +1240,8 @@ static cell AMX_NATIVE_CALL n_SendPlayerMessageToPlayer(AMX *amx, cell *params)
 	if (pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[1])
 		&& pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[2]))
 	{	
-		char* szMessage;
-		amx_StrParam(amx, params[3], szMessage);
+		int len;
+		char* szMessage = format_amxstring(amx, params, 3, len);
 		BYTE byteTextLen = strlen(szMessage);
 		
 		RakNet::BitStream bsSend;
