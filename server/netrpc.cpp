@@ -52,7 +52,7 @@ void ClientJoin(RPCParameters *rpcParams)
 	BYTE byteNickLen;
 	BYTE byteRejectReason;
 	unsigned int uiChallengeResponse=0;
-	UINT uResolution[2];
+	int uResolution[2];
 
 	bytePlayerID = pRak->GetIndexFromPlayerID(sender);
 	PlayerID MyPlayerID = pRak->GetPlayerIDFromIndex(bytePlayerID);

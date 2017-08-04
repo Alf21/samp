@@ -36,7 +36,7 @@ CPlayerPool::~CPlayerPool()
 
 //----------------------------------------------------
 
-BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName, UINT uResolution[2])
+BOOL CPlayerPool::New(BYTE bytePlayerID, PCHAR szPlayerName, int uResolution[2])
 {
 	if(bytePlayerID > MAX_PLAYERS) return FALSE;
 	if(strlen(szPlayerName) > MAX_PLAYER_NAME) return FALSE;
