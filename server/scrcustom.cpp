@@ -1240,8 +1240,9 @@ static cell AMX_NATIVE_CALL n_SendPlayerMessageToPlayer(AMX *amx, cell *params)
 	if (pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[1])
 		&& pNetGame->GetPlayerPool()->GetSlotState((BYTE)params[2]))
 	{	
-		int len;
-		char* szMessage = format_amxstring(amx, params, 3, len);
+		char* szMessage;
+		amx_StrParam(amx, params[3], szMessage);
+
 		BYTE byteTextLen = strlen(szMessage);
 		
 		RakNet::BitStream bsSend;
@@ -1265,6 +1266,7 @@ static cell AMX_NATIVE_CALL n_SendPlayerMessageToAll(AMX *amx, cell *params)
 	{	
 		char* szMessage;
 		amx_StrParam(amx, params[2], szMessage);
+
 		BYTE byteTextLen = strlen(szMessage);
 		
 		RakNet::BitStream bsSend;
@@ -1282,8 +1284,9 @@ static cell AMX_NATIVE_CALL n_SendPlayerMessageToAll(AMX *amx, cell *params)
 // native SendClientMessageToAll(color, const message[])
 static cell AMX_NATIVE_CALL n_SendClientMessageToAll(AMX *amx, cell *params)
 {
-	char* szMessage;
-	amx_StrParam(amx, params[2], szMessage);
+	
+	int len;
+	char* szMessage = format_amxstring(amx, params, 3, len);
 	pNetGame->SendClientMessageToAll(params[1],szMessage);
 
 	return 1;
