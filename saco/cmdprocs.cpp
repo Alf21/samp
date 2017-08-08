@@ -336,7 +336,7 @@ void cmdCreateVehicle(PCHAR szCmd)
 			sprintf(blank, "TYPE_%d", iVehicleType);
 			CVehicle *pTestVehicle = pGame->NewVehicle(iVehicleType,
 				(matPlayer.pos.X - 5.0f), (matPlayer.pos.Y - 5.0f),
-				matPlayer.pos.Z+1.0f, 0.0f, (PCHAR)blank);
+				matPlayer.pos.Z+1.0f, 0.0f, (PCHAR)blank, TRUE);
 
 			pTestVehicle->Add();
 			
@@ -1028,7 +1028,7 @@ void cmdLotsOfV(PCHAR szCmd)
 
 	while(i != MAX_VEHICLES) {
 		//pVehicle = new CVehicle(473,x,y,z,8.7f,plate);
-		pNetGame->GetVehiclePool()->New(i,473,&vecSpawnPos,0.0f,0,0,&vecSpawnPos,0.0f,0,plate);
+		pNetGame->GetVehiclePool()->New(i,473,&vecSpawnPos,0.0f,0,0,&vecSpawnPos,0.0f,0,plate,TRUE);
 		vecSpawnPos.X -= 7.0f;
 		i++;
 	}

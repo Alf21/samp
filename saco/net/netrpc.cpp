@@ -466,6 +466,7 @@ void VehicleSpawn(RPCParameters *rpcParams)
 	int iInterior;
 	bool bHasNumberPlate = false;
 	bool bHasCarModInfo = false;
+	BOOL bShowMarker = true;
 
 	CAR_MOD_INFO	m_CarModInfo;
 	CHAR cNumberPlate[9];
@@ -501,7 +502,9 @@ void VehicleSpawn(RPCParameters *rpcParams)
 		m_CarModInfo.iColor1 = -1;
 	}
 
-	if (!pVehiclePool->New(VehicleID,iVehicleType, &vecPos,fRotation,iColor1,iColor2,&vecSpawnPos,fSpawnRotation, iInterior, cNumberPlate))
+	bsData.Read(bShowMarker);
+
+	if (!pVehiclePool->New(VehicleID,iVehicleType, &vecPos,fRotation,iColor1,iColor2,&vecSpawnPos,fSpawnRotation, iInterior, cNumberPlate, bShowMarker))
 		return;
 		
 	int iVehicle = pVehiclePool->FindGtaIDFromID(VehicleID);

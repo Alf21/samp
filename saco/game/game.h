@@ -63,7 +63,7 @@ private:
 public:	
 
 	CPlayerPed *NewPlayer(int iPlayerID, int iSkin,float fPosX,float fPosY,float fPosZ,float fRotation,BYTE byteCreateMarker = 1);
-	CVehicle *NewVehicle(int iType,float fPosX,float fPosY,float fPosZ,float fRotation, PCHAR szNumberPlate);
+	CVehicle *NewVehicle(int iType,float fPosX,float fPosY,float fPosZ,float fRotation, PCHAR szNumberPlate, BOOL bShowMarker);
 	CObject *NewObject(int iModel, float fPosX, float fPosY,float fPosZ, VECTOR vecRot);
 	int		GetWeaponModelIDFromWeapon(int iWeaponID);
 	BOOL	IsKeyPressed(int iKeyIdentifier);

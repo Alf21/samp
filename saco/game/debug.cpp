@@ -881,7 +881,7 @@ void GameBuildRecreateVehicle()
 	if(pVehicle) delete pVehicle;
 
 	CHAR blank[2] = "";
-	pVehicle = pGame->NewVehicle(iSelection,5.0f,5.0f,500.0f,0.0f,(PCHAR)blank);
+	pVehicle = pGame->NewVehicle(iSelection,5.0f,5.0f,500.0f,0.0f,(PCHAR)blank, TRUE);
 	pVehicle->Add();
 }
 
@@ -949,7 +949,7 @@ void GameBuildSelectVehicle()
 			sprintf(blank, "TYPE_%d", iSelection);
 			CVehicle *pTestVehicle = pGame->NewVehicle(iSelection,
 				(matPlayer.pos.X - 5.0f), (matPlayer.pos.Y - 5.0f),
-				matPlayer.pos.Z+1.0f,0.0f,(PCHAR)blank);
+				matPlayer.pos.Z+1.0f,0.0f,(PCHAR)blank,TRUE);
 
 			pTestVehicle->Add();
 			pPlayer->PutDirectlyInVehicle(pTestVehicle->m_dwGTAId,0);

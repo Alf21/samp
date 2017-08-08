@@ -75,6 +75,7 @@ public:
 	bool					m_bHasBeenOccupied;
 	DWORD					m_dwLastSeenOccupiedTick;
 	DWORD					m_dwLastRespawnedTick;
+	BOOL					m_bShowMarker;
 
 	void Process(float fElapsedTime);
 

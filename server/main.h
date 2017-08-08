@@ -53,6 +53,8 @@
 #define SAFE_DELETE(p)	{ if (p) { delete (p); (p) = NULL; } }
 #define SAFE_RELEASE(p)	{ if (p) { (p)->Release(); (p) = NULL; } }
 
+#define HAVE_STDINT_H
+
 // ------------
 // VERSION INFO
 // ------------

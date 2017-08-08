@@ -28,7 +28,7 @@ DWORD	dwNumVehicles=0;
 // CONSTRUCTOR
 
 CVehicle::CVehicle( int iType, float fPosX, float fPosY,
-					float fPosZ, float fRotation, PCHAR szNumberPlate)
+					float fPosZ, float fRotation, PCHAR szNumberPlate, BOOL bShowMarker)
 {	
 	DWORD dwRetID=0;
 
@@ -131,6 +131,7 @@ CVehicle::CVehicle( int iType, float fPosX, float fPosY,
 	m_bHasBeenDriven = FALSE;
 	m_dwTimeSinceLastDriven = GetTickCount();
 	m_bDoorsLocked = FALSE;
+	m_bShowMarker = bShowMarker;
 }
 
 //-----------------------------------------------------------
@@ -531,14 +532,14 @@ void CVehicle::ProcessMarkers()
 	}
 
 	// Add or remove car scanning markers.
-	if(GetDistanceFromLocalPlayerPed() < CSCANNER_DISTANCE && !IsOccupied()) {
+	if(GetDistanceFromLocalPlayerPed() < CSCANNER_DISTANCE && !IsOccupied() && m_bShowMarker) {
 		// SHOW IT
 		if(!m_dwMarkerID)  {
 			ScriptCommand(&tie_marker_to_car, m_dwGTAId, 1, 2, &m_dwMarkerID);
 			ScriptCommand(&set_marker_color,m_dwMarkerID,200);
 		}	
 	} 
-	else if(IsOccupied() || GetDistanceFromLocalPlayerPed() >= CSCANNER_DISTANCE) {
+	else if(IsOccupied() || GetDistanceFromLocalPlayerPed() >= CSCANNER_DISTANCE || !m_bShowMarker) {
 		// REMOVE IT	
 		if(m_dwMarkerID) {
 			ScriptCommand(&disable_marker, m_dwMarkerID);

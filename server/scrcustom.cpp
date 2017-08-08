@@ -394,6 +394,36 @@ static cell AMX_NATIVE_CALL n_GetVehicleModel(AMX *amx, cell *params)
 }
 
 //----------------------------------------------------------------------------------
+// native ToggleVehicleMarker(vehicleid, bool:toggle = true);
+static cell AMX_NATIVE_CALL n_ToggleVehicleMarker(AMX *amx, cell *params) {
+	CHECK_PARAMS(2);
+
+	if (!pNetGame->GetVehiclePool()->GetSlotState((VEHICLEID)params[1])) return 0;
+	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt((VEHICLEID)params[1]);
+
+	if (!pVehicle) return 0;
+	pVehicle->m_bShowMarker = params[2];
+	RakNet::BitStream bsData;
+	bsData.Write((VEHICLEID)params[1]);
+	bsData.Write(params[2]);
+	pNetGame->GetRakServer()->RPC(RPC_ScrToggleVehicleMarker, &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+}
+
+//----------------------------------------------------------------------------------
+// native ToggleVehicleMarkerForPlayer(playerid, vehicleid, bool:toggle = true);
+static cell AMX_NATIVE_CALL n_ToggleVehicleMarkerForPlayer(AMX *amx, cell *params) {
+	CHECK_PARAMS(2);
+
+	if (!pNetGame->GetVehiclePool()->GetSlotState((VEHICLEID)params[2])) return 0;
+	if (!pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
+	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt((VEHICLEID)params[2]);
+	RakNet::BitStream bsData;
+	bsData.Write((VEHICLEID)params[2]);
+	bsData.Write(params[3]);
+	pNetGame->GetRakServer()->RPC(RPC_ScrToggleVehicleMarker, &bsData, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
+}
+
+//----------------------------------------------------------------------------------
 // native AddStaticPickup(model,type,Float:X,Float:Y,Float:Z);
 
 static cell AMX_NATIVE_CALL n_AddStaticPickup(AMX *amx, cell *params)

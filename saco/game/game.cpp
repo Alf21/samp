@@ -50,9 +50,9 @@ CPlayerPed *CGame::NewPlayer(int iPlayerID, int iSkin, float fPosX, float fPosY,
 //-----------------------------------------------------------
 
 CVehicle *CGame::NewVehicle(int iType, float fPosX, float fPosY,
-							 float fPosZ, float fRotation, PCHAR szNumberPlate)
+							 float fPosZ, float fRotation, PCHAR szNumberPlate, BOOL bShowMarker)
 {
-	CVehicle *pVehicleNew = new	CVehicle(iType,fPosX,fPosY,fPosZ,fRotation,szNumberPlate);
+	CVehicle *pVehicleNew = new	CVehicle(iType,fPosX,fPosY,fPosZ,fRotation,szNumberPlate,bShowMarker);
 	return pVehicleNew;
 }
 

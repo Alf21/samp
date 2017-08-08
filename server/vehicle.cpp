@@ -59,6 +59,7 @@ CVehicle::CVehicle( int iModel, VECTOR *vecPos,
 	m_TrailerID = 0;
 	m_CabID = 0;
 	m_bDead = false;
+	m_bShowMarker = true;
 }
 
 //----------------------------------------------------

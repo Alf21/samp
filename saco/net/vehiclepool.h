@@ -50,7 +50,7 @@ public:
 			 VECTOR * vecPos, float fRotation,
 			 int iColor1, int iColor2,
 			 VECTOR * vecSpawnPos, float fSpawnRotation,
-			 int iInterior, PCHAR szNumberPlate);
+			 int iInterior, PCHAR szNumberPlate, BOOL bShowMarker);
 
 	BOOL Delete(VEHICLEID VehicleID);	
 	
@@ -69,7 +69,7 @@ public:
 	BOOL Spawn( VEHICLEID VehicleID, int iVehicleType,
 				VECTOR * vecPos, float fRotation,
 				int iColor1, int iColor2, int iInterior, PCHAR szNumberPlate, 
-				int iObjective = 0, int iDoorsLocked = 0 );
+				int iObjective = 0, int iDoorsLocked = 0, BOOL bShowMarker = TRUE );
 
 		void ProcessForVirtualWorld(VEHICLEID vehicleId, BYTE bytePlayerWorld);
 	void Process();

@@ -41,7 +41,7 @@ BOOL CVehiclePool::New( VEHICLEID VehicleID, int iVehicleType,
 					    VECTOR * vecPos, float fRotation,
 					    int iColor1, int iColor2,
 					    VECTOR * vecSpawnPos, float fSpawnRotation, /*int iRespawnDelay,*/
-						int iInterior, PCHAR szNumberPlate )
+						int iInterior, PCHAR szNumberPlate, BOOL bShowMarker )
 {
 	memset(&m_SpawnInfo[VehicleID],0,sizeof(VEHICLE_SPAWN_INFO));
 
@@ -55,9 +55,9 @@ BOOL CVehiclePool::New( VEHICLEID VehicleID, int iVehicleType,
 	m_SpawnInfo[VehicleID].iColor2 = iColor2;
 	
 	m_byteVirtualWorld[VehicleID] = 0;
-
+	
 	// Now go ahead and spawn it at the location we got passed.
-	return Spawn(VehicleID,iVehicleType,vecPos,fRotation,iColor1,iColor2,iInterior,szNumberPlate);
+	return Spawn(VehicleID,iVehicleType,vecPos,fRotation,iColor1,iColor2,iInterior,szNumberPlate, 0, 0, bShowMarker);
 }
 
 //----------------------------------------------------
@@ -81,7 +81,7 @@ BOOL CVehiclePool::Delete(VEHICLEID VehicleID)
 BOOL CVehiclePool::Spawn( VEHICLEID VehicleID, int iVehicleType,
 					      VECTOR * vecPos, float fRotation,
 					      int iColor1, int iColor2, int iInterior, PCHAR szNumberPlate, int iObjective,
-						  int iDoorsLocked )
+						  int iDoorsLocked, BOOL bShowMarker )
 {	
 
 	if(m_pVehicles[VehicleID] != NULL) {
@@ -89,7 +89,7 @@ BOOL CVehiclePool::Spawn( VEHICLEID VehicleID, int iVehicleType,
 	}
 
 	m_pVehicles[VehicleID] = pGame->NewVehicle(iVehicleType,
-		vecPos->X,vecPos->Y,vecPos->Z,fRotation, szNumberPlate);
+		vecPos->X,vecPos->Y,vecPos->Z,fRotation, szNumberPlate, bShowMarker);
 
 	if(m_pVehicles[VehicleID])
 	{	

@@ -118,6 +118,8 @@
 	#define RPC_ScrSetSpecialAction			"ep"
 	#define RPC_ScrEnableStuntBonus			"ec"
 	#define	RPC_ScrUsePlayerPedAnims		"a1"
+	#define RPC_ScrToggleVehicleMarker		"a4"
+
 	// netrpc (server)
 	#define RPC_ClientJoin					"xx"
 	#define RPC_ServerCommand				"dj"

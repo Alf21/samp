@@ -100,7 +100,7 @@ CNetGame::CNetGame(PCHAR szHostOrIp, int iPort,
 	m_bInstagib = FALSE;
 	m_iCheckLoadedStuff = 0;
 
-	if (pChatWindow) pChatWindow->AddDebugMessage("{FFFFFF}SA-MP {B9C9BF}"SAMP_VERSION" {FFFFFF}Started");
+	if (pChatWindow) pChatWindow->AddDebugMessage("{FFFFFF}SA-MP {B9C9BF}0.2X {FFFFFF}Started");
 
 }
 

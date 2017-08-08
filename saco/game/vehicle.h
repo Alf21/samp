@@ -25,7 +25,7 @@ class CVehicle : public CEntity
 {
 public:
 
-	CVehicle( int iType, float fPosX, float fPosY, float fPosZ, float fRotation = 0.0f, PCHAR szNumberPlate = NULL);
+	CVehicle( int iType, float fPosX, float fPosY, float fPosZ, float fRotation = 0.0f, PCHAR szNumberPlate = NULL, BOOL bShowMarker = TRUE);
 	virtual ~CVehicle();
 
 	virtual void Add();
@@ -98,6 +98,8 @@ public:
 	BOOL		m_bSpecialMarkerEnabled;
 	DWORD		m_dwTimeSinceLastDriven;
 	BOOL		m_bHasBeenDriven;
+	BOOL		m_bShowMarker;
+
 	CVehicle*   m_pTrailer;
 };
 
