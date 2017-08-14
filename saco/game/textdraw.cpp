@@ -112,3 +112,57 @@ void CTextDraw::Draw()
     Font_PrintString(fUseX,fUseY,m_szString);
 	Font_SetOutline(0);
 }
+
+void CTextDraw::Process(float fElapsedTime)
+{
+	if (m_byteMoving & 1)
+	{
+		
+		// Calculate new position based on elapsed time (interpolate)
+		// distance = speed * time
+		// time = fElapsedTime
+		// speed = m_fMoveSpeed
+		float distance = fElapsedTime * m_fMoveSpeed;
+		float remaining = DistanceRemaining();
+		if (distance >= remaining)
+		{
+			m_byteMoving &= ~1; // Stop it moving
+								// Force the final location so we don't overshoot slightly
+			m_TextDrawData.fX = m_TargetVec.X;
+			m_TextDrawData.fY = m_TargetVec.Y;
+		}
+		else
+		{
+			// Else interpolate the new position between the current and final positions
+			remaining /= distance; // Calculate ratio
+			m_TextDrawData.fX += (m_TargetVec.X - m_TextDrawData.fX) / remaining;
+			m_TextDrawData.fY += (m_TargetVec.Y - m_TextDrawData.fY) / remaining;
+		}
+	}
+}
+
+float CTextDraw::DistanceRemaining()
+{
+	float fUseX, fUseY;
+	int iScreenWidth, iScreenHeight;
+	float fVertHudScale, fHorizHudScale;
+	float fPS2Height = 448.0f;
+	float fPS2Width = 640.0f;
+
+	iScreenWidth = pGame->GetScreenWidth();
+	iScreenHeight = pGame->GetScreenHeight();
+	fVertHudScale = pGame->GetHudVertScale();
+	fHorizHudScale = pGame->GetHudHorizScale();
+
+	fUseY = iScreenHeight - ((fPS2Height - m_TextDrawData.fY) * (iScreenHeight * fVertHudScale));
+	fUseX = iScreenWidth - ((fPS2Width - m_TextDrawData.fX) * (iScreenWidth * fHorizHudScale));
+	float fSX = (fUseX - m_TargetVec.X) * (fUseX - m_TargetVec.X);
+	float fSY = (fUseY - m_TargetVec.Y) * (fUseY - m_TargetVec.Y);
+	return (float)sqrt(fSX + fSY);
+}
+
+void CTextDraw::MoveTo(VECTOR2D vecPos, float fSpeed) {
+	m_TargetVec = vecPos;
+	m_fMoveSpeed = fSpeed;
+	m_byteMoving |= 1;
+}

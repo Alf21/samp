@@ -263,10 +263,10 @@ PCHAR CDeathWindow::SpriteIDForWeapon(BYTE byteWeaponID)
 		case WEAPON_CANE:				return "#";
 		case WEAPON_GRENADE:			return "@";
 		case WEAPON_TEARGAS:			return "D";
-		case WEAPON_MOLTOV:				return "\'"
+		case WEAPON_MOLTOV:				return "\'";
 		case WEAPON_ROCKET:				return "4";
 		case WEAPON_ROCKET_HS:			return ")";
-		case WEAPON_FREEFALLBOMB:		return "<"
+		case WEAPON_FREEFALLBOMB:		return "<";
 		case WEAPON_COLT45:				return "6";
 		case WEAPON_SILENCED:			return "2";
 		case WEAPON_DEAGLE:				return "3";
@@ -290,7 +290,7 @@ PCHAR CDeathWindow::SpriteIDForWeapon(BYTE byteWeaponID)
 		case WEAPON_FIREEXTINGUISHER:	return ",";
 		//case WEAPON_CAMERA:				return "" //not exist in font
 		case WEAPON_NIGHTVISION:		return "-";
-		case WEAPON_INFRARED:			return "-"
+		case WEAPON_INFRARED:			return "-";
 		case WEAPON_PARACHUTE:			return ":";
 		case WEAPON_ARMOUR:				return "G";
 		case WEAPON_VEHICLE:			return "L";

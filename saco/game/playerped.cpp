@@ -982,6 +982,8 @@ BYTE CPlayerPed::FindDeathReasonAndResponsiblePlayer(BYTE * nPlayer)
 
 				if(bytePlayerIDWhoKilled != INVALID_PLAYER_ID) {
 					// killed by another player with a weapon, this is all easy.
+					if (pNetGame->GetPlayerPool()->GetAt(bytePlayerIDWhoKilled)->m_bPassengerDriveByMode) // Killer is in passenger drive by.
+						byteDeathReason = WEAPON_PASSENGER_DRIVEBY;
 					*nPlayer = bytePlayerIDWhoKilled;
 					return byteDeathReason;
 				} else { // could be a vehicle

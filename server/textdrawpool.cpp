@@ -209,3 +209,48 @@ void CTextDrawPool::SetBackgroundColor(WORD wText, DWORD dwColor)
 {
 	m_TextDraw[wText]->dwBackgroundColor = RGBA_ABGR(dwColor);
 }
+
+float CTextDrawPool::DistanceRemaining(WORD wText) {
+	float fSX = (m_TextDraw[wText]->fX - m_TextDraw[wText]->vecTarget.X) * (m_TextDraw[wText]->fX - m_TextDraw[wText]->vecTarget.X);
+	float fSY = (m_TextDraw[wText]->fY - m_TextDraw[wText]->vecTarget.Y) * (m_TextDraw[wText]->fY - m_TextDraw[wText]->vecTarget.Y);
+	return (float)sqrt(fSX + fSY);
+}
+
+void CTextDrawPool::Process(float fElapsedTime)
+{
+	for (WORD i = 0; i < MAX_TEXT_DRAWS; i++) {
+		if (m_TextDraw[i]) {
+			if (m_TextDraw[i]->byteMoving & 1)
+			{
+
+				// Calculate new position based on elapsed time (interpolate)
+				// distance = speed * time
+				// time = fElapsedTime
+				// speed = m_fMoveSpeed
+				float distance = fElapsedTime * m_TextDraw[i]->fMoveSpeed;
+				float remaining = DistanceRemaining(i);
+				if (distance >= remaining)
+				{
+					m_TextDraw[i]->byteMoving &= ~1; // Stop it moving
+										// Force the final location so we don't overshoot slightly
+					m_TextDraw[i]->fX = m_TextDraw[i]->vecTarget.X;
+					m_TextDraw[i]->fY = m_TextDraw[i]->vecTarget.Y;
+
+					// @TODO - Call OnTextDrawMove()?
+				}
+				else
+				{
+					// Else interpolate the new position between the current and final positions
+					remaining /= distance; // Calculate ratio
+					m_TextDraw[i]->fX += (m_TextDraw[i]->vecTarget.X - m_TextDraw[i]->fX) / remaining;
+					m_TextDraw[i]->fY += (m_TextDraw[i]->vecTarget.Y - m_TextDraw[i]->fY) / remaining;
+				}
+			}
+		}
+	}
+}
+
+void CTextDrawPool::MoveTo(WORD wText, VECTOR2D vecPos) {
+	m_TextDraw[wText]->vecTarget = vecPos;
+	m_TextDraw[wText]->byteMoving |= 1;
+}

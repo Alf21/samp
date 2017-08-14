@@ -122,6 +122,8 @@ native TextDrawHideForPlayer(playerid, Text:text);
 native TextDrawShowForAll(Text:text);
 native TextDrawHideForAll(Text:text);
 native TextDrawSetString(Text:text, string[]);
+native TextDrawMoveForAll(Text:text, Float:fX, Float:fY);
+native TextDrawMoveForPlayer(playerid, Text:text, Float:fX, Float:fY);
 
 // Gang Zones
 

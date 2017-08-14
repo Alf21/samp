@@ -85,6 +85,9 @@ private:
 	CHAR			m_szString[MAX_TEXT_DRAW_LINE*4];
 
 	TEXT_DRAW_DATA  m_TextDrawData;
+	VECTOR2D		m_TargetVec;
+	BYTE			m_byteMoving;
+	float			m_fMoveSpeed;
 
 public:
 	CTextDraw(TEXT_DRAW_TRANSMIT *TextDrawTransmit, PCHAR szText);
@@ -94,6 +97,10 @@ public:
 	void SetText(char* szText);
 
 	void Draw();
+	void Process(float fElapsedTime);
+
+	void MoveTo(VECTOR2D vecPos, float fSpeed);
+	float DistanceRemaining();
 };
 
 

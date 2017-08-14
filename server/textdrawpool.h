@@ -38,6 +38,9 @@ typedef struct _TEXT_DRAW_TRANSMIT
 	BYTE byteStyle;
 	float fX;
 	float fY;
+	VECTOR2D vecTarget;
+	float fMoveSpeed;
+	BYTE byteMoving;
 } TEXT_DRAW_TRANSMIT;
 
 //----------------------------------------------------
@@ -80,6 +83,11 @@ public:
 	void SetFont(WORD wText, BYTE byteFont) { m_TextDraw[wText]->byteStyle = byteFont; };
 	void SetTextString(WORD wText, char* szText);
 	void SetProportional(WORD wText, BYTE byteSet) { m_TextDraw[wText]->byteProportional = byteSet ? 1 : 0; };
+
+	float DistanceRemaining(WORD wText);
+	void Process(float fElapsedTime);
+	
+	void MoveTo(WORD wText, VECTOR2D vecPos);
 };
 
 //----------------------------------------------------

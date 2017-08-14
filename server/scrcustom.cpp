@@ -4031,6 +4031,51 @@ static cell AMX_NATIVE_CALL n_TextDrawDestroy(AMX *amx, cell *params)
 	return 1;
 }
 
+// native TextDrawMoveForAll(Text:textdraw, Float:fX, Float:fY);
+
+static cell AMX_NATIVE_CALL n_TextDrawMoveForAll(AMX *amx, cell *params) {
+	CHECK_PARAMS(3);
+	if (!pNetGame->GetTextDrawPool()->GetSlotState(params[1])) return 0;
+	
+	float fX = amx_ctof(params[2]);
+	float fY = amx_ctof(params[3]);
+
+	RakNet::BitStream bsData;
+	bsData.Write((WORD)params[1]);
+	bsData.Write(fX);
+	bsData.Write(fY);
+
+	VECTOR2D pos;
+	pos.X = fX;
+	pos.Y = fY;
+	pNetGame->GetTextDrawPool()->MoveTo(params[1], pos);
+
+	pNetGame->GetRakServer()->RPC(RPC_ScrMoveTextdraw, &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+	return 1;
+}
+
+// native TextDrawMoveForAll(playerid, Text:textdraw, Float:fX, Float:fY);
+static cell AMX_NATIVE_CALL n_TextDrawMoveForPlayer(AMX *amx, cell *params) {
+	CHECK_PARAMS(3);
+	if (!pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
+	if (!pNetGame->GetTextDrawPool()->GetSlotState(params[2])) return 0;
+
+	float fX = amx_ctof(params[3]);
+	float fY = amx_ctof(params[4]);
+
+	RakNet::BitStream bsData;
+	bsData.Write((WORD)params[2]);
+	bsData.Write(fX);
+	bsData.Write(fY);
+
+	VECTOR2D pos;
+	pos.X = fX;
+	pos.Y = fY;
+	pNetGame->GetTextDrawPool()->MoveTo(params[1], pos);
+
+	pNetGame->GetRakServer()->RPC(RPC_ScrMoveTextdraw, &bsData, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
+	return 1;
+}
 //----------------------------------------------------------------------------------
 
 static cell AMX_NATIVE_CALL n_GangZoneCreate(AMX *amx, cell *params)
@@ -4517,7 +4562,9 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "TextDrawHideForPlayer",		n_TextDrawHideForPlayer },
 	{ "TextDrawHideForAll",			n_TextDrawHideForAll },
 	{ "TextDrawDestroy",			n_TextDrawDestroy },
-	
+	{ "TextDrawMoveForAll",			n_TextDrawMoveForAll },
+	{ "TextDrawMoveForPlayer",		n_TextDrawMoveForPlayer },
+
 	// Objects
 	{ "CreateObject",			n_CreateObject },
 	{ "SetObjectPos",			n_SetObjectPos },

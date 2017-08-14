@@ -74,11 +74,18 @@ void CTextDrawPool::Delete(WORD wText)
 void CTextDrawPool::Draw()
 {
     int x=0;
+	static unsigned long s_uLastCall = 0;
+	if (!s_uLastCall) s_uLastCall = GetTickCount();
+	unsigned long ulongTick = GetTickCount();
+	float fElapsedTime = ((float)(ulongTick - s_uLastCall)) / 1000.0f;
 
 	if(GetAsyncKeyState(VK_TAB)) return;
 
 	while(x != MAX_TEXT_DRAWS) {
-		if(m_bSlotState[x]) m_pTextDraw[x]->Draw();
+		if (m_bSlotState[x]) {
+			m_pTextDraw[x]->Process(fElapsedTime);
+			m_pTextDraw[x]->Draw();
+		}
 		x++;
 	}
 }
