@@ -4071,7 +4071,7 @@ static cell AMX_NATIVE_CALL n_TextDrawMoveForPlayer(AMX *amx, cell *params) {
 	VECTOR2D pos;
 	pos.X = fX;
 	pos.Y = fY;
-	pNetGame->GetTextDrawPool()->MoveTo(params[1], pos);
+	pNetGame->GetTextDrawPool()->MoveTo(params[2], pos);
 
 	pNetGame->GetRakServer()->RPC(RPC_ScrMoveTextdraw, &bsData, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
 	return 1;

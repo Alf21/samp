@@ -26,6 +26,7 @@ public:
 	void Delete(WORD wText);
 	void Draw();
 
+
 	CTextDraw * GetAt(WORD wText) {
 		if (wText >= MAX_TEXT_DRAWS) return NULL;
 		if (!m_bSlotState[wText]) return NULL;

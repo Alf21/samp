@@ -37,6 +37,7 @@ extern LONG WINAPI exc_handler(_EXCEPTION_POINTERS* exc_inf);
 //----------------------------------------------------
 
 void InitSettingsFromCommandLine(char * szCmdLine);
+void GetOperatingSystemInfo();
 
 //----------------------------------------------------
 
@@ -254,6 +255,7 @@ int main (int argc, char** argv)
 	logprintf("----------------------");
 //	logprintf("v" SAMP_VERSION ", (C)2005-2009 SA-MP Team\n");
 	logprintf("v" SAMP_VERSION ", (C)2005-2015 SA-MP Team\n");
+	GetOperatingSystemInfo();
 
 #ifdef _DEBUG
 	logprintf("Debug Build Info:\n   NET_VERSION=%d\n   BUILD_DATE=%s\n   BUILD_TIME=%s\n",
@@ -549,6 +551,60 @@ void SetStringFromCommandLine(char *szCmdLine, char *szString)
 		szString++; szCmdLine++;
 	}
 	*szString = '\0';
+}
+
+//----------------------------------------------------
+
+void GetOperatingSystemInfo() {
+#if defined WIN32
+	OSVERSIONINFOEX info;
+	ZeroMemory(&info, sizeof(OSVERSIONINFOEX));
+	info.dwOSVersionInfoSize = sizeof(OSVERSIONINFOEX);
+	GetVersionEx((LPOSVERSIONINFO)&info);
+	char * osInfo = "";
+	switch (info.dwMajorVersion) {
+		case 10: // Windows 10
+			osInfo = info.wProductType == VER_NT_WORKSTATION ? ("Windows 10") : ("Windows Server 2016");
+			break;
+		case 6: { // Windows Vista - Windows 8.1
+			switch (info.dwMinorVersion) {
+				case 3: // Windows 8.1
+					osInfo = info.wProductType == VER_NT_WORKSTATION ? ("Windows 8.1") : ("Windows Server 2012 R2");
+					break;
+				case 2: // Windows 8
+					osInfo = info.wProductType == VER_NT_WORKSTATION ? ("Windows 8") : ("Windows Server 2012");
+					break;
+				case 1: // Windows 7
+					osInfo = info.wProductType == VER_NT_WORKSTATION ? ("Windows 7") : ("Windows Server 2008 R2");
+					break;
+				case 0: // Windows Vista
+					osInfo = info.wProductType == VER_NT_WORKSTATION ? ("Windows Vista") : ("Windows Server 2008");
+					break;
+				}
+				break;
+		}
+		case 5: { // Windows 2000 - Server 2003 R2 
+			switch (info.dwMinorVersion) {
+				case 2:  // Windwos Server 2003 R2  
+					osInfo = info.wSuiteMask & VER_SUITE_WH_SERVER ? ("Windows Home Server") : (GetSystemMetrics(SM_SERVERR2) != 0 ? ("Windows Server 2003 R2") : ("Windows Sever 2003"));
+					break;
+				case 1:
+					osInfo = "Windows XP";
+					break;
+				case 0:
+					osInfo = "Windows 2000";
+					break;
+			}
+			break;
+		}
+	}
+	logprintf("Operating System: %s %i %i.%i Service Pack %i", osInfo, info.dwBuildNumber, info.dwMajorVersion, info.dwMinorVersion, info.wServicePackMajor);
+
+#else 
+	utsname sysInfo;
+	uname(&sysInfo);
+	logprintf("Operating System: %s %s %s", sysInfo.sysname, sysInfo.release, sysInfo.version);
+#endif
 }
 
 //----------------------------------------------------
