@@ -592,7 +592,7 @@ void CPlayer::StoreInCarFullSyncData(INCAR_SYNC_DATA *picSync)
 		DecompressNormalVector(&matWorld.right, &m_icSync.cvecRoll);
 		
 		pVehicle->Update(m_bytePlayerID,&matWorld,fVehicleHealth,m_icSync.TrailerID);
-
+		pVehicle->m_vTankRot = m_icSync.vecTankRot;
 	}
 
 	m_icSync.byteCurrentWeapon = CheckWeapon(m_icSync.byteCurrentWeapon);

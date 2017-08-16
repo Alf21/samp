@@ -798,6 +798,10 @@ void CLocalPlayer::SendInCarFullSyncData()
 				icSync.byteCurrentWeapon = byteCurrentWeapon;
 		}
 
+		// TANK ROT
+		icSync.vecTankRot.X = pGameVehicle->GetTankRotX();
+		icSync.vecTankRot.Y = pGameVehicle->GetTankRotY();
+
 		// send
 		bsVehicleSync.Write((BYTE)ID_VEHICLE_SYNC);
 		bsVehicleSync.Write((PCHAR)&icSync,sizeof(INCAR_SYNC_DATA));

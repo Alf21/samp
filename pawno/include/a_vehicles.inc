@@ -49,6 +49,7 @@ native IsTrailerAttachedToVehicle(vehicleid);
 native GetVehicleTrailer(vehicleid);
 native SetVehicleNumberPlate(vehicleid, numberplate[]);
 native GetVehicleModel(vehicleid);
+native GetVehicleWeaponRotation(vehicleid, &Float:fX, &Float:fY);
 
 // Virtual Worlds
 native SetVehicleVirtualWorld(vehicleid, worldid);

@@ -76,6 +76,7 @@ public:
 	DWORD					m_dwLastSeenOccupiedTick;
 	DWORD					m_dwLastRespawnedTick;
 	BOOL					m_bShowMarker;
+	VECTOR2D				m_vTankRot;
 
 	void Process(float fElapsedTime);
 

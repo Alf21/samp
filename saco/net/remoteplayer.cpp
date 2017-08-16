@@ -233,6 +233,9 @@ void CRemotePlayer::Process(BYTE byteLocalWorld)
 					m_pCurrentVehicle->SetTrailer(NULL);
 				}
 
+				// TANK WEAPON POS
+				m_pCurrentVehicle->SetTankRot(m_icSync.vecTankRot.X, m_icSync.vecTankRot.Y);
+
 				// UPDATE CURRENT WEAPON (FOR DRIVER!)
 				if( m_pPlayerPed->IsAdded() &&
 					m_pPlayerPed->GetCurrentWeapon() != m_icSync.byteCurrentWeapon ) {

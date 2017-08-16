@@ -112,6 +112,7 @@ typedef struct _INCAR_SYNC_DATA
 	BYTE byteSirenOn;
 	BYTE byteLandingGearState;
 	BYTE byteTires[4];
+	VECTOR2D vecTankRot;
 	VEHICLEID TrailerID;
 	DWORD dwHydraThrustAngle;
 	FLOAT fTrainSpeed;

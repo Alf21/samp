@@ -2735,6 +2735,22 @@ static cell AMX_NATIVE_CALL n_GetVehicleHealth(AMX *amx, cell *params)
 }
 
 //----------------------------------------------------------------------------------
+// native GetVehicleWeaponRotation(vehicleid, &Float:fX, &Float:fY)
+
+static cell AMX_NATIVE_CALL n_GetVehicleWeaponRotation(AMX *amx, cell *params) {
+	CHECK_PARAMS(3);
+	CVehicle *pVehicle = pNetGame->GetVehiclePool()->GetAt((VEHICLEID)params[1]);
+	if (!pVehicle) return 0;
+
+	cell *cptr;
+	amx_GetAddr(amx, params[2], &cptr);
+	*cptr = amx_ftoc(pVehicle->m_vTankRot.X);
+	amx_GetAddr(amx, params[3], &cptr);
+	*cptr = amx_ftoc(pVehicle->m_vTankRot.Y);
+	return 1;
+}
+
+//----------------------------------------------------------------------------------
 // native ApplyAnimation(playerid, animlib[], animname[], Float:fS, opt1, opt2, opt3, opt4, opt5)
 
 static cell AMX_NATIVE_CALL n_ApplyAnimation(AMX *amx, cell *params)
@@ -4534,6 +4550,7 @@ AMX_NATIVE_INFO custom_Natives[] =
 
 	{ "SetVehicleVirtualWorld",		n_SetVehicleVirtualWorld },
 	{ "GetVehicleVirtualWorld",		n_GetVehicleVirtualWorld },
+	{ "GetVehicleWeaponRotation",	n_GetVehicleWeaponRotation },
 
 	// Messaging
 	{ "SendClientMessage",		n_SendClientMessage },
