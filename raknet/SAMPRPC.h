@@ -120,6 +120,7 @@
 	#define	RPC_ScrUsePlayerPedAnims		"a1"
 	#define RPC_ScrToggleVehicleMarker		"a4"
 	#define RPC_ScrMoveTextdraw				"a5"
+	#define RPC_ScrSetPlayerVisibleInScoreBoard "a6"
 
 	// netrpc (server)
 	#define RPC_ClientJoin					"xx"

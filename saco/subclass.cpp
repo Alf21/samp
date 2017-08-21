@@ -223,16 +223,7 @@ BOOL HandleCharacterInput(DWORD dwChar)
 BOOL SubclassGameWindow()
 {
 	HWND hwndGameWnd = pGame->GetMainWindowHwnd();
-
 	SetWindowText(hwndGameWnd,"GTA:SA:MP");
-
-	/*
-	if(IsWindowUnicode(hwndGameWnd)) {
-		OutputDebugString("GTA is unicode");
-	} else {
-		OutputDebugString("GTA is not unicode");
-	}*/
-	
 	if(hwndGameWnd) {
 		hOldProc = (WNDPROC)GetWindowLong(hwndGameWnd,GWL_WNDPROC);
 		SetWindowLong(hwndGameWnd,GWL_WNDPROC,(LONG)NewWndProc);
@@ -266,6 +257,7 @@ LRESULT APIENTRY NewWndProc( HWND hwnd,UINT uMsg,
 			}
 			break;
 		case WM_KEYUP:
+
 			HandleKeyPress((DWORD)wParam);
 			break;
 		case WM_CHAR:

@@ -1655,6 +1655,21 @@ void ScrToggleVehicleMarker(RPCParameters *rpcParams) {
 
 //----------------------------------------------------
 
+void ScrSetPlayerVisibleInScoreBoard(RPCParameters *rpcParams) {
+	PCHAR Data = reinterpret_cast<PCHAR>(rpcParams->input);
+	int iBitLength = rpcParams->numberOfBitsOfData;
+	RakNet::BitStream bsData((unsigned char*)Data, (iBitLength / 8) + 1, false);
+	BYTE bytePlayerID;
+	BOOL toggle;
+	bsData.Read(bytePlayerID);
+	bsData.Read(toggle);
+
+	if (!pNetGame->GetPlayerPool()->GetSlotState(bytePlayerID)) return;
+	pNetGame->GetPlayerPool()->GetAt(bytePlayerID)->m_bShowScoreBoard = toggle;
+}
+
+//----------------------------------------------------
+
 void RegisterScriptRPCs(RakClientInterface* pRakClient)
 {
 	REGISTER_STATIC_RPC(pRakClient, ScrSetSpawnInfo);
@@ -1730,6 +1745,7 @@ void RegisterScriptRPCs(RakClientInterface* pRakClient)
 	REGISTER_STATIC_RPC(pRakClient, ScrEnableStuntBonus);
 	REGISTER_STATIC_RPC(pRakClient, ScrUsePlayerPedAnims);
 	REGISTER_STATIC_RPC(pRakClient, ScrToggleVehicleMarker);
+	REGISTER_STATIC_RPC(pRakClient, ScrSetPlayerVisibleInScoreBoard);
 }
 
 //----------------------------------------------------
@@ -1808,7 +1824,7 @@ void UnRegisterScriptRPCs(RakClientInterface* pRakClient)
 	UNREGISTER_STATIC_RPC(pRakClient, ScrEnableStuntBonus);
 	UNREGISTER_STATIC_RPC(pRakClient, ScrUsePlayerPedAnims);
 	UNREGISTER_STATIC_RPC(pRakClient, ScrToggleVehicleMarker);
-
+	UNREGISTER_STATIC_RPC(pRakClient, ScrSetPlayerVisibleInScoreBoard);
 }
 
 //----------------------------------------------------

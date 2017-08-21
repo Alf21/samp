@@ -224,7 +224,7 @@ public:
 	VECTOR  m_vecPos;
 	float	m_fRotation;
 	BOOL	m_bCanTeleport;
-
+	BOOL	m_bShowOnScoreBoard;
 	int		m_iResolution[2];
 
 	BOOL IsActive() { 

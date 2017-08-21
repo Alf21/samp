@@ -67,6 +67,7 @@ public:
 
 	BOOL				m_bShowNameTag;
 	BOOL				m_bVisible;
+	BOOL				m_bShowScoreBoard;
 
 	float				m_fReportedHealth;
 	float				m_fReportedArmour;
@@ -149,6 +150,7 @@ public:
 	BYTE GetTeam() { return m_byteTeam; };
 	void SetTeam(BYTE byteTeam) { m_byteTeam = byteTeam; };
 	void ShowNameTag(BYTE byteShow) { if (byteShow) m_bShowNameTag = TRUE; else m_bShowNameTag = FALSE; };
+	void ShowOnScoreBoard(BOOL bEnabled) { m_bShowScoreBoard = bEnabled; };
 
 	void StateChange(BYTE byteNewState, BYTE byteOldState);
 

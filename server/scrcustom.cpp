@@ -4364,6 +4364,35 @@ static cell AMX_NATIVE_CALL n_GetPlayerResolution(AMX *amx, cell *params) {
 }
 
 //----------------------------------------------------------------------------------
+// native SetPlayerVisibleInScoreboard(playerid, bool:toggle);
+static cell AMX_NATIVE_CALL n_SetPlayerVisibleInScoreboard(AMX *amx, cell *params) {
+	if (!pNetGame || !pNetGame->GetPlayerPool() || !pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
+	CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt(params[1]);
+	pPlayer->m_bShowOnScoreBoard = params[2];
+	
+	RakNet::BitStream bsData;
+	bsData.Write(params[1]);
+	bsData.Write(params[2]);
+	pNetGame->GetRakServer()->RPC(RPC_ScrSetPlayerVisibleInScoreBoard, &bsData, HIGH_PRIORITY, RELIABLE, 0, UNASSIGNED_PLAYER_ID, true, false);
+	return 1;
+}
+
+//----------------------------------------------------------------------------------
+// native SetPlayerVisibleInScoreboardForPlayer(forplayerid, playerid, bool:toggle);
+static cell AMX_NATIVE_CALL n_SetPlayerVisibleInScoreboardForPlayer(AMX *amx, cell *params) {
+	if (!pNetGame || !pNetGame->GetPlayerPool() || !pNetGame->GetPlayerPool()->GetSlotState(params[1])) return 0;
+	else if (!pNetGame->GetPlayerPool()->GetSlotState(params[2])) return 0;
+
+	CPlayer *pPlayer = pNetGame->GetPlayerPool()->GetAt(params[2]);
+
+	RakNet::BitStream bsData;
+	bsData.Write(params[2]);
+	bsData.Write(params[3]);
+	pNetGame->GetRakServer()->RPC(RPC_ScrSetPlayerVisibleInScoreBoard, &bsData, HIGH_PRIORITY, RELIABLE, 0, pNetGame->GetRakServer()->GetPlayerIDFromIndex(params[1]), false, false);
+	return 1;
+}
+
+//----------------------------------------------------------------------------------
 AMX_NATIVE_INFO custom_Natives[] =
 {
 	// Util
@@ -4623,6 +4652,8 @@ AMX_NATIVE_INFO custom_Natives[] =
 	{ "GetPlayerTime",			n_GetPlayerTime },
 	{ "GetPlayerPoolSize",		n_GetPlayerPoolSize },
 	{ "GetPlayerResolution",	n_GetPlayerResolution },
+	{ "SetPlayerVisibleInScoreboard", n_SetPlayerVisibleInScoreboard },
+	{ "SetPlayerVisibleInScoreboardForPlayer", n_SetPlayerVisibleInScoreboardForPlayer },
 	{ NULL, NULL }
 };
 

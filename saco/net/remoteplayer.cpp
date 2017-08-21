@@ -43,6 +43,7 @@ CRemotePlayer::CRemotePlayer()
 	m_byteVirtualWorld = 0;
 	m_dwLastHeadUpdate = GetTickCount();
 	m_dwStreamUpdate = 0;
+	m_bShowScoreBoard = TRUE;
 }
 
 //----------------------------------------------------

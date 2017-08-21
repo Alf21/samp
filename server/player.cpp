@@ -82,7 +82,8 @@ CPlayer::CPlayer()
 	m_bUseCJWalk = false;
 
 	*m_iResolution = 0;
-	
+	m_bShowOnScoreBoard = FALSE;
+
 	BYTE i;
 	for (i = 0; i < 13; i++)
 	{

@@ -165,7 +165,7 @@ void CScoreBoard::Draw()
 	int x;
 	for (x=0; x<MAX_PLAYERS; x++)
 	{
-		if (pPlayerPool->GetSlotState(x) == TRUE)
+		if (pPlayerPool->GetSlotState(x) == TRUE && pPlayerPool->GetAt(x)->m_bShowScoreBoard)
 		{
 			Players[i].dwId = x;
 			Players[i].szName = pPlayerPool->GetPlayerName(x);

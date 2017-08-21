@@ -125,3 +125,6 @@ native DestroyPlayerPickup(pickupid,playerid);
 native IsPlayerInRangeOfPoint(playerid,Float:fRange,Float:PosX,Float:PosY,Float:PosZ);
 native GetPlayerResolution(playerid, &width, &height);
 native GetPlayerPoolSize();
+native SetPlayerVisibleInScoreBoard(playerid, bool:toggle);
+native SetPlayerVisibleInScoreBoardForPlayer(forplayerid, playerid, bool:toggle);
+
