@@ -1217,6 +1217,10 @@ void CPlayerPed::SetModelIndex(UINT uiModel)
 {
 	DWORD dwPedPtr = (DWORD)m_pPed;
 	if(!GamePool_Ped_GetAt(m_dwGTAId)) return;
+	
+	if(uiModel > 311){ //skin limit bypass
+		uiModel += 19689; //skinid 312 -> modelid 20001
+	}
 
 	if(!IsValidModel(uiModel)) uiModel = 0;
 
